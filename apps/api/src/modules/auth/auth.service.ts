@@ -23,6 +23,12 @@ export interface AuthResult extends AuthTokens {
   user: PublicUser;
 }
 
+export interface GithubProfile {
+  githubId: string;
+  email: string;
+  displayName: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -49,7 +55,7 @@ export class AuthService {
 
   async login(dto: LoginDto): Promise<AuthResult> {
     const user = await this.usersService.findByEmail(dto.email);
-    if (!user) {
+    if (!user?.passwordHash) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -62,6 +68,45 @@ export class AuthService {
     }
 
     return this.buildAuthResult(user.id, user.email, toPublicUser(user));
+  }
+
+  // Called from the GitHub OAuth callback once Passport has already
+  // resolved the profile. Finds-or-creates by githubId, linking onto an
+  // existing email/password account instead of creating a duplicate when
+  // the GitHub email matches one already registered.
+  async loginWithGithubProfile(profile: GithubProfile): Promise<AuthResult> {
+    const byGithubId = await this.usersService.findByGithubId(profile.githubId);
+    if (byGithubId) {
+      return this.buildAuthResult(
+        byGithubId.id,
+        byGithubId.email,
+        toPublicUser(byGithubId),
+      );
+    }
+
+    const byEmail = await this.usersService.findByEmail(profile.email);
+    if (byEmail) {
+      const linked = await this.usersService.linkGithubId(
+        byEmail.id,
+        profile.githubId,
+      );
+      return this.buildAuthResult(
+        linked.id,
+        linked.email,
+        toPublicUser(linked),
+      );
+    }
+
+    const created = await this.usersService.create({
+      email: profile.email,
+      displayName: profile.displayName,
+      githubId: profile.githubId,
+    });
+    return this.buildAuthResult(
+      created.id,
+      created.email,
+      toPublicUser(created),
+    );
   }
 
   // The refresh guard already validated the incoming refresh token and

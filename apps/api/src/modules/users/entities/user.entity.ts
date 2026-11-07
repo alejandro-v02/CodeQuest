@@ -17,8 +17,13 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  passwordHash: string;
+  // Null for accounts created via GitHub login only.
+  @Column({ type: 'varchar', nullable: true })
+  passwordHash: string | null;
+
+  // Null for accounts created via email/password only.
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  githubId: string | null;
 
   @Column()
   displayName: string;

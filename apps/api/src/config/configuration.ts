@@ -18,6 +18,15 @@ export interface AppConfig {
     accessExpiresIn: StringValue;
     refreshExpiresIn: StringValue;
   };
+  github: {
+    enabled: boolean;
+    clientId: string;
+    clientSecret: string;
+    callbackUrl: string;
+  };
+  // Custom URL scheme the mobile app registers to receive the GitHub OAuth
+  // callback's tokens (see AndroidManifest.xml and DeepLinkService).
+  mobileDeepLinkUrl: string;
 }
 
 export default (): AppConfig => ({
@@ -38,4 +47,19 @@ export default (): AppConfig => ({
     refreshExpiresIn: (process.env.JWT_REFRESH_EXPIRES_IN ??
       '7d') as StringValue,
   },
+  github: {
+    enabled: Boolean(
+      process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET,
+    ),
+    // passport-github2 throws at construction time on an empty clientID/
+    // clientSecret, so these fall back to harmless placeholders instead of
+    // '' when GitHub login hasn't been configured yet.
+    clientId: process.env.GITHUB_CLIENT_ID || 'not-configured',
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || 'not-configured',
+    callbackUrl:
+      process.env.GITHUB_CALLBACK_URL ||
+      'http://localhost:3000/auth/github/callback',
+  },
+  mobileDeepLinkUrl:
+    process.env.MOBILE_DEEP_LINK_URL ?? 'codequest://auth-callback',
 });

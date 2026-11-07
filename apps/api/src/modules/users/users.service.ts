@@ -6,8 +6,9 @@ import type { UpdateOnboardingDto } from './dto/update-onboarding.dto';
 
 export interface CreateUserInput {
   email: string;
-  passwordHash: string;
   displayName: string;
+  passwordHash?: string;
+  githubId?: string;
 }
 
 @Injectable()
@@ -25,9 +26,27 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { id } });
   }
 
+  findByGithubId(githubId: string): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { githubId } });
+  }
+
   create(input: CreateUserInput): Promise<User> {
-    const user = this.usersRepository.create(input);
+    const user = this.usersRepository.create({
+      email: input.email,
+      displayName: input.displayName,
+      passwordHash: input.passwordHash ?? null,
+      githubId: input.githubId ?? null,
+    });
     return this.usersRepository.save(user);
+  }
+
+  async linkGithubId(id: string, githubId: string): Promise<User> {
+    await this.usersRepository.update(id, { githubId });
+    const user = await this.findById(id);
+    if (!user) {
+      throw new Error(`User ${id} was deleted while linking GitHub`);
+    }
+    return user;
   }
 
   async updateOnboarding(id: string, dto: UpdateOnboardingDto): Promise<User> {

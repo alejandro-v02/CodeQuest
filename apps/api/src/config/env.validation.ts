@@ -16,4 +16,10 @@ export const envValidationSchema = Joi.object({
   JWT_REFRESH_SECRET: Joi.string().min(16).required(),
   JWT_ACCESS_EXPIRES_IN: Joi.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
+
+  // Optional: GitHub login is inactive (routes 501) until these are set.
+  GITHUB_CLIENT_ID: Joi.string().allow('').default(''),
+  GITHUB_CLIENT_SECRET: Joi.string().allow('').default(''),
+  GITHUB_CALLBACK_URL: Joi.string().allow('').default(''),
+  MOBILE_DEEP_LINK_URL: Joi.string().default('codequest://auth-callback'),
 });

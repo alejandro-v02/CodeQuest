@@ -1,6 +1,6 @@
 import type { User } from './entities/user.entity';
 
-export type PublicUser = Omit<User, 'passwordHash'>;
+export type PublicUser = Omit<User, 'passwordHash' | 'githubId'>;
 
 export function toPublicUser(user: User): PublicUser {
   return {
