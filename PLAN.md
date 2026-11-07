@@ -238,6 +238,7 @@ Pipeline de cada ejercicio generado:
 
 ### Fase 8 — Calidad y despliegue
 - [ ] Tests: unitarios del backend (servicios clave), e2e de auth y ejecución; pruebas de componentes críticos del front.
+  - Nota (Fase 1): el e2e por defecto de Nest se eliminó porque `@nestjs/config`/`@nestjs/typeorm` ya son ESM puro y chocan con `ts-jest` + `module: nodenext`. Resolver aquí (transform/ESM config de Jest) antes de escribir la suite real.
 - [ ] CI básico (lint + tests) con GitHub Actions.
 - [ ] Desplegar API + Postgres en Railway/Render, migraciones en producción.
 - [ ] Generar APK/AAB firmado con Capacitor + Android Studio.

@@ -4,12 +4,17 @@ node_modules/
 # Build output
 dist/
 www/
-android/app/build/
-android/.gradle/
-ios/
 
-# Capacitor generated native projects (kept out until Fase 8 build)
-apps/mobile/android/
+# Capacitor native projects are committed (manifest/gradle hold real project
+# config, e.g. dev cleartext traffic); only build output and local machine
+# files are ignored.
+apps/mobile/android/app/build/
+apps/mobile/android/build/
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+apps/mobile/android/.idea/
+apps/mobile/android/**/*.keystore
+apps/mobile/android/**/*.jks
 apps/mobile/ios/
 
 # Env
