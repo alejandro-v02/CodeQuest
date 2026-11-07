@@ -1,0 +1,23 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ion-background-color, #080a0c);
+  opacity: 1;
+  transition: opacity 450ms ease;
+
+  &.fading {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.boot-canvas {
+  width: min(70vw, 420px);
+  height: auto;
+  aspect-ratio: 340 / 190;
+  display: block;
+}
