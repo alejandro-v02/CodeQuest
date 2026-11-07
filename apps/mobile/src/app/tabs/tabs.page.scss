@@ -1,0 +1,26 @@
+// Floating pill tab bar instead of Ionic's default flush-to-edge bar,
+// so it reads more like a modern app HUD than a stock template.
+.quest-tab-bar {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border-radius: 20px;
+  border: 1px solid var(--ion-border-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  ion-tab-button {
+    --color: var(--ion-color-step-700);
+    --color-selected: var(--ion-color-primary);
+    font-size: 11px;
+
+    ion-icon {
+      font-size: 22px;
+      transition: transform 0.15s ease-out;
+    }
+
+    &.tab-selected ion-icon {
+      transform: translateY(-2px) scale(1.05);
+    }
+  }
+}

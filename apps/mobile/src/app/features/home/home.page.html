@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>CodeQuest</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="hero">
+    <p class="eyebrow">Fase 1 · Base del proyecto</p>
+    <h1>Forja tu ruta de código</h1>
+    <p class="subtitle">Esta pantalla confirma que la app y el backend hablan entre sí.</p>
+  </div>
+
+  <ion-card class="status-card" [class]="state()">
+    <ion-card-content>
+      <app-status-pill [state]="state()" [label]="pillLabel"></app-status-pill>
+
+      @if (health(); as data) {
+        <dl class="details">
+          <div class="row">
+            <dt>Base de datos</dt>
+            <dd>{{ data.database === 'connected' ? 'Conectada' : 'Desconectada' }}</dd>
+          </div>
+          <div class="row">
+            <dt>Uptime del servidor</dt>
+            <dd>{{ data.uptimeSeconds }}s</dd>
+          </div>
+          <div class="row">
+            <dt>Última comprobación</dt>
+            <dd>{{ data.timestamp | date: 'HH:mm:ss' }}</dd>
+          </div>
+        </dl>
+      }
+
+      @if (errorMessage(); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
+
+      <ion-button expand="block" fill="outline" (click)="checkHealth()">
+        <ion-icon slot="start" name="refresh"></ion-icon>
+        Reintentar
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
