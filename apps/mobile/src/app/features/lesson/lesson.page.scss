@@ -92,3 +92,54 @@
 .complete-button {
   margin: 8px 20px 24px;
 }
+
+.exercises-section {
+  margin: 0 20px 24px;
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ion-color-step-900);
+    margin: 0 0 10px;
+  }
+}
+
+.exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid var(--ion-border-color);
+  border-radius: 14px;
+  background: var(--ion-item-background);
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  > ion-icon:first-child {
+    font-size: 18px;
+    color: var(--ion-color-secondary);
+    flex-shrink: 0;
+  }
+
+  .exercise-prompt {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .solved-icon {
+    color: var(--ion-color-success);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .chevron {
+    color: var(--ion-color-step-600);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+}

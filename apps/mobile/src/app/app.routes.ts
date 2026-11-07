@@ -33,4 +33,9 @@ export const routes: Routes = [
     canActivate: [authGuard, onboardingGuard],
     loadComponent: () => import('./features/lesson/lesson.page').then((m) => m.LessonPage),
   },
+  {
+    path: 'exercise/:id',
+    canActivate: [authGuard, onboardingGuard],
+    loadComponent: () => import('./features/exercise/exercise.page').then((m) => m.ExercisePage),
+  },
 ];

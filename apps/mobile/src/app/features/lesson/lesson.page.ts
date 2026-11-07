@@ -2,8 +2,10 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonSpinner } from '@ionic/angular';
 import { CoursesService } from '../../core/services/courses.service';
+import { ExercisesService } from '../../core/services/exercises.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import type { LessonDetail } from '../../core/models/course.model';
+import type { ExerciseSummary } from '../../core/models/exercise.model';
 
 @Component({
   selector: 'app-lesson',
@@ -24,9 +26,11 @@ export class LessonPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly coursesService = inject(CoursesService);
+  private readonly exercisesService = inject(ExercisesService);
   private readonly markdownService = inject(MarkdownService);
 
   readonly lesson = signal<LessonDetail | null>(null);
+  readonly exercises = signal<ExerciseSummary[]>([]);
   readonly isLoading = signal(true);
   readonly isCompleting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -52,11 +56,16 @@ export class LessonPage {
 
     try {
       this.lesson.set(await this.coursesService.getLesson(lessonId));
+      this.exercises.set(await this.exercisesService.getForLesson(lessonId));
     } catch {
       this.errorMessage.set('No se pudo cargar la lección.');
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  openExercise(exerciseId: string): void {
+    void this.router.navigateByUrl(`/exercise/${exerciseId}`);
   }
 
   async complete(): Promise<void> {

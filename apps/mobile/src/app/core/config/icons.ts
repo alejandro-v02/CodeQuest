@@ -9,8 +9,13 @@ import {
   logoGithub,
   lockClosed,
   checkmarkCircle,
+  closeCircle,
   ellipseOutline,
   arrowBack,
+  play,
+  send,
+  codeSlash,
+  chevronForward,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -26,7 +31,12 @@ export function registerIcons(): void {
     'logo-github': logoGithub,
     'lock-closed': lockClosed,
     'checkmark-circle': checkmarkCircle,
+    'close-circle': closeCircle,
     'ellipse-outline': ellipseOutline,
     'arrow-back': arrowBack,
+    play,
+    send,
+    'code-slash': codeSlash,
+    'chevron-forward': chevronForward,
   });
 }

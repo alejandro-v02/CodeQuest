@@ -1,0 +1,72 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Ejercicio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="exercise-content">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <ion-spinner name="dots"></ion-spinner>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+    </div>
+  } @else if (exercise(); as current) {
+    <p class="prompt">{{ current.prompt }}</p>
+
+    <div class="editor-shell">
+      <app-code-editor
+        [value]="code()"
+        [language]="current.languageSlug"
+        (valueChange)="code.set($event)"
+      ></app-code-editor>
+    </div>
+
+    <div class="actions">
+      <ion-button fill="outline" [disabled]="isRunning() || isSubmitting()" (click)="run()">
+        <ion-icon name="play" slot="start"></ion-icon>
+        Ejecutar
+      </ion-button>
+      <ion-button [disabled]="isRunning() || isSubmitting()" (click)="submit()">
+        <ion-icon name="send" slot="start"></ion-icon>
+        Enviar
+      </ion-button>
+    </div>
+
+    @if (isRunning() || isSubmitting()) {
+      <div class="console-loading">
+        <app-loading-wave></app-loading-wave>
+      </div>
+    } @else if (result(); as current) {
+      <div class="console">
+        @for (testCase of current.testCases; track testCase.id) {
+          <div class="test-case" [class.passed]="testCase.passed" [class.failed]="!testCase.passed">
+            <div class="test-case-header">
+              <ion-icon [name]="testCase.passed ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+              <span>{{ testCase.passed ? 'Caso correcto' : 'Caso incorrecto' }}</span>
+            </div>
+            @if (testCase.input !== null) {
+              <p class="test-case-line"><span>Entrada:</span> {{ testCase.input || '(vacía)' }}</p>
+              <p class="test-case-line"><span>Esperado:</span> {{ testCase.expectedOutput }}</p>
+              <p class="test-case-line"><span>Obtenido:</span> {{ testCase.actualOutput || '(sin salida)' }}</p>
+              @if (testCase.stderr) {
+                <p class="test-case-line error">{{ testCase.stderr }}</p>
+              }
+            }
+          </div>
+        }
+
+        @if (current.allPassed) {
+          <p class="all-passed">¡Todos los casos pasaron!</p>
+        }
+      </div>
+    }
+  }
+</ion-content>

@@ -1,0 +1,119 @@
+.exercise-content {
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 8px;
+  --padding-bottom: 24px;
+}
+
+.state-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--ion-color-step-700);
+}
+
+.error-message {
+  margin: 0;
+  color: var(--ion-color-danger);
+  font-size: 14px;
+}
+
+.prompt {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.editor-shell {
+  height: 260px;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+
+  ion-button {
+    flex: 1;
+    --border-radius: 14px;
+  }
+}
+
+.console-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.console {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.test-case {
+  border-radius: 14px;
+  border: 1px solid var(--ion-border-color);
+  background: var(--ion-item-background);
+  padding: 14px 16px;
+
+  &.passed {
+    border-color: rgba(46, 204, 113, 0.4);
+  }
+
+  &.failed {
+    border-color: rgba(240, 44, 70, 0.4);
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 8px;
+
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  &.passed &-header ion-icon {
+    color: var(--ion-color-success);
+  }
+
+  &.failed &-header ion-icon {
+    color: var(--ion-color-danger);
+  }
+}
+
+.test-case-line {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-family: ui-monospace, Menlo, Consolas, 'Courier New', monospace;
+  color: var(--ion-color-step-700);
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  span {
+    color: var(--ion-color-step-900);
+    font-weight: 600;
+    font-family: inherit;
+  }
+
+  &.error {
+    color: var(--ion-color-danger);
+  }
+}
+
+.all-passed {
+  margin: 4px 0 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--ion-color-success);
+}
