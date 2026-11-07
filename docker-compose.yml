@@ -1,0 +1,23 @@
+services:
+  postgres:
+    # pgvector/pgvector ships Postgres + the pgvector extension pre-installed,
+    # so Fase 5A only needs `CREATE EXTENSION vector` instead of rebuilding the image.
+    image: pgvector/pgvector:pg16
+    container_name: codequest-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-codequest}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-codequest}
+      POSTGRES_DB: ${DB_NAME:-codequest}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - codequest-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-codequest}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  codequest-postgres-data:
