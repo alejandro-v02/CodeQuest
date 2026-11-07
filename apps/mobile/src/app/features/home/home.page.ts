@@ -1,78 +1,70 @@
 import { Component, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
-  IonCard,
-  IonCardContent,
+  IonSpinner,
   IonButton,
   IonIcon,
 } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { refresh } from 'ionicons/icons';
-import { HealthService } from '../../core/services/health.service';
-import type { HealthStatus } from '../../core/services/health.service';
-import { StatusPillComponent } from '../../shared/components/status-pill/status-pill.component';
-import type { PillState } from '../../shared/components/status-pill/status-pill.component';
+import { AuthService } from '../../core/services/auth.service';
+import { CoursesService } from '../../core/services/courses.service';
+import type { LessonSummary, PathOverview } from '../../core/models/course.model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  imports: [
-    DatePipe,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonCard,
-    IonCardContent,
-    IonButton,
-    IonIcon,
-    StatusPillComponent,
-  ],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonSpinner, IonButton, IonIcon],
 })
 export class HomePage {
-  private readonly healthService = inject(HealthService);
+  private readonly authService = inject(AuthService);
+  private readonly coursesService = inject(CoursesService);
+  private readonly router = inject(Router);
 
-  readonly state = signal<PillState>('checking');
-  readonly health = signal<HealthStatus | null>(null);
+  readonly path = signal<PathOverview | null>(null);
+  readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
 
   constructor() {
-    addIcons({ refresh });
-    this.checkHealth();
+    void this.loadPath();
   }
 
-  checkHealth(): void {
-    this.state.set('checking');
+  async loadPath(): Promise<void> {
+    const language = this.authService.currentUser()?.preferredLanguage;
+    if (!language) {
+      return;
+    }
+
+    this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.healthService.check().subscribe({
-        next: (status) => {
-          this.health.set(status);
-          this.state.set(status.status === 'ok' ? 'ok' : 'error');
-        },
-        error: () => {
-          this.health.set(null);
-          this.state.set('error');
-          this.errorMessage.set(
-            'No se pudo contactar al backend. Revisa que la API esté corriendo y que el teléfono esté en la misma red.',
-          );
-        },
-      });
+    try {
+      this.path.set(await this.coursesService.getPath(language));
+    } catch {
+      this.errorMessage.set('No se pudo cargar tu ruta de aprendizaje.');
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
-  get pillLabel(): string {
-    switch (this.state()) {
-      case 'checking':
-        return 'Conectando...';
-      case 'ok':
-        return 'API OK';
-      case 'error':
-        return 'Sin conexión';
+  openLesson(lesson: LessonSummary): void {
+    if (lesson.status === 'locked') {
+      return;
+    }
+    void this.router.navigateByUrl(`/lesson/${lesson.id}`);
+  }
+
+  statusIcon(status: LessonSummary['status']): string {
+    switch (status) {
+      case 'completed':
+        return 'checkmark-circle';
+      case 'locked':
+        return 'lock-closed';
+      default:
+        return 'ellipse-outline';
     }
   }
 }

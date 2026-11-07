@@ -1,84 +1,88 @@
 // CodeQuest color tokens.
-// Dark-only for now (see global.scss, dark.always.css). Palette: deep navy
-// background with an indigo primary (CTAs) and a cyan secondary (code/data),
-// so the app reads like a dev tool, not a generic dark Ionic template.
+// Dark-only for now (see global.scss, dark.always.css). Palette: true black
+// background with neutral dark-gray surfaces and white text. Primary (CTAs)
+// is off-white; cyan is the single accent (code/data). Success/warning/danger
+// stay colored because they carry meaning.
 
 :root {
-  --ion-color-primary: #7c5cff;
-  --ion-color-primary-rgb: 124, 92, 255;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #6d51e0;
-  --ion-color-primary-tint: #8a6cff;
+  // Primary: off-white (monochrome CTAs)
+  --ion-color-primary: #f5f5f5;
+  --ion-color-primary-rgb: 245, 245, 245;
+  --ion-color-primary-contrast: #0a0a0a;
+  --ion-color-primary-contrast-rgb: 10, 10, 10;
+  --ion-color-primary-shade: #d8d8d8;
+  --ion-color-primary-tint: #f7f7f7;
 
+  // Secondary: cyan, the only real accent
   --ion-color-secondary: #22d3ee;
   --ion-color-secondary-rgb: 34, 211, 238;
-  --ion-color-secondary-contrast: #0b0f14;
-  --ion-color-secondary-contrast-rgb: 11, 15, 20;
+  --ion-color-secondary-contrast: #0a0a0a;
+  --ion-color-secondary-contrast-rgb: 10, 10, 10;
   --ion-color-secondary-shade: #1eb9d1;
   --ion-color-secondary-tint: #3bd8f0;
 
-  --ion-color-tertiary: #fbbf24;
-  --ion-color-tertiary-rgb: 251, 191, 36;
-  --ion-color-tertiary-contrast: #0b0f14;
-  --ion-color-tertiary-contrast-rgb: 11, 15, 20;
-  --ion-color-tertiary-shade: #dda521;
-  --ion-color-tertiary-tint: #fcc94a;
+  // Tertiary: neutral gray (no extra color)
+  --ion-color-tertiary: #8e8e8e;
+  --ion-color-tertiary-rgb: 142, 142, 142;
+  --ion-color-tertiary-contrast: #0a0a0a;
+  --ion-color-tertiary-contrast-rgb: 10, 10, 10;
+  --ion-color-tertiary-shade: #7d7d7d;
+  --ion-color-tertiary-tint: #999999;
 
   --ion-color-success: #2ecc71;
   --ion-color-success-rgb: 46, 204, 113;
-  --ion-color-success-contrast: #ffffff;
-  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-contrast: #0a0a0a;
+  --ion-color-success-contrast-rgb: 10, 10, 10;
   --ion-color-success-shade: #28b363;
   --ion-color-success-tint: #43d17f;
 
   --ion-color-warning: #f59e0b;
   --ion-color-warning-rgb: 245, 158, 11;
-  --ion-color-warning-contrast: #0b0f14;
-  --ion-color-warning-contrast-rgb: 11, 15, 20;
+  --ion-color-warning-contrast: #0a0a0a;
+  --ion-color-warning-contrast-rgb: 10, 10, 10;
   --ion-color-warning-shade: #d88b0a;
   --ion-color-warning-tint: #f7ae2d;
 
-  --ion-color-danger: #ff5c72;
+  --ion-color-danger: #f02c46;
   --ion-color-danger-rgb: 255, 92, 114;
   --ion-color-danger-contrast: #ffffff;
   --ion-color-danger-contrast-rgb: 255, 255, 255;
   --ion-color-danger-shade: #e05164;
-  --ion-color-danger-tint: #ff7485;
+  --ion-color-danger-tint: #f4374d;
 }
 
-// Surfaces: a near-black navy background with slightly lighter elevated
-// panels (cards, toolbars, tab bar) so depth reads without needing shadows.
+// Surfaces: pure black background; elevated panels step up in neutral grays
+// so depth reads without shadows.
 .ios body,
 .md body {
-  --ion-background-color: #080a0c;
-  --ion-background-color-rgb: 11, 15, 20;
-  --ion-text-color: #e8edf2;
-  --ion-text-color-rgb: 232, 237, 242;
+  --ion-background-color: #000000;
+  --ion-background-color-rgb: 0, 0, 0;
+  --ion-text-color: #f2f2f2;
+  --ion-text-color-rgb: 242, 242, 242;
 
-  --ion-toolbar-background: #11161d;
-  --ion-tab-bar-background: #0f141b;
-  --ion-item-background: #121820;
-  --ion-card-background: #141b24;
-  --ion-border-color: #232b36;
+  --ion-toolbar-background: #0a0a0a;
+  --ion-tab-bar-background: #0a0a0a;
+  --ion-item-background: #0f0f0f;
+  --ion-card-background: #141414;
+  --ion-border-color: #262626;
 
-  --ion-color-step-50: #141a21;
-  --ion-color-step-100: #191f27;
-  --ion-color-step-150: #1f252e;
-  --ion-color-step-200: #242b35;
-  --ion-color-step-250: #2a313c;
-  --ion-color-step-300: #2f3743;
-  --ion-color-step-350: #343d4a;
-  --ion-color-step-400: #3a4351;
-  --ion-color-step-450: #3f4958;
-  --ion-color-step-500: #454f5f;
-  --ion-color-step-550: #4a5666;
-  --ion-color-step-600: #505c6d;
-  --ion-color-step-650: #556274;
-  --ion-color-step-700: #5b687b;
-  --ion-color-step-750: #606e82;
-  --ion-color-step-800: #667489;
-  --ion-color-step-850: #6c7a90;
-  --ion-color-step-900: #717f97;
-  --ion-color-step-950: #77859e;
+  --ion-color-step-50: #0d0d0d;
+  --ion-color-step-100: #121212;
+  --ion-color-step-150: #181818;
+  --ion-color-step-200: #1e1e1e;
+  --ion-color-step-250: #242424;
+  --ion-color-step-300: #2a2a2a;
+  --ion-color-step-350: #303030;
+  --ion-color-step-400: #363636;
+  --ion-color-step-450: #3d3d3d;
+  --ion-color-step-500: #444444;
+  --ion-color-step-550: #4b4b4b;
+  --ion-color-step-600: #535353;
+  --ion-color-step-650: #5b5b5b;
+  --ion-color-step-700: #646464;
+  --ion-color-step-750: #6e6e6e;
+  --ion-color-step-800: #787878;
+  --ion-color-step-850: #838383;
+  --ion-color-step-900: #8e8e8e;
+  --ion-color-step-950: #9a9a9a;
 }

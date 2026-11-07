@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ lesson()?.title ?? 'Lección' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="lesson-content">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <ion-spinner name="dots"></ion-spinner>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+    </div>
+  } @else if (lesson(); as current) {
+    @if (renderedContent(); as html) {
+      <div class="markdown-body" [innerHTML]="html"></div>
+    } @else {
+      <div class="state-pane">
+        <p>El contenido de esta lección llega en una fase posterior.</p>
+      </div>
+    }
+
+    <ion-button
+      expand="block"
+      class="complete-button"
+      [disabled]="current.status === 'completed' || isCompleting()"
+      (click)="complete()"
+    >
+      @if (isCompleting()) {
+        <ion-spinner name="dots"></ion-spinner>
+      } @else if (current.status === 'completed') {
+        Completada
+      } @else {
+        Marcar como completada
+      }
+    </ion-button>
+  }
+</ion-content>

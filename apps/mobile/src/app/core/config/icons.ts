@@ -7,6 +7,10 @@ import {
   personOutline,
   refresh,
   logoGithub,
+  lockClosed,
+  checkmarkCircle,
+  ellipseOutline,
+  arrowBack,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -20,5 +24,9 @@ export function registerIcons(): void {
     'person-outline': personOutline,
     refresh,
     'logo-github': logoGithub,
+    'lock-closed': lockClosed,
+    'checkmark-circle': checkmarkCircle,
+    'ellipse-outline': ellipseOutline,
+    'arrow-back': arrowBack,
   });
 }

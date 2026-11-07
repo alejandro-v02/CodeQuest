@@ -5,41 +5,43 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="hero">
-    <p class="eyebrow">Fase 1 · Base del proyecto</p>
-    <h1>Forja tu ruta de código</h1>
-    <p class="subtitle">Esta pantalla confirma que la app y el backend hablan entre sí.</p>
-  </div>
-
-  <ion-card class="status-card" [class]="state()">
-    <ion-card-content>
-      <app-status-pill [state]="state()" [label]="pillLabel"></app-status-pill>
-
-      @if (health(); as data) {
-        <dl class="details">
-          <div class="row">
-            <dt>Base de datos</dt>
-            <dd>{{ data.database === 'connected' ? 'Conectada' : 'Desconectada' }}</dd>
-          </div>
-          <div class="row">
-            <dt>Uptime del servidor</dt>
-            <dd>{{ data.uptimeSeconds }}s</dd>
-          </div>
-          <div class="row">
-            <dt>Última comprobación</dt>
-            <dd>{{ data.timestamp | date: 'HH:mm:ss' }}</dd>
-          </div>
-        </dl>
+  @if (isLoading()) {
+    <div class="state-pane">
+      <ion-spinner name="dots"></ion-spinner>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="loadPath()">Reintentar</ion-button>
+    </div>
+  } @else if (path(); as overview) {
+    <div class="hero">
+      <p class="eyebrow">Ruta de aprendizaje</p>
+      <h1>{{ overview.title }}</h1>
+      @if (overview.description) {
+        <p class="subtitle">{{ overview.description }}</p>
       }
+    </div>
 
-      @if (errorMessage(); as message) {
-        <p class="error-message">{{ message }}</p>
-      }
+    @for (module of overview.modules; track module.id) {
+      <section class="module">
+        <h2 class="module-title">{{ module.title }}</h2>
 
-      <ion-button expand="block" fill="outline" (click)="checkHealth()">
-        <ion-icon slot="start" name="refresh"></ion-icon>
-        Reintentar
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+        <div class="lesson-list">
+          @for (lesson of module.lessons; track lesson.id) {
+            <button
+              type="button"
+              class="lesson-row"
+              [class]="lesson.status"
+              [disabled]="lesson.status === 'locked'"
+              (click)="openLesson(lesson)"
+            >
+              <ion-icon [name]="statusIcon(lesson.status)"></ion-icon>
+              <span class="lesson-title">{{ lesson.title }}</span>
+            </button>
+          }
+        </div>
+      </section>
+    }
+  }
 </ion-content>
