@@ -178,9 +178,9 @@ Pipeline de cada ejercicio generado:
 - **Entrega:** la app en el teléfono muestra "API OK" leyendo el backend.
 
 ### Fase 2 — Autenticación y usuarios
-- [ ] Backend: registro, login, refresh token, guard JWT, endpoint `GET /me`.
-- [ ] App: pantallas de registro/login, almacenamiento seguro del token, interceptor HTTP y guards de ruta.
-- [ ] Onboarding: elegir lenguaje y meta diaria.
+- [x] Backend: registro, login, refresh token, guard JWT, endpoint `GET /me`.
+- [x] App: pantallas de registro/login, almacenamiento seguro del token, interceptor HTTP y guards de ruta.
+- [x] Onboarding: elegir lenguaje y meta diaria.
 - **Entrega:** puedo registrarme, iniciar sesión y mantener la sesión al reabrir la app.
 
 ### Fase 3 — Contenido: rutas, módulos y lecciones
