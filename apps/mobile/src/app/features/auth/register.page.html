@@ -1,62 +1,64 @@
 <ion-content [fullscreen]="true" class="auth-content">
-  <div class="auth-hero">
-    <div class="brand-row">
-      <img src="assets/branding/logo-mark.png" alt="" class="brand-mark" />
-      <p class="brand">CodeQuest</p>
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div class="brand-row">
+        <img src="assets/branding/logo-mark.png" alt="" class="brand-mark" />
+        <p class="brand">CodeQuest</p>
+      </div>
+      <h1>Crea tu cuenta</h1>
+      <p class="subtitle">Un lenguaje a la vez, a tu ritmo.</p>
     </div>
-    <h1>Crea tu cuenta</h1>
-    <p class="subtitle">Un lenguaje a la vez, a tu ritmo.</p>
-  </div>
 
-  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
-    <ion-input
-      label="Nombre"
-      labelPlacement="stacked"
-      formControlName="displayName"
-      placeholder="¿Cómo te llamamos?"
-      fill="outline"
-    ></ion-input>
+    <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+      <ion-input
+        label="Nombre"
+        labelPlacement="stacked"
+        formControlName="displayName"
+        placeholder="¿Cómo te llamamos?"
+        fill="outline"
+      ></ion-input>
 
-    <ion-input
-      label="Correo"
-      labelPlacement="stacked"
-      type="email"
-      inputmode="email"
-      formControlName="email"
-      placeholder="tu@correo.com"
-      fill="outline"
-    ></ion-input>
+      <ion-input
+        label="Correo"
+        labelPlacement="stacked"
+        type="email"
+        inputmode="email"
+        formControlName="email"
+        placeholder="tu@correo.com"
+        fill="outline"
+      ></ion-input>
 
-    <ion-input
-      label="Contraseña"
-      labelPlacement="stacked"
-      type="password"
-      formControlName="password"
-      placeholder="Mínimo 8 caracteres"
-      fill="outline"
-    ></ion-input>
+      <ion-input
+        label="Contraseña"
+        labelPlacement="stacked"
+        type="password"
+        formControlName="password"
+        placeholder="Mínimo 8 caracteres"
+        fill="outline"
+      ></ion-input>
 
-    @if (errorMessage(); as message) {
-      <p class="error-message">{{ message }}</p>
-    }
-
-    <ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting()">
-      @if (isSubmitting()) {
-        <ion-spinner name="dots"></ion-spinner>
-      } @else {
-        Crear cuenta
+      @if (errorMessage(); as message) {
+        <p class="error-message">{{ message }}</p>
       }
-    </ion-button>
 
-    <div class="divider"><span>o</span></div>
+      <ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting()">
+        @if (isSubmitting()) {
+          <ion-spinner name="dots"></ion-spinner>
+        } @else {
+          Crear cuenta
+        }
+      </ion-button>
 
-    <ion-button expand="block" fill="outline" type="button" (click)="continueWithGithub()">
-      <ion-icon name="logo-github" slot="start"></ion-icon>
-      Continuar con GitHub
-    </ion-button>
+      <div class="divider"><span>o</span></div>
 
-    <p class="switch-link">
-      ¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a>
-    </p>
-  </form>
+      <ion-button expand="block" fill="outline" type="button" (click)="continueWithGithub()">
+        <ion-icon name="logo-github" slot="start"></ion-icon>
+        Continuar con GitHub
+      </ion-button>
+
+      <p class="switch-link">
+        ¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a>
+      </p>
+    </form>
+  </div>
 </ion-content>
