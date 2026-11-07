@@ -96,9 +96,8 @@
     --border-width: 1px;
     --padding-start: 16px;
     --padding-end: 16px;
-    --padding-top: 14px;
-    --padding-bottom: 14px;
     --highlight-color-focused: var(--ion-color-secondary);
+    min-height: 60px;
     transition: background 200ms ease;
   }
 
