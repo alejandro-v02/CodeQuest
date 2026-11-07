@@ -6,6 +6,7 @@ import {
   IonInput,
   IonButton,
   IonSpinner,
+  IonIcon,
 } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -13,7 +14,7 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./auth.shared.scss'],
-  imports: [ReactiveFormsModule, RouterLink, IonContent, IonInput, IonButton, IonSpinner],
+  imports: [ReactiveFormsModule, RouterLink, IonContent, IonInput, IonButton, IonSpinner, IonIcon],
 })
 export class LoginPage {
   private readonly fb = inject(FormBuilder);
@@ -44,5 +45,11 @@ export class LoginPage {
     } finally {
       this.isSubmitting.set(false);
     }
+  }
+
+  // Opens the system browser; DeepLinkService picks up the session once
+  // GitHub redirects back to the app, so there's nothing to await here.
+  async continueWithGithub(): Promise<void> {
+    await this.authService.loginWithGithub();
   }
 }

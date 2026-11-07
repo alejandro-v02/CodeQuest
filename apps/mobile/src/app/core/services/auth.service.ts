@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { Browser } from '@capacitor/browser';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { TokenStorageService } from './token-storage.service';
@@ -86,6 +87,24 @@ export class AuthService {
 
   async logout(): Promise<void> {
     await this.clearSession();
+  }
+
+  // Opens GitHub's consent page in the system browser (required by GitHub;
+  // an embedded webview is blocked/discouraged). The backend owns the OAuth
+  // exchange, then redirects the browser to a codequest:// deep link, which
+  // DeepLinkService catches and hands to completeGithubLogin() below.
+  async loginWithGithub(): Promise<void> {
+    await Browser.open({ url: `${environment.apiUrl}/auth/github` });
+  }
+
+  // Called by DeepLinkService once it parses accessToken/refreshToken out of
+  // the codequest://auth-callback redirect. There's no user payload in the
+  // deep link, so we fetch it once tokens are in place.
+  async completeGithubLogin(accessToken: string, refreshToken: string): Promise<void> {
+    this.setTokens(accessToken, refreshToken);
+    const user = await firstValueFrom(this.http.get<User>(`${environment.apiUrl}/users/me`));
+    this._currentUser.set(user);
+    await this.tokenStorage.save({ accessToken, refreshToken });
   }
 
   // Used by the auth interceptor when a request comes back 401.

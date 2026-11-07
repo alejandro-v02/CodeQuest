@@ -41,6 +41,25 @@
   color: var(--ion-color-danger);
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+  color: var(--ion-color-step-600);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ion-border-color);
+  }
+}
+
 .switch-link {
   margin: 8px 0 0;
   text-align: center;

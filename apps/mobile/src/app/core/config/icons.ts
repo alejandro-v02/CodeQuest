@@ -6,6 +6,7 @@ import {
   personCircle,
   personOutline,
   refresh,
+  logoGithub,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -18,5 +19,6 @@ export function registerIcons(): void {
     'person-circle': personCircle,
     'person-outline': personOutline,
     refresh,
+    'logo-github': logoGithub,
   });
 }
