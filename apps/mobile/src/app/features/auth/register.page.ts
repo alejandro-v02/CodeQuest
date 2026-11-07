@@ -2,14 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import {
-  IonContent,
-  IonInput,
-  IonButton,
-  IonSpinner,
-  IonIcon,
-} from '@ionic/angular';
+import { IonContent, IonInput, IonButton, IonIcon } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
+import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
 
 @Component({
   selector: 'app-register',
@@ -21,8 +16,8 @@ import { AuthService } from '../../core/services/auth.service';
     IonContent,
     IonInput,
     IonButton,
-    IonSpinner,
     IonIcon,
+    LoadingWaveComponent,
   ],
 })
 export class RegisterPage {

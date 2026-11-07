@@ -42,11 +42,7 @@
       }
 
       <ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting()">
-        @if (isSubmitting()) {
-          <ion-spinner name="dots"></ion-spinner>
-        } @else {
-          Crear cuenta
-        }
+        Crear cuenta
       </ion-button>
 
       <div class="divider"><span>o</span></div>
@@ -59,6 +55,12 @@
       <p class="switch-link">
         ¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a>
       </p>
+
+      @if (isSubmitting()) {
+        <div class="auth-card-overlay">
+          <app-loading-wave />
+        </div>
+      }
     </form>
   </div>
 </ion-content>
