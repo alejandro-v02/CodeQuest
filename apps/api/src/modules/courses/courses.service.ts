@@ -173,6 +173,7 @@ export class CoursesService {
       status: summary.status,
       contentMarkdown: lesson.contentMarkdown,
       xpReward: lesson.xpReward,
+      languageSlug: lesson.module.path.language.slug,
     };
   }
 

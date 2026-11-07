@@ -1,9 +1,26 @@
 import type { ProgrammingLanguageSlug } from '../../modules/users/entities/user.entity';
 
+export interface SeedTestCase {
+  input: string;
+  expectedOutput: string;
+  isHidden: boolean;
+}
+
+export interface SeedExercise {
+  prompt: string;
+  starterCode: string;
+  difficulty: number;
+  testCases: SeedTestCase[];
+}
+
 export interface SeedLesson {
   title: string;
   contentMarkdown: string | null;
   xpReward: number;
+  // Only a handful of lessons have a hand-written exercise so far (Fase 4
+  // end-to-end proof); the rest get real ones once Fase 5A's generator
+  // exists.
+  exercises?: SeedExercise[];
 }
 
 export interface SeedModule {
@@ -65,6 +82,19 @@ puntos += 5   # equivalente a: puntos = puntos + 5
 \`\`\`
 
 **Constantes:** Python no tiene una palabra clave para constantes, pero por convención se escriben en mayúsculas (\`PI = 3.14159\`) para indicar que no deberían reasignarse.`,
+            exercises: [
+              {
+                prompt:
+                  'Lee un número entero de la entrada estándar (con `input()`) y súmale 10. Imprime el resultado.',
+                starterCode: 'numero = int(input())\n',
+                difficulty: 1,
+                testCases: [
+                  { input: '5', expectedOutput: '15', isHidden: false },
+                  { input: '0', expectedOutput: '10', isHidden: false },
+                  { input: '37', expectedOutput: '47', isHidden: true },
+                ],
+              },
+            ],
           },
           {
             title: 'Tipos de datos básicos',
@@ -138,6 +168,19 @@ if edad >= 18 and tiene_entrada:
 \`\`\`
 
 Cualquier valor puede evaluarse como verdadero o falso: \`0\`, \`""\`, \`None\` y las listas vacías cuentan como \`False\`; casi todo lo demás es \`True\`.`,
+            exercises: [
+              {
+                prompt:
+                  'Lee un número entero. Si es par, imprime "par"; si es impar, imprime "impar".',
+                starterCode: 'numero = int(input())\n',
+                difficulty: 2,
+                testCases: [
+                  { input: '4', expectedOutput: 'par', isHidden: false },
+                  { input: '7', expectedOutput: 'impar', isHidden: false },
+                  { input: '0', expectedOutput: 'par', isHidden: true },
+                ],
+              },
+            ],
           },
           {
             title: 'Bucles',
@@ -222,6 +265,20 @@ c, r = dividir(17, 5)   # c=3, r=2
 \`\`\`
 
 Las variables definidas dentro de una función solo existen dentro de ella (**alcance local**); no son visibles afuera.`,
+            exercises: [
+              {
+                prompt:
+                  'Define una función `es_mayor_de_edad(edad)` que devuelva `True` si `edad` es mayor o igual a 18. Lee un número de la entrada estándar, pásalo a la función e imprime el resultado.',
+                starterCode:
+                  'def es_mayor_de_edad(edad):\n    # Escribe tu código aquí\n    pass\n\nedad = int(input())\nprint(es_mayor_de_edad(edad))\n',
+                difficulty: 2,
+                testCases: [
+                  { input: '20', expectedOutput: 'True', isHidden: false },
+                  { input: '15', expectedOutput: 'False', isHidden: false },
+                  { input: '18', expectedOutput: 'True', isHidden: true },
+                ],
+              },
+            ],
           },
           {
             title: 'Listas',
@@ -364,6 +421,20 @@ Cada línea termina (por convención) con \`;\`. JavaScript usa \`camelCase\` pa
 let puntos = 10;
 puntos += 5;   // equivalente a: puntos = puntos + 5
 \`\`\``,
+            exercises: [
+              {
+                prompt:
+                  'Lee un número entero de la entrada estándar y súmale 10. Imprime el resultado con `console.log`.',
+                starterCode:
+                  "const numero = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\n",
+                difficulty: 1,
+                testCases: [
+                  { input: '5', expectedOutput: '15', isHidden: false },
+                  { input: '0', expectedOutput: '10', isHidden: false },
+                  { input: '37', expectedOutput: '47', isHidden: true },
+                ],
+              },
+            ],
           },
           {
             title: 'Tipos de datos básicos',
@@ -438,6 +509,20 @@ if (edad >= 18 && tieneEntrada) {
 \`\`\`
 
 Valores "falsy" (se comportan como \`false\` en un \`if\`): \`0\`, \`""\`, \`null\`, \`undefined\`, \`NaN\`. Casi todo lo demás es "truthy".`,
+            exercises: [
+              {
+                prompt:
+                  'Lee un número entero. Si es par, imprime "par"; si es impar, imprime "impar".',
+                starterCode:
+                  "const numero = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\n",
+                difficulty: 2,
+                testCases: [
+                  { input: '4', expectedOutput: 'par', isHidden: false },
+                  { input: '7', expectedOutput: 'impar', isHidden: false },
+                  { input: '0', expectedOutput: 'par', isHidden: true },
+                ],
+              },
+            ],
           },
           {
             title: 'Bucles',
@@ -523,6 +608,20 @@ saludar("Ana", "en");    // usa idioma = "en"
 \`\`\`
 
 Las variables declaradas dentro de una función (con \`let\` o \`const\`) solo existen dentro de ella (**alcance local**).`,
+            exercises: [
+              {
+                prompt:
+                  'Define una función `esMayorDeEdad(edad)` que devuelva `true` si `edad` es mayor o igual a 18. Lee un número de la entrada estándar, pásalo a la función e imprime el resultado con `console.log`.',
+                starterCode:
+                  "function esMayorDeEdad(edad) {\n  // Escribe tu código aquí\n}\n\nconst edad = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\nconsole.log(esMayorDeEdad(edad));\n",
+                difficulty: 2,
+                testCases: [
+                  { input: '20', expectedOutput: 'true', isHidden: false },
+                  { input: '15', expectedOutput: 'false', isHidden: false },
+                  { input: '18', expectedOutput: 'true', isHidden: true },
+                ],
+              },
+            ],
           },
           {
             title: 'Arrays',

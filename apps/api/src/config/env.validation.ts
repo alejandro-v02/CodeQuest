@@ -22,4 +22,6 @@ export const envValidationSchema = Joi.object({
   GITHUB_CLIENT_SECRET: Joi.string().allow('').default(''),
   GITHUB_CALLBACK_URL: Joi.string().allow('').default(''),
   MOBILE_DEEP_LINK_URL: Joi.string().default('codequest://auth-callback'),
+
+  PISTON_API_URL: Joi.string().default('http://localhost:2000'),
 });

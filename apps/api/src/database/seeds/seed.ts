@@ -14,6 +14,9 @@ import { LearningPath } from '../../modules/courses/entities/learning-path.entit
 import { CourseModule } from '../../modules/courses/entities/course-module.entity';
 import { Lesson } from '../../modules/courses/entities/lesson.entity';
 import { UserProgress } from '../../modules/courses/entities/user-progress.entity';
+import { Exercise } from '../../modules/exercises/entities/exercise.entity';
+import { TestCase } from '../../modules/exercises/entities/test-case.entity';
+import { Attempt } from '../../modules/exercises/entities/attempt.entity';
 import { curriculum } from './curriculum.data';
 
 // Standalone script (not booted through Nest), so it opens its own
@@ -26,7 +29,17 @@ const dataSource = new DataSource({
   username: process.env.DB_USER ?? 'codequest',
   password: process.env.DB_PASSWORD ?? 'codequest',
   database: process.env.DB_NAME ?? 'codequest',
-  entities: [User, Language, LearningPath, CourseModule, Lesson, UserProgress],
+  entities: [
+    User,
+    Language,
+    LearningPath,
+    CourseModule,
+    Lesson,
+    UserProgress,
+    Exercise,
+    TestCase,
+    Attempt,
+  ],
   synchronize: true,
 });
 
@@ -37,6 +50,8 @@ async function run(): Promise<void> {
   const pathRepo = dataSource.getRepository(LearningPath);
   const moduleRepo = dataSource.getRepository(CourseModule);
   const lessonRepo = dataSource.getRepository(Lesson);
+  const exerciseRepo = dataSource.getRepository(Exercise);
+  const testCaseRepo = dataSource.getRepository(TestCase);
 
   for (const languageSeed of curriculum) {
     let language = await languageRepo.findOne({
@@ -46,7 +61,6 @@ async function run(): Promise<void> {
       languageRepo.create({
         slug: languageSeed.slug,
         name: languageSeed.name,
-        judge0LanguageId: null,
       }),
     );
 
@@ -86,7 +100,42 @@ async function run(): Promise<void> {
         lesson.title = lessonSeed.title;
         lesson.contentMarkdown = lessonSeed.contentMarkdown;
         lesson.xpReward = lessonSeed.xpReward;
-        await lessonRepo.save(lesson);
+        lesson = await lessonRepo.save(lesson);
+
+        for (const [exerciseIndex, exerciseSeed] of (
+          lessonSeed.exercises ?? []
+        ).entries()) {
+          let exercise = await exerciseRepo.findOne({
+            where: { lessonId: lesson.id, order: exerciseIndex },
+          });
+          if (!exercise) {
+            exercise = exerciseRepo.create({
+              lessonId: lesson.id,
+              order: exerciseIndex,
+            });
+          }
+          exercise.prompt = exerciseSeed.prompt;
+          exercise.starterCode = exerciseSeed.starterCode;
+          exercise.difficulty = exerciseSeed.difficulty;
+          exercise = await exerciseRepo.save(exercise);
+
+          for (const [
+            testCaseIndex,
+            testCaseSeed,
+          ] of exerciseSeed.testCases.entries()) {
+            let testCase = await testCaseRepo.findOne({
+              where: { exerciseId: exercise.id, order: testCaseIndex },
+            });
+            testCase ??= testCaseRepo.create({
+              exerciseId: exercise.id,
+              order: testCaseIndex,
+            });
+            testCase.input = testCaseSeed.input;
+            testCase.expectedOutput = testCaseSeed.expectedOutput;
+            testCase.isHidden = testCaseSeed.isHidden;
+            await testCaseRepo.save(testCase);
+          }
+        }
       }
     }
 

@@ -36,4 +36,5 @@ export interface LessonDetail {
   status: LessonStatus;
   contentMarkdown: string | null;
   xpReward: number;
+  languageSlug: ProgrammingLanguageSlug;
 }

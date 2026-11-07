@@ -19,5 +19,20 @@ services:
       timeout: 5s
       retries: 10
 
+  piston:
+    # Code execution sandbox (Fase 4). Ships with zero language runtimes
+    # installed — run `npm run setup:piston` in apps/api once it's up.
+    image: ghcr.io/engineer-man/piston
+    container_name: codequest-piston
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "${PISTON_PORT:-2000}:2000"
+    volumes:
+      - codequest-piston-packages:/piston/packages
+    tmpfs:
+      - /tmp:exec
+
 volumes:
   codequest-postgres-data:
+  codequest-piston-packages:

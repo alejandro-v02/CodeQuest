@@ -27,6 +27,9 @@ export interface AppConfig {
   // Custom URL scheme the mobile app registers to receive the GitHub OAuth
   // callback's tokens (see AndroidManifest.xml and DeepLinkService).
   mobileDeepLinkUrl: string;
+  execution: {
+    pistonApiUrl: string;
+  };
 }
 
 export default (): AppConfig => ({
@@ -62,4 +65,7 @@ export default (): AppConfig => ({
   },
   mobileDeepLinkUrl:
     process.env.MOBILE_DEEP_LINK_URL ?? 'codequest://auth-callback',
+  execution: {
+    pistonApiUrl: process.env.PISTON_API_URL ?? 'http://localhost:2000',
+  },
 });

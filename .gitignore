@@ -36,3 +36,6 @@ Thumbs.db
 
 # Testing
 coverage/
+
+# Local Claude Code session state
+.claude/
