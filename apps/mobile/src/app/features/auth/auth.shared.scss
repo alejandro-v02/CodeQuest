@@ -1,0 +1,55 @@
+.auth-content {
+  --padding-top: 48px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+}
+
+.auth-hero {
+  margin-bottom: 28px;
+
+  .brand {
+    margin: 0 0 16px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ion-color-secondary);
+  }
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--ion-color-step-700);
+    font-size: 14px;
+  }
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.error-message {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: var(--ion-color-danger);
+}
+
+.switch-link {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ion-color-step-700);
+
+  a {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+}

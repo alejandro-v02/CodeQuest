@@ -1,0 +1,44 @@
+<ion-content [fullscreen]="true" class="auth-content">
+  <div class="auth-hero">
+    <p class="brand">CodeQuest</p>
+    <h1>Bienvenido de vuelta</h1>
+    <p class="subtitle">Sigue tu racha donde la dejaste.</p>
+  </div>
+
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <ion-input
+      label="Correo"
+      labelPlacement="stacked"
+      type="email"
+      inputmode="email"
+      formControlName="email"
+      placeholder="tu@correo.com"
+      fill="outline"
+    ></ion-input>
+
+    <ion-input
+      label="Contraseña"
+      labelPlacement="stacked"
+      type="password"
+      formControlName="password"
+      placeholder="••••••••"
+      fill="outline"
+    ></ion-input>
+
+    @if (errorMessage(); as message) {
+      <p class="error-message">{{ message }}</p>
+    }
+
+    <ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting()">
+      @if (isSubmitting()) {
+        <ion-spinner name="dots"></ion-spinner>
+      } @else {
+        Iniciar sesión
+      }
+    </ion-button>
+
+    <p class="switch-link">
+      ¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a>
+    </p>
+  </form>
+</ion-content>

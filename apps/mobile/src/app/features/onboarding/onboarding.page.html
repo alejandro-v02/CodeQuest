@@ -1,0 +1,46 @@
+<ion-content [fullscreen]="true" class="onboarding-content">
+  <p class="eyebrow">Paso 1 de 1</p>
+  <h1>Arma tu ruta</h1>
+  <p class="subtitle">Elige con qué lenguaje empiezas y cuánto tiempo quieres practicar al día.</p>
+
+  <section>
+    <h2>Lenguaje</h2>
+    <div class="language-grid">
+      @for (lang of languages; track lang.slug) {
+        <button
+          type="button"
+          class="language-card"
+          [class.selected]="selectedLanguage() === lang.slug"
+          (click)="selectLanguage(lang.slug)"
+        >
+          {{ lang.label }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section>
+    <h2>Meta diaria</h2>
+    <div class="goal-row">
+      @for (minutes of dailyGoals; track minutes) {
+        <button
+          type="button"
+          class="goal-chip"
+          [class.selected]="selectedGoal() === minutes"
+          (click)="selectGoal(minutes)"
+        >
+          {{ minutes }} min
+        </button>
+      }
+    </div>
+  </section>
+
+  <ion-button
+    expand="block"
+    class="finish-button"
+    [disabled]="!selectedLanguage() || !selectedGoal() || isSubmitting()"
+    (click)="finish()"
+  >
+    Comenzar
+  </ion-button>
+</ion-content>

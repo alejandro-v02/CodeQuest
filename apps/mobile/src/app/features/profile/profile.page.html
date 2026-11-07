@@ -5,9 +5,27 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-coming-soon
-    icon="person-outline"
-    title="Tu cuenta, pronto"
-    subtitle="Login, lenguaje preferido y meta diaria llegan en la Fase 2."
-  ></app-coming-soon>
+  @if (user(); as u) {
+    <div class="profile-card">
+      <div class="avatar">{{ u.displayName.charAt(0).toUpperCase() }}</div>
+      <h2>{{ u.displayName }}</h2>
+      <p class="email">{{ u.email }}</p>
+
+      <dl class="details">
+        <div class="row">
+          <dt>Lenguaje</dt>
+          <dd>{{ u.preferredLanguage ?? '—' }}</dd>
+        </div>
+        <div class="row">
+          <dt>Meta diaria</dt>
+          <dd>{{ u.dailyGoalMinutes ? u.dailyGoalMinutes + ' min' : '—' }}</dd>
+        </div>
+      </dl>
+
+      <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        Cerrar sesión
+      </ion-button>
+    </div>
+  }
 </ion-content>
