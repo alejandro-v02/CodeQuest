@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration, { AppConfig } from './config/configuration';
 import { envValidationSchema } from './config/env.validation';
 import { HealthModule } from './modules/health/health.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +32,15 @@ import { HealthModule } from './modules/health/health.module';
           configService.get('nodeEnv', { infer: true }) === 'development',
       }),
     }),
+    // App-wide default; auth endpoints override this with a tighter limit
+    // (see AuthController) per PLAN.md section 6.
+    ThrottlerModule.forRoot({
+      throttlers: [{ limit: 60, ttl: 60_000 }],
+    }),
     HealthModule,
+    UsersModule,
+    AuthModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
