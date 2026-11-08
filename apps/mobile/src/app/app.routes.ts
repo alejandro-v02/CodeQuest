@@ -38,4 +38,9 @@ export const routes: Routes = [
     canActivate: [authGuard, onboardingGuard],
     loadComponent: () => import('./features/exercise/exercise.page').then((m) => m.ExercisePage),
   },
+  {
+    path: 'practice',
+    canActivate: [authGuard, onboardingGuard],
+    loadComponent: () => import('./features/practice/practice.page').then((m) => m.PracticePage),
+  },
 ];

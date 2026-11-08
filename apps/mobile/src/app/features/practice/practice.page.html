@@ -1,0 +1,46 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Práctica libre</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="loadConcepts()">Reintentar</ion-button>
+    </div>
+  } @else {
+    <div class="hero">
+      <p class="eyebrow">Elige un concepto</p>
+      <h1>Practica sin límite</h1>
+      <p class="subtitle">
+        Ejercicios generados a tu nivel, nunca se repiten.
+      </p>
+    </div>
+
+    @if (startingConceptId()) {
+      <div class="state-pane">
+        <app-loading-bounce></app-loading-bounce>
+      </div>
+    } @else {
+      <div class="concept-list">
+        @for (concept of concepts(); track concept.id) {
+          <button type="button" class="concept-row" (click)="practice(concept)">
+            <span class="concept-name">{{ concept.name }}</span>
+            <ion-icon name="chevron-forward"></ion-icon>
+          </button>
+        }
+      </div>
+    }
+  }
+</ion-content>

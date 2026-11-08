@@ -63,6 +63,10 @@ export class HomePage implements ViewWillEnter {
     void this.router.navigateByUrl(`/lesson/${lesson.id}`);
   }
 
+  openPractice(): void {
+    void this.router.navigateByUrl('/practice');
+  }
+
   statusIcon(status: LessonSummary['status']): string {
     switch (status) {
       case 'completed':

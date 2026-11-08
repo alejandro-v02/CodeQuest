@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
@@ -13,6 +14,7 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { PublicUser } from '../users/users.mapper';
 import { ExercisesService } from './exercises.service';
+import { NextExerciseService } from './next-exercise.service';
 import { RunCodeDto } from './dto/run-code.dto';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
 import type {
@@ -31,7 +33,10 @@ const EXECUTION_THROTTLE = { default: { limit: 15, ttl: 60_000 } };
 @UseGuards(JwtAccessGuard)
 @Controller('exercises')
 export class ExercisesController {
-  constructor(private readonly exercisesService: ExercisesService) {}
+  constructor(
+    private readonly exercisesService: ExercisesService,
+    private readonly nextExerciseService: NextExerciseService,
+  ) {}
 
   @Get('lesson/:lessonId')
   getForLesson(
@@ -39,6 +44,16 @@ export class ExercisesController {
     @CurrentUser() user: PublicUser,
   ): Promise<ExerciseSummary[]> {
     return this.exercisesService.getExercisesForLesson(lessonId, user.id);
+  }
+
+  // Fase 5A.3 "siguiente ejercicio" — must be declared before ':exerciseId'
+  // so Nest's route matching doesn't treat "next" as an exercise id.
+  @Get('next')
+  getNext(
+    @Query('conceptId') conceptId: string,
+    @CurrentUser() user: PublicUser,
+  ): Promise<ExerciseDetail> {
+    return this.nextExerciseService.getNext(user.id, conceptId);
   }
 
   @Get(':exerciseId')

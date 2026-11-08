@@ -20,6 +20,7 @@ import {
   createOutline,
   swapVertical,
   bugOutline,
+  flashOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -46,5 +47,6 @@ export function registerIcons(): void {
     'create-outline': createOutline,
     'swap-vertical': swapVertical,
     'bug-outline': bugOutline,
+    'flash-outline': flashOutline,
   });
 }

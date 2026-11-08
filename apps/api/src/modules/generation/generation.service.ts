@@ -1,5 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import type { Queue } from 'bullmq';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { DataSource, Repository } from 'typeorm';
@@ -18,6 +20,13 @@ import type {
   GenerateCodeExerciseResult,
   GenerationOutcome,
 } from './generation.types';
+import {
+  EXERCISE_GENERATION_QUEUE,
+  type ExerciseGenerationJobData,
+} from './queue/exercise-generation.queue';
+
+// How many exercises a single backfill job tries to add to the bank.
+const BACKFILL_BATCH_SIZE = 3;
 
 // Cosine similarity (1 - cosine distance) above this counts as "close enough
 // to be a duplicate" for two exercise prompts on the same concept. Picked
@@ -44,9 +53,27 @@ export class GenerationService {
     @InjectRepository(TestCase)
     private readonly testCaseRepo: Repository<TestCase>,
     @InjectDataSource() private readonly dataSource: DataSource,
+    @InjectQueue(EXERCISE_GENERATION_QUEUE)
+    private readonly generationQueue: Queue<ExerciseGenerationJobData>,
     private readonly aiService: AiService,
     private readonly pistonService: PistonService,
   ) {}
+
+  // Fire-and-forget: enqueues a batch backfill job for this concept/
+  // difficulty, deduped by jobId so a burst of "next exercise" requests
+  // hitting a low watermark at the same time only enqueues one job.
+  async enqueueBackfill(conceptId: string, difficulty: number): Promise<void> {
+    await this.generationQueue.add(
+      'backfill',
+      { conceptId, difficulty, count: BACKFILL_BATCH_SIZE },
+      {
+        // BullMQ rejects ':' in custom job ids.
+        jobId: `${conceptId}-${difficulty}`,
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    );
+  }
 
   async generateCodeExercise(
     conceptId: string,

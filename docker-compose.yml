@@ -33,6 +33,22 @@ services:
     tmpfs:
       - /tmp:exec
 
+  redis:
+    # BullMQ's backing store for the Fase 5A.3 exercise-generation queue.
+    # No persistent volume: losing queued backfill jobs on restart is
+    # harmless, the low-watermark check in NextExerciseService just
+    # re-enqueues them.
+    image: redis:7-alpine
+    container_name: codequest-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   codequest-postgres-data:
   codequest-piston-packages:

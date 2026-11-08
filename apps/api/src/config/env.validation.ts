@@ -28,4 +28,8 @@ export const envValidationSchema = Joi.object({
   // Optional: the Fase 5A generator and Fase 5B tutor are inactive until
   // this is set (see AiService.isEnabled).
   GEMINI_API_KEY: Joi.string().allow('').default(''),
+
+  // Backs the Fase 5A.3 BullMQ exercise-generation queue.
+  REDIS_HOST: Joi.string().default('localhost'),
+  REDIS_PORT: Joi.number().default(6379),
 });

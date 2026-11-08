@@ -34,6 +34,10 @@ export interface AppConfig {
     enabled: boolean;
     apiKey: string;
   };
+  redis: {
+    host: string;
+    port: number;
+  };
 }
 
 export default (): AppConfig => ({
@@ -75,5 +79,9 @@ export default (): AppConfig => ({
   gemini: {
     enabled: Boolean(process.env.GEMINI_API_KEY),
     apiKey: process.env.GEMINI_API_KEY ?? '',
+  },
+  redis: {
+    host: process.env.REDIS_HOST ?? 'localhost',
+    port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
   },
 });

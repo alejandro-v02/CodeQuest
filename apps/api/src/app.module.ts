@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -41,6 +42,15 @@ import { GenerationModule } from './modules/generation/generation.module';
     // (see AuthController) per PLAN.md section 6.
     ThrottlerModule.forRoot({
       throttlers: [{ limit: 60, ttl: 60_000 }],
+    }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<AppConfig, true>) => ({
+        connection: {
+          host: configService.get('redis', { infer: true }).host,
+          port: configService.get('redis', { infer: true }).port,
+        },
+      }),
     }),
     DatabaseModule,
     HealthModule,

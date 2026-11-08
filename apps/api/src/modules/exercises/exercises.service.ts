@@ -19,6 +19,7 @@ import type {
 } from './entities/exercise.entity';
 import { TestCase } from './entities/test-case.entity';
 import { Attempt } from './entities/attempt.entity';
+import { UserExerciseHistory } from './entities/user-exercise-history.entity';
 import type { SubmitAnswerDto } from './dto/submit-answer.dto';
 import type {
   AnswerSubmitResult,
@@ -45,6 +46,8 @@ export class ExercisesService {
     private readonly testCaseRepo: Repository<TestCase>,
     @InjectRepository(Attempt)
     private readonly attemptRepo: Repository<Attempt>,
+    @InjectRepository(UserExerciseHistory)
+    private readonly historyRepo: Repository<UserExerciseHistory>,
     @InjectRepository(Concept)
     private readonly conceptRepo: Repository<Concept>,
     private readonly coursesService: CoursesService,
@@ -155,6 +158,27 @@ export class ExercisesService {
       await this.coursesService.getLessonDetail(exercise.lessonId, userId);
     }
 
+    const result = await this.dispatchSubmit(exercise, userId, dto);
+
+    if (exercise.conceptId) {
+      // Fase 5A "next exercise" serving reads this back to exclude seen
+      // exercises and adapt difficulty — only concept-scoped (Fase 5A)
+      // exercises are tracked here, lesson exercises use Attempt only.
+      const passed = 'allPassed' in result ? result.allPassed : result.passed;
+      await this.historyRepo.update(
+        { userId, exerciseId: exercise.id },
+        { outcome: passed ? 'passed' : 'failed' },
+      );
+    }
+
+    return result;
+  }
+
+  private async dispatchSubmit(
+    exercise: Exercise,
+    userId: string,
+    dto: SubmitAnswerDto,
+  ): Promise<SubmitResult | AnswerSubmitResult> {
     switch (exercise.type) {
       case 'code':
         if (dto.code === undefined) {

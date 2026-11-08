@@ -35,6 +35,14 @@ export class ExercisesService {
     );
   }
 
+  getNext(conceptId: string): Promise<ExerciseDetail> {
+    return firstValueFrom(
+      this.http.get<ExerciseDetail>(`${environment.apiUrl}/exercises/next`, {
+        params: { conceptId },
+      }),
+    );
+  }
+
   run(exerciseId: string, code: string): Promise<RunResult> {
     return firstValueFrom(
       this.http.post<RunResult>(`${environment.apiUrl}/exercises/${exerciseId}/run`, { code }),

@@ -1,0 +1,76 @@
+.state-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.error-message {
+  margin: 0;
+  color: var(--ion-color-danger);
+  font-size: 14px;
+}
+
+.hero {
+  padding: 8px 20px 24px;
+
+  .eyebrow {
+    margin: 0 0 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ion-color-secondary);
+  }
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--ion-color-step-700);
+    font-size: 14px;
+  }
+}
+
+.concept-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 20px 24px;
+}
+
+.concept-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--ion-card-background);
+  color: var(--ion-text-color);
+  font-size: 15px;
+  text-align: left;
+
+  ion-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    color: var(--ion-color-step-500);
+  }
+
+  &:active {
+    background: var(--ion-color-step-100);
+  }
+}
+
+.concept-name {
+  flex: 1;
+  font-weight: 600;
+}

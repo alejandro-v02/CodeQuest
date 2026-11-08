@@ -21,6 +21,10 @@
       @if (overview.description) {
         <p class="subtitle">{{ overview.description }}</p>
       }
+      <ion-button fill="outline" class="practice-button" (click)="openPractice()">
+        <ion-icon slot="start" name="flash-outline"></ion-icon>
+        Práctica libre
+      </ion-button>
     </div>
 
     @for (module of overview.modules; track module.id) {
