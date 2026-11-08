@@ -1,6 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon } from '@ionic/angular';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonIcon,
+  ViewWillEnter,
+} from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { CoursesService } from '../../core/services/courses.service';
 import type { LessonSummary, PathOverview } from '../../core/models/course.model';
@@ -12,7 +20,7 @@ import { LoadingBounceComponent } from '../../shared/components/loading-bounce/l
   styleUrls: ['./home.page.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, LoadingBounceComponent],
 })
-export class HomePage {
+export class HomePage implements ViewWillEnter {
   private readonly authService = inject(AuthService);
   private readonly coursesService = inject(CoursesService);
   private readonly router = inject(Router);
@@ -21,7 +29,12 @@ export class HomePage {
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
 
-  constructor() {
+  // Ionic's IonicRouteStrategy (app.config.ts) caches and reuses this page's
+  // component instance instead of recreating it, so the constructor only
+  // ever runs once per app session — a second login/account would keep
+  // showing the first account's path. ionViewWillEnter fires on every
+  // activation regardless, so the path is reloaded for whoever is logged in.
+  ionViewWillEnter(): void {
     void this.loadPath();
   }
 

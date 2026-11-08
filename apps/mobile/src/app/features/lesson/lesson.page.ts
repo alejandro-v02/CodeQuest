@@ -9,6 +9,7 @@ import {
   IonIcon,
   IonContent,
   IonSpinner,
+  ViewWillEnter,
 } from '@ionic/angular';
 import { CoursesService } from '../../core/services/courses.service';
 import { ExercisesService } from '../../core/services/exercises.service';
@@ -33,7 +34,7 @@ import { LoadingBounceComponent } from '../../shared/components/loading-bounce/l
     LoadingBounceComponent,
   ],
 })
-export class LessonPage {
+export class LessonPage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly coursesService = inject(CoursesService);
@@ -51,7 +52,10 @@ export class LessonPage {
     return content ? this.markdownService.render(content) : null;
   });
 
-  constructor() {
+  // Same IonicRouteStrategy caching issue as HomePage: two different
+  // accounts can reach the exact same lesson id (shared curriculum), which
+  // would reuse this page's stale lock/solved state without this hook.
+  ionViewWillEnter(): void {
     void this.load();
   }
 

@@ -8,6 +8,7 @@ import {
   IonButton,
   IonIcon,
   IonContent,
+  ViewWillEnter,
 } from '@ionic/angular';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
@@ -50,7 +51,7 @@ import {
     LoadingBounceComponent,
   ],
 })
-export class ExercisePage {
+export class ExercisePage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly exercisesService = inject(ExercisesService);
@@ -72,7 +73,10 @@ export class ExercisePage {
 
   readonly isAnswerResult = isAnswerSubmitResult;
 
-  constructor() {
+  // Same IonicRouteStrategy caching issue as HomePage/LessonPage: revisiting
+  // the exact same exercise (e.g. after submitting and going back) must not
+  // reuse stale state from before.
+  ionViewWillEnter(): void {
     void this.load();
   }
 
