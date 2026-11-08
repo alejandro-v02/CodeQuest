@@ -4,23 +4,36 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import OpenAI from 'openai';
+import { GoogleGenAI } from '@google/genai';
 import type { AppConfig } from '../../config/configuration';
 
-// text-embedding-3-small outputs 1536-dimension vectors, matching
-// `exercises.embedding vector(1536)` (see DatabaseBootstrapService) exactly
-// — don't change one without the other.
-const GENERATION_MODEL = 'gpt-4o-mini';
-const EMBEDDING_MODEL = 'text-embedding-3-small';
+const GENERATION_MODEL = 'gemini-3.6-flash';
+const EMBEDDING_MODEL = 'gemini-embedding-001';
+// gemini-embedding-001 natively outputs 3072 dimensions but supports MRL
+// truncation to smaller recommended sizes (768/1536/3072) — 1536 matches
+// `exercises.embedding vector(1536)` (see DatabaseBootstrapService) exactly,
+// so don't change one without the other.
+const EMBEDDING_DIMENSIONS = 1536;
+
+// Truncated (non-3072) gemini-embedding-001 output isn't unit-length by
+// itself (only the full 3072-dim output is pre-normalized) — re-normalizing
+// keeps cosine-distance comparisons well-behaved downstream.
+function normalizeVector(values: number[]): number[] {
+  const magnitude = Math.sqrt(values.reduce((sum, v) => sum + v * v, 0));
+  if (magnitude === 0) {
+    return values;
+  }
+  return values.map((v) => v / magnitude);
+}
 
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
-  private readonly client: OpenAI | null;
+  private readonly client: GoogleGenAI | null;
 
   constructor(configService: ConfigService<AppConfig, true>) {
-    const { enabled, apiKey } = configService.get('openai', { infer: true });
-    this.client = enabled ? new OpenAI({ apiKey }) : null;
+    const { enabled, apiKey } = configService.get('gemini', { infer: true });
+    this.client = enabled ? new GoogleGenAI({ apiKey }) : null;
   }
 
   get isEnabled(): boolean {
@@ -36,35 +49,35 @@ export class AiService {
   ): Promise<unknown> {
     const client = this.requireClient();
 
-    let content: string | null | undefined;
+    let text: string | undefined;
     try {
-      const response = await client.chat.completions.create({
+      const response = await client.models.generateContent({
         model: GENERATION_MODEL,
-        response_format: { type: 'json_object' },
-        temperature: 0.8,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
+        contents: userPrompt,
+        config: {
+          systemInstruction: systemPrompt,
+          responseMimeType: 'application/json',
+          temperature: 0.8,
+        },
       });
-      content = response.choices[0]?.message.content;
+      text = response.text;
     } catch (error) {
-      this.logger.error('OpenAI chat completion failed', error);
+      this.logger.error('Gemini content generation failed', error);
       throw new ServiceUnavailableException(
         'No se pudo generar el ejercicio con IA.',
       );
     }
 
-    if (!content) {
+    if (!text) {
       throw new ServiceUnavailableException(
-        'OpenAI devolvió una respuesta vacía.',
+        'Gemini devolvió una respuesta vacía.',
       );
     }
     try {
-      return JSON.parse(content);
+      return JSON.parse(text);
     } catch {
       throw new ServiceUnavailableException(
-        'OpenAI devolvió un JSON inválido.',
+        'Gemini devolvió un JSON inválido.',
       );
     }
   }
@@ -72,21 +85,26 @@ export class AiService {
   async embed(text: string): Promise<number[]> {
     const client = this.requireClient();
     try {
-      const response = await client.embeddings.create({
+      const response = await client.models.embedContent({
         model: EMBEDDING_MODEL,
-        input: text,
+        contents: text,
+        config: { outputDimensionality: EMBEDDING_DIMENSIONS },
       });
-      return response.data[0].embedding;
+      const values = response.embeddings?.[0]?.values;
+      if (!values) {
+        throw new Error('No embedding values in response');
+      }
+      return normalizeVector(values);
     } catch (error) {
-      this.logger.error('OpenAI embedding request failed', error);
+      this.logger.error('Gemini embedding request failed', error);
       throw new ServiceUnavailableException('No se pudo generar el embedding.');
     }
   }
 
-  private requireClient(): OpenAI {
+  private requireClient(): GoogleGenAI {
     if (!this.client) {
       throw new ServiceUnavailableException(
-        'OPENAI_API_KEY no está configurado; el generador de IA está desactivado.',
+        'GEMINI_API_KEY no está configurado; el generador de IA está desactivado.',
       );
     }
     return this.client;

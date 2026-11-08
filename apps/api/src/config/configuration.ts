@@ -30,7 +30,7 @@ export interface AppConfig {
   execution: {
     pistonApiUrl: string;
   };
-  openai: {
+  gemini: {
     enabled: boolean;
     apiKey: string;
   };
@@ -72,8 +72,8 @@ export default (): AppConfig => ({
   execution: {
     pistonApiUrl: process.env.PISTON_API_URL ?? 'http://localhost:2000',
   },
-  openai: {
-    enabled: Boolean(process.env.OPENAI_API_KEY),
-    apiKey: process.env.OPENAI_API_KEY ?? '',
+  gemini: {
+    enabled: Boolean(process.env.GEMINI_API_KEY),
+    apiKey: process.env.GEMINI_API_KEY ?? '',
   },
 });

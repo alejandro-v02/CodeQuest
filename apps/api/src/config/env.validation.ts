@@ -27,5 +27,5 @@ export const envValidationSchema = Joi.object({
 
   // Optional: the Fase 5A generator and Fase 5B tutor are inactive until
   // this is set (see AiService.isEnabled).
-  OPENAI_API_KEY: Joi.string().allow('').default(''),
+  GEMINI_API_KEY: Joi.string().allow('').default(''),
 });
