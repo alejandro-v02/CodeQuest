@@ -75,7 +75,10 @@ export class AuthService {
     await this.applyAuthResult(result);
   }
 
-  async completeOnboarding(preferredLanguage: string, dailyGoalMinutes: number): Promise<void> {
+  // Backs both onboarding (first-time setup) and the settings modal (editing
+  // preferences afterward) — same endpoint, same shape, just called from
+  // two different screens.
+  async updatePreferences(preferredLanguage: string, dailyGoalMinutes: number): Promise<void> {
     const user = await firstValueFrom(
       this.http.patch<User>(`${environment.apiUrl}/users/me/onboarding`, {
         preferredLanguage,

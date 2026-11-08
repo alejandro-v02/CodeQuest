@@ -2,19 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, IonButton } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
-import type { ProgrammingLanguageSlug } from '../../core/models/user.model';
-
-interface LanguageOption {
-  slug: ProgrammingLanguageSlug;
-  label: string;
-}
-
-const LANGUAGES: LanguageOption[] = [
-  { slug: 'python', label: 'Python' },
-  { slug: 'javascript', label: 'JavaScript' },
-  { slug: 'typescript', label: 'TypeScript' },
-  { slug: 'cpp', label: 'C++' },
-];
+import { LANGUAGE_OPTIONS, type ProgrammingLanguageSlug } from '../../core/models/user.model';
 
 const DAILY_GOALS = [5, 15, 30, 60];
 
@@ -28,7 +16,7 @@ export class OnboardingPage {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  readonly languages = LANGUAGES;
+  readonly languages = LANGUAGE_OPTIONS;
   readonly dailyGoals = DAILY_GOALS;
 
   readonly selectedLanguage = signal<ProgrammingLanguageSlug | null>(null);
@@ -52,7 +40,7 @@ export class OnboardingPage {
 
     this.isSubmitting.set(true);
     try {
-      await this.authService.completeOnboarding(language, goal);
+      await this.authService.updatePreferences(language, goal);
       await this.router.navigateByUrl('/tabs/home');
     } finally {
       this.isSubmitting.set(false);

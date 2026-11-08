@@ -1,4 +1,51 @@
-<app-page-header title="CodeQuest"></app-page-header>
+<app-page-header title="CodeQuest">
+  <ion-button actions fill="clear" class="settings-button" (click)="openSettings()">
+    <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+  </ion-button>
+</app-page-header>
+
+<ion-modal
+  class="settings-modal"
+  [isOpen]="isSettingsOpen()"
+  [breakpoints]="[0, 0.5, 0.85]"
+  [initialBreakpoint]="0.5"
+  (willDismiss)="closeSettings()"
+>
+  <ng-template>
+    <ion-content class="settings-modal-content">
+      <div class="modal-handle"></div>
+      <p class="eyebrow">Ajustes</p>
+      <h1>Lenguaje preferido</h1>
+      <p class="subtitle">Cambia el lenguaje de tu ruta de aprendizaje cuando quieras.</p>
+
+      <div class="language-grid">
+        @for (lang of languages; track lang.slug) {
+          <button
+            type="button"
+            class="language-card"
+            [class.selected]="selectedLanguage() === lang.slug"
+            (click)="selectedLanguage.set(lang.slug)"
+          >
+            {{ lang.label }}
+          </button>
+        }
+      </div>
+
+      <ion-button
+        expand="block"
+        class="save-button"
+        [disabled]="!selectedLanguage() || selectedLanguage() === currentLanguage() || isSavingLanguage()"
+        (click)="saveLanguage()"
+      >
+        @if (isSavingLanguage()) {
+          <ion-spinner name="dots"></ion-spinner>
+        } @else {
+          Guardar cambios
+        }
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 <ion-content [fullscreen]="true">
   @if (isLoading()) {

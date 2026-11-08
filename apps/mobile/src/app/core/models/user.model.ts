@@ -1,5 +1,17 @@
 export type ProgrammingLanguageSlug = 'python' | 'javascript' | 'typescript' | 'cpp';
 
+export interface LanguageOption {
+  slug: ProgrammingLanguageSlug;
+  label: string;
+}
+
+export const LANGUAGE_OPTIONS: LanguageOption[] = [
+  { slug: 'python', label: 'Python' },
+  { slug: 'javascript', label: 'JavaScript' },
+  { slug: 'typescript', label: 'TypeScript' },
+  { slug: 'cpp', label: 'C++' },
+];
+
 export interface User {
   id: string;
   email: string;
