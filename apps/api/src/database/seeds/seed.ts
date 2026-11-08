@@ -17,7 +17,11 @@ import { UserProgress } from '../../modules/courses/entities/user-progress.entit
 import { Exercise } from '../../modules/exercises/entities/exercise.entity';
 import { TestCase } from '../../modules/exercises/entities/test-case.entity';
 import { Attempt } from '../../modules/exercises/entities/attempt.entity';
+import { UserExerciseHistory } from '../../modules/exercises/entities/user-exercise-history.entity';
+import { ExerciseReport } from '../../modules/exercises/entities/exercise-report.entity';
+import { Concept } from '../../modules/concepts/entities/concept.entity';
 import { curriculum } from './curriculum.data';
+import { conceptsByLanguage } from './concepts.data';
 
 // Standalone script (not booted through Nest), so it opens its own
 // DataSource. `synchronize: true` mirrors the app's dev config (see
@@ -39,6 +43,9 @@ const dataSource = new DataSource({
     Exercise,
     TestCase,
     Attempt,
+    UserExerciseHistory,
+    ExerciseReport,
+    Concept,
   ],
   synchronize: true,
 });
@@ -52,6 +59,7 @@ async function run(): Promise<void> {
   const lessonRepo = dataSource.getRepository(Lesson);
   const exerciseRepo = dataSource.getRepository(Exercise);
   const testCaseRepo = dataSource.getRepository(TestCase);
+  const conceptRepo = dataSource.getRepository(Concept);
 
   for (const languageSeed of curriculum) {
     let language = await languageRepo.findOne({
@@ -63,6 +71,21 @@ async function run(): Promise<void> {
         name: languageSeed.name,
       }),
     );
+
+    for (const [conceptIndex, conceptSeed] of (
+      conceptsByLanguage[languageSeed.slug] ?? []
+    ).entries()) {
+      let concept = await conceptRepo.findOne({
+        where: { languageId: language.id, slug: conceptSeed.slug },
+      });
+      concept ??= conceptRepo.create({
+        languageId: language.id,
+        slug: conceptSeed.slug,
+      });
+      concept.name = conceptSeed.name;
+      concept.order = conceptIndex;
+      await conceptRepo.save(concept);
+    }
 
     let path = await pathRepo.findOne({
       where: { languageId: language.id, level: 'beginner' },

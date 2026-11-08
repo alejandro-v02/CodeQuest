@@ -6,10 +6,17 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Lesson } from '../../courses/entities/lesson.entity';
+import { Concept } from '../../concepts/entities/concept.entity';
 
 // 'code' (Fase 4) runs on Piston against TestCase rows. The Fase 4B types
 // below are graded structurally against `payload` instead — no sandbox.
 export type ExerciseType = 'code' | 'quiz' | 'fill' | 'sort' | 'bug';
+
+// Fase 3/4 hand-authored exercises are born 'approved'. Fase 5A's generator
+// creates rows as 'pending_verification' until the execution+dedup pipeline
+// clears them for serving; 'rejected' ones are kept (not deleted) for
+// debugging the generator/prompts.
+export type ExerciseStatus = 'approved' | 'pending_verification' | 'rejected';
 
 export interface QuizPayload {
   code: string;
@@ -74,4 +81,16 @@ export class Exercise {
 
   @Column({ default: false })
   isAiGenerated: boolean;
+
+  @Column({ type: 'varchar', default: 'approved' })
+  status: ExerciseStatus;
+
+  // Nullable: Fase 3/4 hand-authored exercises predate concepts. Fase 5A's
+  // generator sets this to group its output for serving/dedup.
+  @ManyToOne(() => Concept, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'concept_id' })
+  concept: Concept | null;
+
+  @Column({ type: 'varchar', name: 'concept_id', nullable: true })
+  conceptId: string | null;
 }

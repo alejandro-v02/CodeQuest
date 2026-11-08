@@ -5,9 +5,11 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration, { AppConfig } from './config/configuration';
 import { envValidationSchema } from './config/env.validation';
+import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './modules/health/health.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ConceptsModule } from './modules/concepts/concepts.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
 
@@ -39,9 +41,11 @@ import { ExercisesModule } from './modules/exercises/exercises.module';
     ThrottlerModule.forRoot({
       throttlers: [{ limit: 60, ttl: 60_000 }],
     }),
+    DatabaseModule,
     HealthModule,
     UsersModule,
     AuthModule,
+    ConceptsModule,
     CoursesModule,
     ExercisesModule,
   ],

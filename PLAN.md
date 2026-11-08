@@ -203,8 +203,8 @@ Pipeline de cada ejercicio generado:
 - **Entrega:** puedo hacer los 5 tipos de ejercicio cómodamente en el teléfono. ✅ Confirmado en dispositivo real.
 
 ### Fase 5A — Motor de ejercicios ilimitados
-- [ ] Tablas: `Concept`, `Exercise` (con `status`, `embedding`, `difficulty`), `UserExerciseHistory`, `ExerciseReport`.
-- [ ] Activar `pgvector`; servicio de embeddings y detección de duplicados.
+- [x] Tablas: `Concept`, `Exercise` (con `status`, `embedding`, `difficulty`), `UserExerciseHistory`, `ExerciseReport`.
+- [ ] Activar `pgvector` (extensión + columna + índice HNSW listos); falta el servicio de embeddings y detección de duplicados.
 - [ ] Generador con IA (JSON estricto, prompts versionados) + **plantillas parametrizadas** para quizzes.
 - [ ] Pipeline de verificación por ejecución (solución de referencia vs tests, código inicial no debe pasar).
 - [ ] Cola BullMQ + Redis que rellena el banco por concepto/nivel/tipo.
