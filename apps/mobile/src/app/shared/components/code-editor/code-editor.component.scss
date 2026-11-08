@@ -3,6 +3,51 @@
   height: 100%;
 }
 
-.code-editor-host {
+.editor-surface {
+  position: relative;
   height: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--ion-border-color, #262626);
+  background: var(--ion-item-background, #0f0f0f);
+  overflow: hidden;
+}
+
+// Both layers share the exact same box model/typography so the highlighted
+// text lines up precisely underneath the (invisible) textarea text.
+.editor-highlight,
+.editor-input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 12px 14px;
+  border: none;
+  box-sizing: border-box;
+  font: 14px/1.5 ui-monospace, Menlo, Consolas, 'Courier New', monospace;
+  letter-spacing: normal;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  tab-size: 4;
+  overflow: auto;
+}
+
+.editor-highlight {
+  color: var(--ion-text-color, #f2f2f2);
+  pointer-events: none;
+
+  code {
+    font: inherit;
+  }
+}
+
+.editor-input {
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ion-color-secondary, #22d3ee);
+  -webkit-text-fill-color: transparent;
+  resize: none;
+  outline: none;
+
+  &::selection {
+    background: rgba(34, 211, 238, 0.28);
+  }
 }

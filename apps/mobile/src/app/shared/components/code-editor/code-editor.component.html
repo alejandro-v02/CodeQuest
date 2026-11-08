@@ -1,0 +1,15 @@
+<div class="editor-surface">
+  <pre #highlightPre class="editor-highlight" aria-hidden="true"><code [innerHTML]="highlightedHtml"></code></pre>
+  <textarea
+    #input
+    class="editor-input"
+    spellcheck="false"
+    autocapitalize="none"
+    autocorrect="off"
+    autocomplete="off"
+    wrap="off"
+    (input)="onInput()"
+    (keydown)="onKeydown($event)"
+    (scroll)="onScroll()"
+  ></textarea>
+</div>
