@@ -1,0 +1,49 @@
+<button type="button" class="dev-link" (click)="open()">
+  <span class="mini" [style.backgroundImage]="'url(' + spriteUrl + ')'" aria-hidden="true"></span>
+  <span>Desarrollado por <b>Alejo</b></span>
+</button>
+
+<div class="dev-overlay" [hidden]="!isOpen()" (click)="onBackdropClick($event)" (keydown)="onKeydown($event)">
+  <div class="dev-sheet">
+    <button #closeBtn type="button" class="close-btn" (click)="close()" aria-label="Cerrar">✕</button>
+
+    <div class="stage">
+      <div class="say" [class.say-off]="!message()">{{ message() }}</div>
+      <canvas
+        #avatarCanvas
+        [width]="rawWidth"
+        [height]="rawHeight"
+        [style.width.px]="displayWidth"
+        [style.height.px]="displayHeight"
+        class="avatar-canvas"
+        tabindex="0"
+        role="img"
+        aria-label="Avatar de Alejo, toca para ver otro saludo"
+        (click)="replay()"
+        (keydown.enter)="replay()"
+        (keydown.space)="replay()"
+      ></canvas>
+    </div>
+
+    <div class="info">
+      <h2>Alejo</h2>
+      <p class="role">&lt;Desarrollador full-stack/&gt;</p>
+      <p class="bio">Diseñé y construí esta aplicación de punta a punta: backend, interfaz y despliegue.</p>
+      <div class="chips">
+        <span>NestJS</span>
+        <span>Angular</span>
+        <span>Ionic</span>
+        <span>TypeScript</span>
+        <span>PostgreSQL</span>
+        <span>Docker</span>
+      </div>
+      <div class="links">
+        <a href="https://github.com/alejandro-v02" target="_blank" rel="noopener">
+          <ion-icon name="logo-github"></ion-icon>
+          GitHub
+        </a>
+        <a href="mailto:alejandrovitovis@gmail.com">Correo</a>
+      </div>
+    </div>
+  </div>
+</div>

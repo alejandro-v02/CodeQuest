@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { IonContent, IonInput, IonButton, IonIcon } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
+import { DeveloperCreditComponent } from '../../shared/components/developer-credit/developer-credit.component';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ import { LoadingWaveComponent } from '../../shared/components/loading-wave/loadi
     IonButton,
     IonIcon,
     LoadingWaveComponent,
+    DeveloperCreditComponent,
   ],
 })
 export class LoginPage {
