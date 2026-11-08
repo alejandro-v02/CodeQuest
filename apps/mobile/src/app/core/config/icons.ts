@@ -16,6 +16,10 @@ import {
   send,
   codeSlash,
   chevronForward,
+  helpCircleOutline,
+  createOutline,
+  swapVertical,
+  bugOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -38,5 +42,9 @@ export function registerIcons(): void {
     send,
     'code-slash': codeSlash,
     'chevron-forward': chevronForward,
+    'help-circle-outline': helpCircleOutline,
+    'create-outline': createOutline,
+    'swap-vertical': swapVertical,
+    'bug-outline': bugOutline,
   });
 }

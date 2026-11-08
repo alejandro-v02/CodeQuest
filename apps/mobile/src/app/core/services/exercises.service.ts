@@ -6,8 +6,18 @@ import type {
   ExerciseDetail,
   ExerciseSummary,
   RunResult,
-  SubmitResult,
+  SubmitOutcome,
 } from '../models/exercise.model';
+
+// Only the field matching the exercise's own type is sent — see
+// SubmitAnswerDto on the backend for the mirrored shape.
+export interface SubmitAnswerBody {
+  code?: string;
+  selectedIndex?: number;
+  answers?: string[];
+  order?: string[];
+  lineIndex?: number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ExercisesService {
@@ -31,9 +41,9 @@ export class ExercisesService {
     );
   }
 
-  submit(exerciseId: string, code: string): Promise<SubmitResult> {
+  submit(exerciseId: string, body: SubmitAnswerBody): Promise<SubmitOutcome> {
     return firstValueFrom(
-      this.http.post<SubmitResult>(`${environment.apiUrl}/exercises/${exerciseId}/submit`, { code }),
+      this.http.post<SubmitOutcome>(`${environment.apiUrl}/exercises/${exerciseId}/submit`, body),
     );
   }
 }

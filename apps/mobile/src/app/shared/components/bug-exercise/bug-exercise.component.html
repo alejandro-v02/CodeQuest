@@ -1,0 +1,9 @@
+<pre class="bug-code">@for (line of payload.lines; track $index) {
+  <button
+    type="button"
+    class="bug-line"
+    [class.selected]="selectedLine() === $index"
+    [disabled]="disabled"
+    (click)="select($index)"
+  ><span class="bug-line-number">{{ $index + 1 }}</span><code>{{ line || ' ' }}</code></button>
+}</pre>

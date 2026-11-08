@@ -1,0 +1,44 @@
+.bug-code {
+  display: flex;
+  flex-direction: column;
+  background: var(--ion-item-background);
+  border: 1px solid var(--ion-border-color);
+  border-radius: 12px;
+  margin: 0;
+  overflow: hidden;
+  font-family: ui-monospace, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.bug-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 14px;
+  border: none;
+  border-left: 3px solid transparent;
+  background: none;
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: left;
+  white-space: pre;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &.selected {
+    border-left-color: var(--ion-color-danger);
+    background: color-mix(in srgb, var(--ion-color-danger) 14%, transparent);
+  }
+}
+
+.bug-line-number {
+  color: var(--ion-color-step-600);
+  min-width: 2ch;
+  text-align: right;
+  user-select: none;
+  flex-shrink: 0;
+}

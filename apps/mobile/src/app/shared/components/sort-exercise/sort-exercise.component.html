@@ -1,0 +1,13 @@
+<div
+  class="sort-list"
+  cdkDropList
+  [cdkDropListDisabled]="disabled"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (block of blocks(); track block) {
+    <div class="sort-block" cdkDrag [cdkDragDisabled]="disabled">
+      <span class="sort-handle">⠿</span>
+      <code>{{ block || '(línea vacía)' }}</code>
+    </div>
+  }
+</div>

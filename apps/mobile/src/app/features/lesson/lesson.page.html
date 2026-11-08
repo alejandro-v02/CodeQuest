@@ -47,7 +47,7 @@
         <h2>Practicar</h2>
         @for (exercise of exercises(); track exercise.id) {
           <button class="exercise-row" type="button" (click)="openExercise(exercise.id)">
-            <ion-icon name="code-slash"></ion-icon>
+            <ion-icon [name]="exerciseIcon(exercise.type)"></ion-icon>
             <span class="exercise-prompt">{{ exercise.prompt }}</span>
             @if (exercise.solved) {
               <ion-icon name="checkmark-circle" class="solved-icon"></ion-icon>

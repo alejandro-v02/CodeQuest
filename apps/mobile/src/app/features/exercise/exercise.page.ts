@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonHeader,
@@ -11,9 +11,23 @@ import {
 } from '@ionic/angular';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
+import { QuizExerciseComponent } from '../../shared/components/quiz-exercise/quiz-exercise.component';
+import { FillExerciseComponent } from '../../shared/components/fill-exercise/fill-exercise.component';
+import { SortExerciseComponent } from '../../shared/components/sort-exercise/sort-exercise.component';
+import { BugExerciseComponent } from '../../shared/components/bug-exercise/bug-exercise.component';
 import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
-import type { ExerciseDetail, RunResult, SubmitResult } from '../../core/models/exercise.model';
+import {
+  isAnswerSubmitResult,
+  type AnswerSubmitResult,
+  type BugPayload,
+  type ExerciseDetail,
+  type FillPayload,
+  type QuizPayload,
+  type RunResult,
+  type SortPayload,
+  type SubmitOutcome,
+} from '../../core/models/exercise.model';
 
 @Component({
   selector: 'app-exercise',
@@ -28,6 +42,10 @@ import type { ExerciseDetail, RunResult, SubmitResult } from '../../core/models/
     IonIcon,
     IonContent,
     CodeEditorComponent,
+    QuizExerciseComponent,
+    FillExerciseComponent,
+    SortExerciseComponent,
+    BugExerciseComponent,
     LoadingWaveComponent,
     LoadingBounceComponent,
   ],
@@ -37,13 +55,22 @@ export class ExercisePage {
   private readonly router = inject(Router);
   private readonly exercisesService = inject(ExercisesService);
 
+  @ViewChild(CodeEditorComponent) private codeEditor?: CodeEditorComponent;
+
+  readonly symbols = ['{', '}', '(', ')', '[', ']', ';', ':', '=', '"', "'", '_'];
+
   readonly exercise = signal<ExerciseDetail | null>(null);
   readonly code = signal('');
+  // Current answer for quiz/fill/sort/bug — shape depends on the exercise
+  // type (number | string[] | number for bug's line index).
+  readonly answer = signal<number | string[] | null>(null);
   readonly isLoading = signal(true);
   readonly isRunning = signal(false);
-  readonly isSubmitting = signal(false);
-  readonly result = signal<RunResult | SubmitResult | null>(null);
+  readonly isChecking = signal(false);
+  readonly result = signal<RunResult | SubmitOutcome | null>(null);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly isAnswerResult = isAnswerSubmitResult;
 
   constructor() {
     void this.load();
@@ -63,6 +90,8 @@ export class ExercisePage {
       const exercise = await this.exercisesService.getExercise(exerciseId);
       this.exercise.set(exercise);
       this.code.set(exercise.starterCode ?? '');
+      this.answer.set(null);
+      this.result.set(null);
     } catch {
       this.errorMessage.set('No se pudo cargar el ejercicio.');
     } finally {
@@ -70,9 +99,33 @@ export class ExercisePage {
     }
   }
 
+  get quizPayload(): QuizPayload {
+    return this.exercise()!.payload as QuizPayload;
+  }
+
+  get fillPayload(): FillPayload {
+    return this.exercise()!.payload as FillPayload;
+  }
+
+  get sortPayload(): SortPayload {
+    return this.exercise()!.payload as SortPayload;
+  }
+
+  get bugPayload(): BugPayload {
+    return this.exercise()!.payload as BugPayload;
+  }
+
+  get canCheck(): boolean {
+    const answer = this.answer();
+    if (answer === null) {
+      return false;
+    }
+    return !Array.isArray(answer) || answer.every((item) => item.trim().length > 0);
+  }
+
   async run(): Promise<void> {
     const exercise = this.exercise();
-    if (!exercise || this.isRunning() || this.isSubmitting()) {
+    if (!exercise || this.isRunning() || this.isChecking()) {
       return;
     }
 
@@ -91,25 +144,78 @@ export class ExercisePage {
 
   async submit(): Promise<void> {
     const exercise = this.exercise();
-    if (!exercise || this.isRunning() || this.isSubmitting()) {
+    if (!exercise || this.isRunning() || this.isChecking()) {
       return;
     }
 
-    this.isSubmitting.set(true);
+    this.isChecking.set(true);
     this.errorMessage.set(null);
     this.result.set(null);
 
     try {
-      const submitResult = await this.exercisesService.submit(exercise.id, this.code());
-      this.result.set(submitResult);
-      if (submitResult.allPassed) {
+      const outcome = await this.exercisesService.submit(exercise.id, { code: this.code() });
+      this.result.set(outcome);
+      if (!isAnswerSubmitResult(outcome) && outcome.allPassed) {
         this.exercise.set({ ...exercise, solved: true });
       }
     } catch {
       this.errorMessage.set('No se pudo enviar la solución.');
     } finally {
-      this.isSubmitting.set(false);
+      this.isChecking.set(false);
     }
+  }
+
+  async checkAnswer(): Promise<void> {
+    const exercise = this.exercise();
+    const answer = this.answer();
+    if (!exercise || answer === null || this.isChecking()) {
+      return;
+    }
+
+    this.isChecking.set(true);
+    this.errorMessage.set(null);
+    this.result.set(null);
+
+    try {
+      const body =
+        exercise.type === 'quiz'
+          ? { selectedIndex: answer as number }
+          : exercise.type === 'fill'
+            ? { answers: answer as string[] }
+            : exercise.type === 'sort'
+              ? { order: answer as string[] }
+              : { lineIndex: answer as number };
+
+      const outcome = await this.exercisesService.submit(exercise.id, body);
+      this.result.set(outcome);
+      if (isAnswerSubmitResult(outcome) && outcome.passed) {
+        this.exercise.set({ ...exercise, solved: true });
+      }
+    } catch {
+      this.errorMessage.set('No se pudo comprobar la respuesta.');
+    } finally {
+      this.isChecking.set(false);
+    }
+  }
+
+  formatCorrectAnswer(result: AnswerSubmitResult): string {
+    const type = this.exercise()?.type;
+    switch (type) {
+      case 'quiz':
+        return this.quizPayload.options[result.correctAnswer as number];
+      case 'fill':
+        return (result.correctAnswer as string[]).join(', ');
+      case 'sort':
+        return (result.correctAnswer as string[]).join('\n');
+      case 'bug':
+        return `Línea ${(result.correctAnswer as number) + 1}`;
+      default:
+        return '';
+    }
+  }
+
+  insertSymbol(symbol: string): void {
+    this.codeEditor?.insertAtCursor(symbol);
   }
 
   goBack(): void {

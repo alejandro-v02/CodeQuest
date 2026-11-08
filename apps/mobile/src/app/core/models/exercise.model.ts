@@ -1,6 +1,6 @@
 import type { ProgrammingLanguageSlug } from './user.model';
 
-export type ExerciseType = 'code';
+export type ExerciseType = 'code' | 'quiz' | 'fill' | 'sort' | 'bug';
 
 export interface VisibleTestCase {
   id: string;
@@ -8,6 +8,28 @@ export interface VisibleTestCase {
   input: string;
   expectedOutput: string;
 }
+
+// Answer-stripped payloads, as served by GET /exercises/:id — see
+// apps/api .../exercises.service.ts#sanitizePayload for what's hidden.
+export interface QuizPayload {
+  code: string;
+  options: string[];
+}
+
+export interface FillPayload {
+  template: string;
+  blankCount: number;
+}
+
+export interface SortPayload {
+  blocks: string[];
+}
+
+export interface BugPayload {
+  lines: string[];
+}
+
+export type ExercisePayload = QuizPayload | FillPayload | SortPayload | BugPayload;
 
 export interface ExerciseSummary {
   id: string;
@@ -22,6 +44,7 @@ export interface ExerciseDetail extends ExerciseSummary {
   lessonId: string;
   languageSlug: ProgrammingLanguageSlug;
   starterCode: string | null;
+  payload: ExercisePayload | null;
   testCases: VisibleTestCase[];
 }
 
@@ -41,4 +64,20 @@ export interface RunResult {
 
 export interface SubmitResult extends RunResult {
   attemptId: string;
+}
+
+// Result shape for quiz/fill/sort/bug — graded structurally, no test cases.
+export interface AnswerSubmitResult {
+  passed: boolean;
+  attemptId: string;
+  correctAnswer: unknown;
+  explanation: string | null;
+}
+
+export type SubmitOutcome = SubmitResult | AnswerSubmitResult;
+
+export function isAnswerSubmitResult(
+  result: RunResult | SubmitOutcome,
+): result is AnswerSubmitResult {
+  return !('testCases' in result);
 }

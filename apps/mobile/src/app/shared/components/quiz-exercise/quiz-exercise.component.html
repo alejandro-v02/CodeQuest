@@ -1,0 +1,16 @@
+<pre class="quiz-code"><code>{{ payload.code }}</code></pre>
+
+<div class="quiz-options">
+  @for (option of payload.options; track $index) {
+    <button
+      type="button"
+      class="quiz-option"
+      [class.selected]="selectedIndex() === $index"
+      [disabled]="disabled"
+      (click)="select($index)"
+    >
+      <span class="quiz-option-marker">{{ selectedIndex() === $index ? '●' : '○' }}</span>
+      <code>{{ option }}</code>
+    </button>
+  }
+</div>

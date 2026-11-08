@@ -1,0 +1,17 @@
+<pre class="fill-code">@for (part of parts(); track $index) {
+  @if (part.kind === 'text') {
+    <span>{{ part.value }}</span>
+  } @else {
+    <input
+      class="fill-blank"
+      type="text"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      [style.width.ch]="Math.max(3, (answers()[part.index] || '').length + 1)"
+      [value]="answers()[part.index]"
+      [disabled]="disabled"
+      (input)="setAnswer(part.index, $any($event.target).value)"
+    />
+  }
+}</pre>

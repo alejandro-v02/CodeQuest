@@ -21,52 +21,115 @@
   } @else if (exercise(); as current) {
     <p class="prompt">{{ current.prompt }}</p>
 
-    <div class="editor-shell">
-      <app-code-editor
-        [value]="code()"
-        [language]="current.languageSlug"
-        (valueChange)="code.set($event)"
-      ></app-code-editor>
-    </div>
+    @if (current.type === 'code') {
+      <div class="editor-shell">
+        <app-code-editor
+          [value]="code()"
+          [language]="current.languageSlug"
+          (valueChange)="code.set($event)"
+        ></app-code-editor>
+      </div>
 
-    <div class="actions">
-      <ion-button fill="outline" [disabled]="isRunning() || isSubmitting()" (click)="run()">
-        <ion-icon name="play" slot="start"></ion-icon>
-        Ejecutar
-      </ion-button>
-      <ion-button [disabled]="isRunning() || isSubmitting()" (click)="submit()">
-        <ion-icon name="send" slot="start"></ion-icon>
-        Enviar
-      </ion-button>
-    </div>
+      <div class="symbol-bar">
+        @for (symbol of symbols; track symbol) {
+          <button type="button" class="symbol-key" (click)="insertSymbol(symbol)">{{ symbol }}</button>
+        }
+      </div>
 
-    @if (isRunning() || isSubmitting()) {
+      <div class="actions">
+        <ion-button fill="outline" [disabled]="isRunning() || isChecking()" (click)="run()">
+          <ion-icon name="play" slot="start"></ion-icon>
+          Ejecutar
+        </ion-button>
+        <ion-button [disabled]="isRunning() || isChecking()" (click)="submit()">
+          <ion-icon name="send" slot="start"></ion-icon>
+          Enviar
+        </ion-button>
+      </div>
+    } @else {
+      <div class="exercise-body">
+        @switch (current.type) {
+          @case ('quiz') {
+            <app-quiz-exercise
+              [payload]="quizPayload"
+              [disabled]="isChecking()"
+              (answerChange)="answer.set($event)"
+            ></app-quiz-exercise>
+          }
+          @case ('fill') {
+            <app-fill-exercise
+              [payload]="fillPayload"
+              [disabled]="isChecking()"
+              (answerChange)="answer.set($event)"
+            ></app-fill-exercise>
+          }
+          @case ('sort') {
+            <app-sort-exercise
+              [payload]="sortPayload"
+              [disabled]="isChecking()"
+              (answerChange)="answer.set($event)"
+            ></app-sort-exercise>
+          }
+          @case ('bug') {
+            <app-bug-exercise
+              [payload]="bugPayload"
+              [disabled]="isChecking()"
+              (answerChange)="answer.set($event)"
+            ></app-bug-exercise>
+          }
+        }
+      </div>
+
+      <div class="actions">
+        <ion-button [disabled]="!canCheck || isChecking()" (click)="checkAnswer()">
+          <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+          Comprobar
+        </ion-button>
+      </div>
+    }
+
+    @if (isRunning() || isChecking()) {
       <div class="console-loading">
         <app-loading-wave></app-loading-wave>
       </div>
-    } @else if (result(); as current) {
-      <div class="console">
-        @for (testCase of current.testCases; track testCase.id) {
-          <div class="test-case" [class.passed]="testCase.passed" [class.failed]="!testCase.passed">
-            <div class="test-case-header">
-              <ion-icon [name]="testCase.passed ? 'checkmark-circle' : 'close-circle'"></ion-icon>
-              <span>{{ testCase.passed ? 'Caso correcto' : 'Caso incorrecto' }}</span>
-            </div>
-            @if (testCase.input !== null) {
-              <p class="test-case-line"><span>Entrada:</span> {{ testCase.input || '(vacía)' }}</p>
-              <p class="test-case-line"><span>Esperado:</span> {{ testCase.expectedOutput }}</p>
-              <p class="test-case-line"><span>Obtenido:</span> {{ testCase.actualOutput || '(sin salida)' }}</p>
-              @if (testCase.stderr) {
-                <p class="test-case-line error">{{ testCase.stderr }}</p>
-              }
-            }
+    } @else if (result(); as currentResult) {
+      @if (isAnswerResult(currentResult)) {
+        <div class="answer-result" [class.passed]="currentResult.passed" [class.failed]="!currentResult.passed">
+          <div class="answer-result-header">
+            <ion-icon [name]="currentResult.passed ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+            <span>{{ currentResult.passed ? '¡Correcto!' : 'No es correcto' }}</span>
           </div>
-        }
+          @if (!currentResult.passed) {
+            <p class="answer-result-line"><span>Respuesta correcta:</span> {{ formatCorrectAnswer(currentResult) }}</p>
+            @if (currentResult.explanation) {
+              <p class="answer-result-line">{{ currentResult.explanation }}</p>
+            }
+          }
+        </div>
+      } @else {
+        <div class="console">
+          @for (testCase of currentResult.testCases; track testCase.id) {
+            <div class="test-case" [class.passed]="testCase.passed" [class.failed]="!testCase.passed">
+              <div class="test-case-header">
+                <ion-icon [name]="testCase.passed ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+                <span>{{ testCase.passed ? 'Caso correcto' : 'Caso incorrecto' }}</span>
+              </div>
+              @if (testCase.input !== null) {
+                <p class="test-case-line"><span>Entrada:</span> {{ testCase.input || '(vacía)' }}</p>
+                <p class="test-case-line"><span>Esperado:</span> {{ testCase.expectedOutput }}</p>
+                <p class="test-case-line"><span>Obtenido:</span> {{ testCase.actualOutput || '(sin salida)' }}</p>
+                @if (testCase.stderr) {
+                  <p class="test-case-line error">{{ testCase.stderr }}</p>
+                }
+              }
+            </div>
+          }
 
-        @if (current.allPassed) {
-          <p class="all-passed">¡Todos los casos pasaron!</p>
-        }
-      </div>
+          @if (currentResult.allPassed) {
+            <p class="all-passed">¡Todos los casos pasaron!</p>
+          }
+        </div>
+      }
     }
   }
 </ion-content>

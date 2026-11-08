@@ -1,0 +1,36 @@
+.fill-code {
+  background: var(--ion-item-background);
+  border: 1px solid var(--ion-border-color);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 0;
+  overflow-x: auto;
+  font-family: ui-monospace, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--ion-text-color);
+}
+
+.fill-blank {
+  display: inline-block;
+  min-width: 3ch;
+  margin: 0 2px;
+  padding: 1px 6px;
+  border: none;
+  border-bottom: 2px solid var(--ion-color-secondary);
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--ion-color-secondary) 14%, transparent);
+  color: var(--ion-color-secondary);
+  font: inherit;
+  text-align: center;
+
+  &:focus {
+    outline: none;
+    background: color-mix(in srgb, var(--ion-color-secondary) 24%, transparent);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+  }
+}

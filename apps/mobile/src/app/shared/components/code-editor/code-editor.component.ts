@@ -81,6 +81,21 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
 
   private view: EditorView | null = null;
 
+  // Called from the symbol bar above the editor (PLAN.md Fase 4B: "barra de
+  // símbolos sobre el teclado") — mobile keyboards make `{ } [ ] ; : " '`
+  // slow to reach, so this inserts at the cursor instead.
+  insertAtCursor(text: string): void {
+    if (!this.view) {
+      return;
+    }
+    const { from, to } = this.view.state.selection.main;
+    this.view.dispatch({
+      changes: { from, to, insert: text },
+      selection: { anchor: from + text.length },
+    });
+    this.view.focus();
+  }
+
   ngAfterViewInit(): void {
     this.view = new EditorView({
       parent: this.hostRef.nativeElement,

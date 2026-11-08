@@ -79,6 +79,21 @@ export class LessonPage {
     void this.router.navigateByUrl(`/exercise/${exerciseId}`);
   }
 
+  exerciseIcon(type: ExerciseSummary['type']): string {
+    switch (type) {
+      case 'quiz':
+        return 'help-circle-outline';
+      case 'fill':
+        return 'create-outline';
+      case 'sort':
+        return 'swap-vertical';
+      case 'bug':
+        return 'bug-outline';
+      default:
+        return 'code-slash';
+    }
+  }
+
   async complete(): Promise<void> {
     const current = this.lesson();
     if (!current || this.isCompleting()) {
