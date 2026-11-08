@@ -184,10 +184,10 @@ Pipeline de cada ejercicio generado:
 - **Entrega:** puedo registrarme, iniciar sesión y mantener la sesión al reabrir la app.
 
 ### Fase 3 — Contenido: rutas, módulos y lecciones
-- [ ] Entidades y migraciones del contenido.
-- [ ] Cargar el **mapa de currículo** (sección 4B, capa 1) de los 4 lenguajes (Python, JavaScript, TypeScript, C++) como datos; lecciones completas de **Python y JavaScript nivel principiante** (variables, tipos, condicionales, bucles, funciones, listas/arrays, diccionarios/objetos).
-- [ ] App: pantalla "Ruta de aprendizaje" (mapa de módulos con estados bloqueado/en curso/completo) y pantalla de lección (renderizar Markdown).
-- **Entrega:** navego la ruta y leo lecciones reales desde la API.
+- [x] Entidades y migraciones del contenido.
+- [x] Cargar el **mapa de currículo** (sección 4B, capa 1) de los 4 lenguajes (Python, JavaScript, TypeScript, C++) como datos; lecciones completas de **Python y JavaScript nivel principiante** (variables, tipos, condicionales, bucles, funciones, listas/arrays, diccionarios/objetos).
+- [x] App: pantalla "Ruta de aprendizaje" (mapa de módulos con estados bloqueado/en curso/completo) y pantalla de lección (renderizar Markdown).
+- **Entrega:** navego la ruta y leo lecciones reales desde la API. ✅ Confirmado en dispositivo real (implementado y verificado en una sesión anterior; checklist actualizado ahora).
 
 ### Fase 4 — Editor y ejecución de código
 - [x] Integrar CodeMirror en un componente `code-editor` (resaltado, tema, teclado móvil usable).
