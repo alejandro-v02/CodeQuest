@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
+import { Concept } from '../concepts/entities/concept.entity';
 import { CoursesService } from '../courses/courses.service';
 import { PistonService } from '../execution/piston.service';
 import type { ProgrammingLanguageSlug } from '../users/entities/user.entity';
@@ -44,6 +45,8 @@ export class ExercisesService {
     private readonly testCaseRepo: Repository<TestCase>,
     @InjectRepository(Attempt)
     private readonly attemptRepo: Repository<Attempt>,
+    @InjectRepository(Concept)
+    private readonly conceptRepo: Repository<Concept>,
     private readonly coursesService: CoursesService,
     private readonly pistonService: PistonService,
   ) {}
@@ -80,10 +83,7 @@ export class ExercisesService {
     userId: string,
   ): Promise<ExerciseDetail> {
     const exercise = await this.findExerciseOrThrow(exerciseId);
-    const lesson = await this.coursesService.getLessonDetail(
-      exercise.lessonId,
-      userId,
-    );
+    const languageSlug = await this.resolveLanguageSlug(exercise, userId);
 
     const testCases = await this.testCaseRepo.find({
       where: { exerciseId, isHidden: false },
@@ -94,7 +94,7 @@ export class ExercisesService {
     return {
       id: exercise.id,
       lessonId: exercise.lessonId,
-      languageSlug: lesson.languageSlug,
+      languageSlug,
       order: exercise.order,
       type: exercise.type,
       prompt: exercise.prompt,
@@ -124,17 +124,14 @@ export class ExercisesService {
         'Este tipo de ejercicio no tiene vista previa, usa "Comprobar".',
       );
     }
-    const lesson = await this.coursesService.getLessonDetail(
-      exercise.lessonId,
-      userId,
-    );
+    const languageSlug = await this.resolveLanguageSlug(exercise, userId);
 
     const testCases = await this.testCaseRepo.find({
       where: { exerciseId, isHidden: false },
       order: { order: 'ASC' },
     });
 
-    const results = await this.runAgainst(lesson.languageSlug, code, testCases);
+    const results = await this.runAgainst(languageSlug, code, testCases);
 
     return {
       allPassed: results.every((result) => result.passed),
@@ -151,8 +148,12 @@ export class ExercisesService {
     dto: SubmitAnswerDto,
   ): Promise<SubmitResult | AnswerSubmitResult> {
     const exercise = await this.findExerciseOrThrow(exerciseId);
-    // Throws if the lesson is locked/missing — exercises inherit that check.
-    await this.coursesService.getLessonDetail(exercise.lessonId, userId);
+    if (exercise.lessonId) {
+      // Throws if the lesson is locked/missing — exercises inherit that
+      // check. Concept-only (Fase 5A-generated) exercises have no lesson to
+      // check against.
+      await this.coursesService.getLessonDetail(exercise.lessonId, userId);
+    }
 
     switch (exercise.type) {
       case 'code':
@@ -190,17 +191,14 @@ export class ExercisesService {
     code: string,
   ): Promise<SubmitResult> {
     const exerciseId = exercise.id;
-    const lesson = await this.coursesService.getLessonDetail(
-      exercise.lessonId,
-      userId,
-    );
+    const languageSlug = await this.resolveLanguageSlug(exercise, userId);
 
     const testCases = await this.testCaseRepo.find({
       where: { exerciseId },
       order: { order: 'ASC' },
     });
 
-    const results = await this.runAgainst(lesson.languageSlug, code, testCases);
+    const results = await this.runAgainst(languageSlug, code, testCases);
     const allPassed = results.every((result) => result.passed);
     const firstError = results.find((result) => result.stderr)?.stderr ?? null;
 
@@ -431,6 +429,36 @@ export class ExercisesService {
       where: { userId, exerciseId: In(exerciseIds), passed: true },
     });
     return new Set(attempts.map((attempt) => attempt.exerciseId));
+  }
+
+  // Lesson-scoped (Fase 3/4) exercises resolve their language through their
+  // lesson, which also doubles as the locked-lesson access check. Concept-
+  // scoped (Fase 5A-generated) exercises have no lesson to check against —
+  // they resolve through their concept's language instead.
+  private async resolveLanguageSlug(
+    exercise: Exercise,
+    userId: string,
+  ): Promise<ProgrammingLanguageSlug> {
+    if (exercise.lessonId) {
+      const lesson = await this.coursesService.getLessonDetail(
+        exercise.lessonId,
+        userId,
+      );
+      return lesson.languageSlug;
+    }
+    if (exercise.conceptId) {
+      const concept = await this.conceptRepo.findOne({
+        where: { id: exercise.conceptId },
+        relations: { language: true },
+      });
+      if (!concept) {
+        throw new NotFoundException('Concept not found');
+      }
+      return concept.language.slug;
+    }
+    throw new BadRequestException(
+      'Exercise has neither a lesson nor a concept.',
+    );
   }
 
   private async findExerciseOrThrow(exerciseId: string): Promise<Exercise> {

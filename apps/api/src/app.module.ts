@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConceptsModule } from './modules/concepts/concepts.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
+import { GenerationModule } from './modules/generation/generation.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ExercisesModule } from './modules/exercises/exercises.module';
     ConceptsModule,
     CoursesModule,
     ExercisesModule,
+    GenerationModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

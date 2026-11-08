@@ -52,12 +52,14 @@ export class Exercise {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Lesson, { onDelete: 'CASCADE' })
+  // Nullable: Fase 5A's generator attaches its output to a Concept instead
+  // (see conceptId below) — it has no curriculum Lesson of its own.
+  @ManyToOne(() => Lesson, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'lesson_id' })
-  lesson: Lesson;
+  lesson: Lesson | null;
 
-  @Column({ name: 'lesson_id' })
-  lessonId: string;
+  @Column({ type: 'varchar', name: 'lesson_id', nullable: true })
+  lessonId: string | null;
 
   @Column({ type: 'int' })
   order: number;

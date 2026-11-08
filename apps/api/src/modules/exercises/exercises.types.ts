@@ -44,7 +44,9 @@ export interface ExerciseSummary {
 }
 
 export interface ExerciseDetail extends ExerciseSummary {
-  lessonId: string;
+  // Null for Fase 5A-generated practice exercises, which attach to a Concept
+  // instead of a curriculum Lesson.
+  lessonId: string | null;
   languageSlug: ProgrammingLanguageSlug;
   starterCode: string | null;
   payload: ExercisePayloadView | null;

@@ -30,6 +30,10 @@ export interface AppConfig {
   execution: {
     pistonApiUrl: string;
   };
+  openai: {
+    enabled: boolean;
+    apiKey: string;
+  };
 }
 
 export default (): AppConfig => ({
@@ -67,5 +71,9 @@ export default (): AppConfig => ({
     process.env.MOBILE_DEEP_LINK_URL ?? 'codequest://auth-callback',
   execution: {
     pistonApiUrl: process.env.PISTON_API_URL ?? 'http://localhost:2000',
+  },
+  openai: {
+    enabled: Boolean(process.env.OPENAI_API_KEY),
+    apiKey: process.env.OPENAI_API_KEY ?? '',
   },
 });
