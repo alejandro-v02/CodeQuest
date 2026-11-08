@@ -123,6 +123,10 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
   private buildState(doc: string): EditorState {
     return EditorState.create({
       doc,
+      // Without this, CodeMirror's default cursor sits at position 0, so
+      // tapping a symbol-bar button before ever tapping the editor itself
+      // inserts at the very start of the starter code instead of the end.
+      selection: { anchor: doc.length },
       extensions: [
         basicSetup,
         languageExtension(this.language),

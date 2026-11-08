@@ -30,6 +30,7 @@
         ></app-code-editor>
       </div>
 
+      <p class="editor-hint">Toca dentro del código donde quieras escribir, y usa estos símbolos para insertarlos ahí:</p>
       <div class="symbol-bar">
         @for (symbol of symbols; track symbol) {
           <button type="button" class="symbol-key" (click)="insertSymbol(symbol)">{{ symbol }}</button>
