@@ -1,14 +1,28 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CoursesService } from '../courses/courses.service';
 import { PistonService } from '../execution/piston.service';
 import type { ProgrammingLanguageSlug } from '../users/entities/user.entity';
 import { Exercise } from './entities/exercise.entity';
+import type {
+  BugPayload,
+  ExercisePayload,
+  FillPayload,
+  QuizPayload,
+  SortPayload,
+} from './entities/exercise.entity';
 import { TestCase } from './entities/test-case.entity';
 import { Attempt } from './entities/attempt.entity';
+import type { SubmitAnswerDto } from './dto/submit-answer.dto';
 import type {
+  AnswerSubmitResult,
   ExerciseDetail,
+  ExercisePayloadView,
   ExerciseSummary,
   RunResult,
   SubmitResult,
@@ -85,6 +99,7 @@ export class ExercisesService {
       type: exercise.type,
       prompt: exercise.prompt,
       starterCode: exercise.starterCode,
+      payload: this.sanitizePayload(exercise.type, exercise.payload),
       difficulty: exercise.difficulty,
       solved: solvedIds.has(exercise.id),
       testCases: testCases.map((testCase) => ({
@@ -104,6 +119,11 @@ export class ExercisesService {
     code: string,
   ): Promise<RunResult> {
     const exercise = await this.findExerciseOrThrow(exerciseId);
+    if (exercise.type !== 'code') {
+      throw new BadRequestException(
+        'Este tipo de ejercicio no tiene vista previa, usa "Comprobar".',
+      );
+    }
     const lesson = await this.coursesService.getLessonDetail(
       exercise.lessonId,
       userId,
@@ -122,13 +142,54 @@ export class ExercisesService {
     };
   }
 
-  // "Enviar": runs every case (visible + hidden) and records the attempt.
-  async submitCode(
+  // Dispatches "Enviar"/"Comprobar" by exercise type: 'code' runs the
+  // sandbox against every TestCase, the Fase 4B types are graded structurally
+  // against the stored payload instead (see each submitX helper below).
+  async submitAnswer(
     exerciseId: string,
+    userId: string,
+    dto: SubmitAnswerDto,
+  ): Promise<SubmitResult | AnswerSubmitResult> {
+    const exercise = await this.findExerciseOrThrow(exerciseId);
+    // Throws if the lesson is locked/missing — exercises inherit that check.
+    await this.coursesService.getLessonDetail(exercise.lessonId, userId);
+
+    switch (exercise.type) {
+      case 'code':
+        if (dto.code === undefined) {
+          throw new BadRequestException('Falta el código.');
+        }
+        return this.submitCode(exercise, userId, dto.code);
+      case 'quiz':
+        if (dto.selectedIndex === undefined) {
+          throw new BadRequestException('Falta la opción seleccionada.');
+        }
+        return this.submitQuiz(exercise, userId, dto.selectedIndex);
+      case 'fill':
+        if (dto.answers === undefined) {
+          throw new BadRequestException('Faltan las respuestas.');
+        }
+        return this.submitFill(exercise, userId, dto.answers);
+      case 'sort':
+        if (dto.order === undefined) {
+          throw new BadRequestException('Falta el orden propuesto.');
+        }
+        return this.submitSort(exercise, userId, dto.order);
+      case 'bug':
+        if (dto.lineIndex === undefined) {
+          throw new BadRequestException('Falta la línea seleccionada.');
+        }
+        return this.submitBug(exercise, userId, dto.lineIndex);
+    }
+  }
+
+  // "Enviar": runs every case (visible + hidden) and records the attempt.
+  private async submitCode(
+    exercise: Exercise,
     userId: string,
     code: string,
   ): Promise<SubmitResult> {
-    const exercise = await this.findExerciseOrThrow(exerciseId);
+    const exerciseId = exercise.id;
     const lesson = await this.coursesService.getLessonDetail(
       exercise.lessonId,
       userId,
@@ -175,6 +236,159 @@ export class ExercisesService {
     });
 
     return { allPassed, testCases: sanitized, attemptId: attempt.id };
+  }
+
+  private async submitQuiz(
+    exercise: Exercise,
+    userId: string,
+    selectedIndex: number,
+  ): Promise<AnswerSubmitResult> {
+    const payload = exercise.payload as QuizPayload;
+    const passed = selectedIndex === payload.correctIndex;
+    const attempt = await this.recordAnswerAttempt(
+      exercise.id,
+      userId,
+      { selectedIndex },
+      passed,
+    );
+    return {
+      passed,
+      attemptId: attempt.id,
+      correctAnswer: payload.correctIndex,
+      explanation: null,
+    };
+  }
+
+  private async submitFill(
+    exercise: Exercise,
+    userId: string,
+    answers: string[],
+  ): Promise<AnswerSubmitResult> {
+    const payload = exercise.payload as FillPayload;
+    const passed =
+      answers.length === payload.blanks.length &&
+      payload.blanks.every(
+        (blank, index) =>
+          answers[index]?.trim().toLowerCase() === blank.trim().toLowerCase(),
+      );
+    const attempt = await this.recordAnswerAttempt(
+      exercise.id,
+      userId,
+      { answers },
+      passed,
+    );
+    return {
+      passed,
+      attemptId: attempt.id,
+      correctAnswer: payload.blanks,
+      explanation: null,
+    };
+  }
+
+  private async submitSort(
+    exercise: Exercise,
+    userId: string,
+    order: string[],
+  ): Promise<AnswerSubmitResult> {
+    const payload = exercise.payload as SortPayload;
+    const passed =
+      order.length === payload.blocks.length &&
+      payload.blocks.every(
+        (block, index) => order[index]?.trim() === block.trim(),
+      );
+    const attempt = await this.recordAnswerAttempt(
+      exercise.id,
+      userId,
+      { order },
+      passed,
+    );
+    return {
+      passed,
+      attemptId: attempt.id,
+      correctAnswer: payload.blocks,
+      explanation: null,
+    };
+  }
+
+  private async submitBug(
+    exercise: Exercise,
+    userId: string,
+    lineIndex: number,
+  ): Promise<AnswerSubmitResult> {
+    const payload = exercise.payload as BugPayload;
+    const passed = lineIndex === payload.buggyLineIndex;
+    const attempt = await this.recordAnswerAttempt(
+      exercise.id,
+      userId,
+      { lineIndex },
+      passed,
+    );
+    return {
+      passed,
+      attemptId: attempt.id,
+      correctAnswer: payload.buggyLineIndex,
+      explanation: payload.explanation,
+    };
+  }
+
+  private async recordAnswerAttempt(
+    exerciseId: string,
+    userId: string,
+    answer: Record<string, unknown>,
+    passed: boolean,
+  ): Promise<Attempt> {
+    return this.attemptRepo.save(
+      this.attemptRepo.create({
+        userId,
+        exerciseId,
+        code: JSON.stringify(answer),
+        passed,
+        output: null,
+        errorMessage: null,
+      }),
+    );
+  }
+
+  // Strips the correct-answer fields a client must never see before
+  // submitting (correctIndex/blanks/buggyLineIndex/explanation), and shuffles
+  // 'sort' blocks for display — see SortPayload's comment for why that's
+  // enough to keep the answer hidden without any index bookkeeping.
+  private sanitizePayload(
+    type: Exercise['type'],
+    payload: ExercisePayload | null,
+  ): ExercisePayloadView | null {
+    if (!payload) {
+      return null;
+    }
+    switch (type) {
+      case 'quiz': {
+        const { code, options } = payload as QuizPayload;
+        return { code, options };
+      }
+      case 'fill': {
+        const { template, blanks } = payload as FillPayload;
+        return { template, blankCount: blanks.length };
+      }
+      case 'sort': {
+        const { blocks } = payload as SortPayload;
+        return { blocks: this.shuffle(blocks) };
+      }
+      case 'bug': {
+        const { lines } = payload as BugPayload;
+        return { lines };
+      }
+      default:
+        return null;
+    }
+  }
+
+  private shuffle<T>(items: T[]): T[] {
+    const shuffled = [...items];
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }
 
   private async runAgainst(

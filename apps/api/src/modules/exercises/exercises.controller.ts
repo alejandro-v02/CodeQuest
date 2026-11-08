@@ -14,7 +14,9 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { PublicUser } from '../users/users.mapper';
 import { ExercisesService } from './exercises.service';
 import { RunCodeDto } from './dto/run-code.dto';
+import { SubmitAnswerDto } from './dto/submit-answer.dto';
 import type {
+  AnswerSubmitResult,
   ExerciseDetail,
   ExerciseSummary,
   RunResult,
@@ -63,9 +65,9 @@ export class ExercisesController {
   @Post(':exerciseId/submit')
   submit(
     @Param('exerciseId') exerciseId: string,
-    @Body() dto: RunCodeDto,
+    @Body() dto: SubmitAnswerDto,
     @CurrentUser() user: PublicUser,
-  ): Promise<SubmitResult> {
-    return this.exercisesService.submitCode(exerciseId, user.id, dto.code);
+  ): Promise<SubmitResult | AnswerSubmitResult> {
+    return this.exercisesService.submitAnswer(exerciseId, user.id, dto);
   }
 }

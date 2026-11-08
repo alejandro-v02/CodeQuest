@@ -190,17 +190,17 @@ Pipeline de cada ejercicio generado:
 - **Entrega:** navego la ruta y leo lecciones reales desde la API.
 
 ### Fase 4 — Editor y ejecución de código
-- [ ] Integrar CodeMirror en un componente `code-editor` (resaltado, tema, teclado móvil usable).
-- [ ] Backend `execution`: enviar código a Judge0/Piston, manejar timeouts y límites, devolver stdout/stderr.
-- [ ] Validar el ejercicio contra los `TestCase` y registrar `Attempt`.
-- [ ] App: consola de salida, botón "Ejecutar" y "Enviar", feedback de casos pasados/fallidos.
-- **Entrega:** resuelvo un ejercicio, se ejecuta mi código y se valida contra los tests.
+- [x] Integrar CodeMirror en un componente `code-editor` (resaltado, tema, teclado móvil usable).
+- [x] Backend `execution`: enviar código a Judge0/Piston, manejar timeouts y límites, devolver stdout/stderr.
+- [x] Validar el ejercicio contra los `TestCase` y registrar `Attempt`.
+- [x] App: consola de salida, botón "Ejecutar" y "Enviar", feedback de casos pasados/fallidos.
+- **Entrega:** resuelvo un ejercicio, se ejecuta mi código y se valida contra los tests. ✅ Confirmado en dispositivo real.
 - **Seguridad:** nunca ejecutar código del usuario en el propio servidor de la API; solo vía sandbox externo.
 
 ### Fase 4B — Tipos de ejercicio para móvil
-- [ ] Componentes: quiz, completar hueco, ordenar bloques (drag & drop), encontrar el error, código corto con barra de símbolos (`{ } ( ) [ ] ; = " ' :`).
-- [ ] Todos comparten un contrato de ejercicio común (`type`, `payload`, `validation`).
-- **Entrega:** puedo hacer los 5 tipos de ejercicio cómodamente en el teléfono.
+- [x] Componentes: quiz, completar hueco, ordenar bloques (drag & drop con `@angular/cdk`), encontrar el error, código corto con barra de símbolos (`{ } ( ) [ ] ; = " ' :`).
+- [x] Todos comparten un contrato de ejercicio común (`type`, `payload`, `validation` vía `Exercise.payload` + `SubmitAnswerDto`).
+- **Entrega:** puedo hacer los 5 tipos de ejercicio cómodamente en el teléfono. ⏳ Pendiente de confirmar en dispositivo real.
 
 ### Fase 5A — Motor de ejercicios ilimitados
 - [ ] Tablas: `Concept`, `Exercise` (con `status`, `embedding`, `difficulty`), `UserExerciseHistory`, `ExerciseReport`.

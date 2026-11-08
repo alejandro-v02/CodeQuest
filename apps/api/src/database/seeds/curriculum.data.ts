@@ -1,4 +1,11 @@
 import type { ProgrammingLanguageSlug } from '../../modules/users/entities/user.entity';
+import type {
+  BugPayload,
+  ExerciseType,
+  FillPayload,
+  QuizPayload,
+  SortPayload,
+} from '../../modules/exercises/entities/exercise.entity';
 
 export interface SeedTestCase {
   input: string;
@@ -7,10 +14,14 @@ export interface SeedTestCase {
 }
 
 export interface SeedExercise {
+  type: ExerciseType;
   prompt: string;
-  starterCode: string;
   difficulty: number;
-  testCases: SeedTestCase[];
+  // 'code' only:
+  starterCode?: string;
+  testCases?: SeedTestCase[];
+  // Fase 4B types only — shape depends on `type` (see exercise.entity.ts):
+  payload?: QuizPayload | FillPayload | SortPayload | BugPayload;
 }
 
 export interface SeedLesson {
@@ -84,6 +95,7 @@ puntos += 5   # equivalente a: puntos = puntos + 5
 **Constantes:** Python no tiene una palabra clave para constantes, pero por convención se escriben en mayúsculas (\`PI = 3.14159\`) para indicar que no deberían reasignarse.`,
             exercises: [
               {
+                type: 'code',
                 prompt:
                   'Lee un número entero de la entrada estándar (con `input()`) y súmale 10. Imprime el resultado.',
                 starterCode: 'numero = int(input())\n',
@@ -134,6 +146,23 @@ mensaje = f"{nombre} tiene {edad} años"
 \`\`\`
 
 Ten cuidado al mezclar tipos sin convertir: \`"edad: " + 25\` lanza un error porque Python no suma automáticamente texto y números.`,
+            exercises: [
+              {
+                type: 'quiz',
+                prompt: '¿Qué imprime este código?',
+                difficulty: 1,
+                payload: {
+                  code: 'precio = "19.99"\nprint(type(precio))',
+                  options: [
+                    "<class 'float'>",
+                    "<class 'str'>",
+                    "<class 'int'>",
+                    '19.99',
+                  ],
+                  correctIndex: 1,
+                },
+              },
+            ],
           },
           {
             title: 'Condicionales',
@@ -170,6 +199,7 @@ if edad >= 18 and tiene_entrada:
 Cualquier valor puede evaluarse como verdadero o falso: \`0\`, \`""\`, \`None\` y las listas vacías cuentan como \`False\`; casi todo lo demás es \`True\`.`,
             exercises: [
               {
+                type: 'code',
                 prompt:
                   'Lee un número entero. Si es par, imprime "par"; si es impar, imprime "impar".',
                 starterCode: 'numero = int(input())\n',
@@ -179,6 +209,17 @@ Cualquier valor puede evaluarse como verdadero o falso: \`0\`, \`""\`, \`None\` 
                   { input: '7', expectedOutput: 'impar', isHidden: false },
                   { input: '0', expectedOutput: 'par', isHidden: true },
                 ],
+              },
+              {
+                type: 'fill',
+                prompt:
+                  'Completa el condicional para que compare correctamente.',
+                difficulty: 1,
+                payload: {
+                  template:
+                    'edad = 15\n\nif edad {{0}} 18:\n    print("menor de edad")\n{{1}}:\n    print("mayor de edad")',
+                  blanks: ['<', 'else'],
+                },
               },
             ],
           },
@@ -223,6 +264,22 @@ for numero in range(10):
         continue     # se salta los pares
     print(numero)
 \`\`\``,
+            exercises: [
+              {
+                type: 'sort',
+                prompt:
+                  'Ordena las líneas para que el bucle imprima los números del 1 al 3.',
+                difficulty: 1,
+                payload: {
+                  blocks: [
+                    'contador = 1',
+                    'while contador <= 3:',
+                    '    print(contador)',
+                    '    contador += 1',
+                  ],
+                },
+              },
+            ],
           },
           {
             title: 'Funciones',
@@ -267,6 +324,7 @@ c, r = dividir(17, 5)   # c=3, r=2
 Las variables definidas dentro de una función solo existen dentro de ella (**alcance local**); no son visibles afuera.`,
             exercises: [
               {
+                type: 'code',
                 prompt:
                   'Define una función `es_mayor_de_edad(edad)` que devuelva `True` si `edad` es mayor o igual a 18. Lee un número de la entrada estándar, pásalo a la función e imprime el resultado.',
                 starterCode:
@@ -277,6 +335,26 @@ Las variables definidas dentro de una función solo existen dentro de ella (**al
                   { input: '15', expectedOutput: 'False', isHidden: false },
                   { input: '18', expectedOutput: 'True', isHidden: true },
                 ],
+              },
+              {
+                type: 'bug',
+                prompt:
+                  'Este código debería duplicar el número, pero tiene un error. ¿En qué línea está?',
+                difficulty: 2,
+                payload: {
+                  lines: [
+                    'def duplicar(numero):',
+                    '    resultado = numero * 2',
+                    '    print(resultado)',
+                    '',
+                    'duplicar(5)',
+                    'valor = duplicar(5)',
+                    'print(valor + 1)',
+                  ],
+                  buggyLineIndex: 2,
+                  explanation:
+                    'La función usa `print(resultado)` en vez de `return resultado`, así que `duplicar(5)` siempre devuelve `None` y `valor + 1` falla.',
+                },
               },
             ],
           },
@@ -423,6 +501,7 @@ puntos += 5;   // equivalente a: puntos = puntos + 5
 \`\`\``,
             exercises: [
               {
+                type: 'code',
                 prompt:
                   'Lee un número entero de la entrada estándar y súmale 10. Imprime el resultado con `console.log`.',
                 starterCode:
@@ -511,6 +590,7 @@ if (edad >= 18 && tieneEntrada) {
 Valores "falsy" (se comportan como \`false\` en un \`if\`): \`0\`, \`""\`, \`null\`, \`undefined\`, \`NaN\`. Casi todo lo demás es "truthy".`,
             exercises: [
               {
+                type: 'code',
                 prompt:
                   'Lee un número entero. Si es par, imprime "par"; si es impar, imprime "impar".',
                 starterCode:
@@ -610,6 +690,7 @@ saludar("Ana", "en");    // usa idioma = "en"
 Las variables declaradas dentro de una función (con \`let\` o \`const\`) solo existen dentro de ella (**alcance local**).`,
             exercises: [
               {
+                type: 'code',
                 prompt:
                   'Define una función `esMayorDeEdad(edad)` que devuelva `true` si `edad` es mayor o igual a 18. Lee un número de la entrada estándar, pásalo a la función e imprime el resultado con `console.log`.',
                 starterCode:

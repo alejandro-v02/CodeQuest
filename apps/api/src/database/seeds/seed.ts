@@ -114,15 +114,16 @@ async function run(): Promise<void> {
               order: exerciseIndex,
             });
           }
+          exercise.type = exerciseSeed.type;
           exercise.prompt = exerciseSeed.prompt;
-          exercise.starterCode = exerciseSeed.starterCode;
+          exercise.starterCode = exerciseSeed.starterCode ?? null;
+          exercise.payload = exerciseSeed.payload ?? null;
           exercise.difficulty = exerciseSeed.difficulty;
           exercise = await exerciseRepo.save(exercise);
 
-          for (const [
-            testCaseIndex,
-            testCaseSeed,
-          ] of exerciseSeed.testCases.entries()) {
+          for (const [testCaseIndex, testCaseSeed] of (
+            exerciseSeed.testCases ?? []
+          ).entries()) {
             let testCase = await testCaseRepo.findOne({
               where: { exerciseId: exercise.id, order: testCaseIndex },
             });

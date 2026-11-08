@@ -18,6 +18,8 @@ export class Attempt {
   @Column({ name: 'exercise_id' })
   exerciseId: string;
 
+  // The submitted code for 'code' exercises; for Fase 4B types (quiz/fill/
+  // sort/bug) this holds the submitted answer JSON-stringified instead.
   @Column({ type: 'text' })
   code: string;
 
