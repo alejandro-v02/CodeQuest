@@ -11,12 +11,52 @@ import {
   ViewChild,
 } from '@angular/core';
 import { EditorState } from '@codemirror/state';
-import { EditorView, basicSetup } from 'codemirror';
+import {
+  EditorView,
+  highlightSpecialChars,
+  drawSelection,
+  dropCursor,
+  rectangularSelection,
+  crosshairCursor,
+  highlightActiveLine,
+  keymap,
+} from '@codemirror/view';
+import {
+  indentOnInput,
+  syntaxHighlighting,
+  defaultHighlightStyle,
+  bracketMatching,
+} from '@codemirror/language';
+import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
+import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import type { LanguageSupport } from '@codemirror/language';
 import type { ProgrammingLanguageSlug } from '../../../core/models/user.model';
+
+// Same as the `codemirror` package's `basicSetup`, minus `lineNumbers()` and
+// `foldGutter()` — these exercises are 1-3 lines long, and on some Android
+// WebViews the gutter column fails to stay contained inside the fixed-height
+// editor box as lines are added, visually spilling over the rest of the page.
+const editorSetup = [
+  highlightSpecialChars(),
+  history(),
+  drawSelection(),
+  dropCursor(),
+  EditorState.allowMultipleSelections.of(true),
+  indentOnInput(),
+  syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+  bracketMatching(),
+  closeBrackets(),
+  autocompletion(),
+  rectangularSelection(),
+  crosshairCursor(),
+  highlightActiveLine(),
+  highlightSelectionMatches(),
+  keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap, ...completionKeymap]),
+];
 
 function languageExtension(slug: ProgrammingLanguageSlug): LanguageSupport {
   switch (slug) {
@@ -48,16 +88,10 @@ const EDITOR_THEME = EditorView.theme(
     '.cm-content': {
       fontFamily: "ui-monospace, Menlo, Consolas, 'Courier New', monospace",
       caretColor: 'var(--ion-color-secondary, #22d3ee)',
-      padding: '12px 0',
+      padding: '12px 14px',
     },
     '.cm-cursor': { borderLeftColor: 'var(--ion-color-secondary, #22d3ee)' },
     '.cm-activeLine': { backgroundColor: 'rgba(255, 255, 255, 0.04)' },
-    '.cm-activeLineGutter': { backgroundColor: 'rgba(255, 255, 255, 0.04)' },
-    '.cm-gutters': {
-      backgroundColor: 'transparent',
-      color: 'var(--ion-color-step-600, #535353)',
-      border: 'none',
-    },
     '&.cm-focused': { outline: 'none' },
     '&.cm-focused .cm-selectionBackground, .cm-selectionBackground': {
       backgroundColor: 'rgba(34, 211, 238, 0.18)',
@@ -128,7 +162,7 @@ export class CodeEditorComponent implements AfterViewInit, OnChanges, OnDestroy 
       // inserts at the very start of the starter code instead of the end.
       selection: { anchor: doc.length },
       extensions: [
-        basicSetup,
+        editorSetup,
         languageExtension(this.language),
         EDITOR_THEME,
         EditorView.updateListener.of((update) => {
