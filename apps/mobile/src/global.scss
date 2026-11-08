@@ -34,3 +34,11 @@
 
 /* CodeQuest ships dark-only for now, so dark is unconditional (not system/class based). */
 @import "@ionic/angular/css/palettes/dark.always.css";
+
+// The floating glass tab bar (tabs.page.scss) is positioned absolute so it
+// can float over rounded corners, which also means it reserves no space in
+// the layout — without this, a tab page's last scrollable items end up
+// hidden underneath it and unclickable.
+ion-tabs ion-content {
+  --padding-bottom: 104px;
+}

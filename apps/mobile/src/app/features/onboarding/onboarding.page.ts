@@ -2,9 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, IonButton } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
-import { LANGUAGE_OPTIONS, type ProgrammingLanguageSlug } from '../../core/models/user.model';
-
-const DAILY_GOALS = [5, 15, 30, 60];
+import {
+  DAILY_GOAL_OPTIONS,
+  LANGUAGE_OPTIONS,
+  type ProgrammingLanguageSlug,
+} from '../../core/models/user.model';
 
 @Component({
   selector: 'app-onboarding',
@@ -17,7 +19,7 @@ export class OnboardingPage {
   private readonly router = inject(Router);
 
   readonly languages = LANGUAGE_OPTIONS;
-  readonly dailyGoals = DAILY_GOALS;
+  readonly dailyGoals = DAILY_GOAL_OPTIONS;
 
   readonly selectedLanguage = signal<ProgrammingLanguageSlug | null>(null);
   readonly selectedGoal = signal<number | null>(null);

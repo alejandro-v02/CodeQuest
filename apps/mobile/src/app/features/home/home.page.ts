@@ -4,7 +4,11 @@ import { IonContent, IonButton, IonIcon, IonModal, IonSpinner, ViewWillEnter } f
 import { AuthService } from '../../core/services/auth.service';
 import { CoursesService } from '../../core/services/courses.service';
 import type { LessonSummary, PathOverview } from '../../core/models/course.model';
-import { LANGUAGE_OPTIONS, type ProgrammingLanguageSlug } from '../../core/models/user.model';
+import {
+  DAILY_GOAL_OPTIONS,
+  LANGUAGE_OPTIONS,
+  type ProgrammingLanguageSlug,
+} from '../../core/models/user.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
@@ -32,9 +36,11 @@ export class HomePage implements ViewWillEnter {
   readonly errorMessage = signal<string | null>(null);
 
   readonly languages = LANGUAGE_OPTIONS;
+  readonly dailyGoals = DAILY_GOAL_OPTIONS;
   readonly isSettingsOpen = signal(false);
   readonly selectedLanguage = signal<ProgrammingLanguageSlug | null>(null);
-  readonly isSavingLanguage = signal(false);
+  readonly selectedGoal = signal<number | null>(null);
+  readonly isSavingPreferences = signal(false);
 
   // Ionic's IonicRouteStrategy (app.config.ts) caches and reuses this page's
   // component instance instead of recreating it, so the constructor only
@@ -78,8 +84,17 @@ export class HomePage implements ViewWillEnter {
     return this.authService.currentUser()?.preferredLanguage ?? null;
   }
 
+  currentGoal(): number | null {
+    return this.authService.currentUser()?.dailyGoalMinutes ?? null;
+  }
+
+  hasPreferenceChanges(): boolean {
+    return this.selectedLanguage() !== this.currentLanguage() || this.selectedGoal() !== this.currentGoal();
+  }
+
   openSettings(): void {
     this.selectedLanguage.set(this.currentLanguage());
+    this.selectedGoal.set(this.currentGoal());
     this.isSettingsOpen.set(true);
   }
 
@@ -87,21 +102,30 @@ export class HomePage implements ViewWillEnter {
     this.isSettingsOpen.set(false);
   }
 
-  async saveLanguage(): Promise<void> {
+  async savePreferences(): Promise<void> {
     const language = this.selectedLanguage();
-    const dailyGoalMinutes = this.authService.currentUser()?.dailyGoalMinutes;
-    if (!language || !dailyGoalMinutes || language === this.currentLanguage() || this.isSavingLanguage()) {
+    const goal = this.selectedGoal();
+    if (!language || !goal || !this.hasPreferenceChanges() || this.isSavingPreferences()) {
       return;
     }
 
-    this.isSavingLanguage.set(true);
+    this.isSavingPreferences.set(true);
     try {
-      await this.authService.updatePreferences(language, dailyGoalMinutes);
+      const languageChanged = language !== this.currentLanguage();
+      await this.authService.updatePreferences(language, goal);
       this.isSettingsOpen.set(false);
-      await this.loadPath();
+      if (languageChanged) {
+        await this.loadPath();
+      }
     } finally {
-      this.isSavingLanguage.set(false);
+      this.isSavingPreferences.set(false);
     }
+  }
+
+  async logout(): Promise<void> {
+    this.isSettingsOpen.set(false);
+    await this.authService.logout();
+    await this.router.navigateByUrl('/auth/login');
   }
 
   statusIcon(status: LessonSummary['status']): string {

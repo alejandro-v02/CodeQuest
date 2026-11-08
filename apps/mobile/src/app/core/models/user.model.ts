@@ -12,6 +12,8 @@ export const LANGUAGE_OPTIONS: LanguageOption[] = [
   { slug: 'cpp', label: 'C++' },
 ];
 
+export const DAILY_GOAL_OPTIONS: number[] = [5, 15, 30, 60];
+
 export interface User {
   id: string;
   email: string;

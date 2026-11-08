@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, IonButton, IonIcon } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { logOutOutline } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
@@ -17,10 +15,6 @@ export class ProfilePage {
   private readonly router = inject(Router);
 
   readonly user = this.authService.currentUser;
-
-  constructor() {
-    addIcons({ 'log-out-outline': logOutOutline });
-  }
 
   async logout(): Promise<void> {
     await this.authService.logout();

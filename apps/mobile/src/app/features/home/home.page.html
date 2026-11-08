@@ -7,17 +7,18 @@
 <ion-modal
   class="settings-modal"
   [isOpen]="isSettingsOpen()"
-  [breakpoints]="[0, 0.5, 0.85]"
-  [initialBreakpoint]="0.5"
+  [breakpoints]="[0, 0.65, 0.92]"
+  [initialBreakpoint]="0.65"
   (willDismiss)="closeSettings()"
 >
   <ng-template>
     <ion-content class="settings-modal-content">
       <div class="modal-handle"></div>
       <p class="eyebrow">Ajustes</p>
-      <h1>Lenguaje preferido</h1>
-      <p class="subtitle">Cambia el lenguaje de tu ruta de aprendizaje cuando quieras.</p>
+      <h1>Tus preferencias</h1>
+      <p class="subtitle">Cambia tu lenguaje y meta diaria cuando quieras.</p>
 
+      <h2 class="section-title">Lenguaje preferido</h2>
       <div class="language-grid">
         @for (lang of languages; track lang.slug) {
           <button
@@ -31,17 +32,36 @@
         }
       </div>
 
+      <h2 class="section-title">Meta diaria</h2>
+      <div class="goal-row">
+        @for (minutes of dailyGoals; track minutes) {
+          <button
+            type="button"
+            class="goal-chip"
+            [class.selected]="selectedGoal() === minutes"
+            (click)="selectedGoal.set(minutes)"
+          >
+            {{ minutes }} min
+          </button>
+        }
+      </div>
+
       <ion-button
         expand="block"
         class="save-button"
-        [disabled]="!selectedLanguage() || selectedLanguage() === currentLanguage() || isSavingLanguage()"
-        (click)="saveLanguage()"
+        [disabled]="!selectedLanguage() || !selectedGoal() || !hasPreferenceChanges() || isSavingPreferences()"
+        (click)="savePreferences()"
       >
-        @if (isSavingLanguage()) {
+        @if (isSavingPreferences()) {
           <ion-spinner name="dots"></ion-spinner>
         } @else {
           Guardar cambios
         }
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" color="danger" class="logout-button" (click)="logout()">
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        Cerrar sesión
       </ion-button>
     </ion-content>
   </ng-template>
