@@ -113,8 +113,19 @@
 
 .settings-modal {
   --border-radius: 24px 24px 0 0;
-  --background: rgba(14, 14, 14, 0.96);
-  --backdrop-opacity: 0.6;
+  --background: transparent;
+  --backdrop-opacity: 0.55;
+
+  // --background alone can't give a frosted look (CSS vars don't carry
+  // backdrop-filter), so the actual glass styling goes on the modal's
+  // "content" shadow part — the real sheet surface — directly.
+  &::part(content) {
+    background: rgba(14, 14, 14, 0.6);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.35);
+  }
 }
 
 .settings-modal-content {
