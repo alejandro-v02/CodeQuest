@@ -200,7 +200,7 @@ Pipeline de cada ejercicio generado:
 ### Fase 4B — Tipos de ejercicio para móvil
 - [x] Componentes: quiz, completar hueco, ordenar bloques (drag & drop con `@angular/cdk`), encontrar el error, código corto con barra de símbolos (`{ } ( ) [ ] ; = " ' :`).
 - [x] Todos comparten un contrato de ejercicio común (`type`, `payload`, `validation` vía `Exercise.payload` + `SubmitAnswerDto`).
-- **Entrega:** puedo hacer los 5 tipos de ejercicio cómodamente en el teléfono. ⏳ Pendiente de confirmar en dispositivo real.
+- **Entrega:** puedo hacer los 5 tipos de ejercicio cómodamente en el teléfono. ✅ Confirmado en dispositivo real.
 
 ### Fase 5A — Motor de ejercicios ilimitados
 - [ ] Tablas: `Concept`, `Exercise` (con `status`, `embedding`, `difficulty`), `UserExerciseHistory`, `ExerciseReport`.
