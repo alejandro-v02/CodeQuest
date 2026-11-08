@@ -34,17 +34,3 @@
 
 /* CodeQuest ships dark-only for now, so dark is unconditional (not system/class based). */
 @import "@ionic/angular/css/palettes/dark.always.css";
-
-// Blur/glass surfaces (headers, tab bar, modals) need something textured
-// behind them to actually read as glass — against flat black, a blurred
-// panel just looks like a solid fill. ion-content's "background" shadow
-// part paints behind the scrollable area, so every page gets a few soft,
-// mostly-static cyan/white glows for the glass to pick up, without
-// changing the actual black/gray/cyan palette tokens.
-ion-content::part(background) {
-  background:
-    radial-gradient(640px 520px at 12% -8%, rgba(34, 211, 238, 0.16), transparent 60%),
-    radial-gradient(520px 440px at 108% 18%, rgba(34, 211, 238, 0.1), transparent 55%),
-    radial-gradient(680px 560px at 50% 115%, rgba(255, 255, 255, 0.05), transparent 60%),
-    var(--ion-background-color);
-}
