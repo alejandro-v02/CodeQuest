@@ -1,23 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonSpinner,
-  IonButton,
-  IonIcon,
-} from '@ionic/angular';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { CoursesService } from '../../core/services/courses.service';
 import type { LessonSummary, PathOverview } from '../../core/models/course.model';
+import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonSpinner, IonButton, IonIcon],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, LoadingBounceComponent],
 })
 export class HomePage {
   private readonly authService = inject(AuthService);

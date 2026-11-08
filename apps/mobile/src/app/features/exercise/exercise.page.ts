@@ -8,11 +8,11 @@ import {
   IonButton,
   IonIcon,
   IonContent,
-  IonSpinner,
 } from '@ionic/angular';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
 import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
+import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import type { ExerciseDetail, RunResult, SubmitResult } from '../../core/models/exercise.model';
 
 @Component({
@@ -27,9 +27,9 @@ import type { ExerciseDetail, RunResult, SubmitResult } from '../../core/models/
     IonButton,
     IonIcon,
     IonContent,
-    IonSpinner,
     CodeEditorComponent,
     LoadingWaveComponent,
+    LoadingBounceComponent,
   ],
 })
 export class ExercisePage {

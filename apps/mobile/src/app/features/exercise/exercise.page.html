@@ -12,7 +12,7 @@
 <ion-content [fullscreen]="true" class="exercise-content">
   @if (isLoading()) {
     <div class="state-pane">
-      <ion-spinner name="dots"></ion-spinner>
+      <app-loading-bounce></app-loading-bounce>
     </div>
   } @else if (errorMessage(); as message) {
     <div class="state-pane">

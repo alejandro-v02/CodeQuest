@@ -1,11 +1,21 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonSpinner } from '@ionic/angular';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonContent,
+  IonSpinner,
+} from '@ionic/angular';
 import { CoursesService } from '../../core/services/courses.service';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import type { LessonDetail } from '../../core/models/course.model';
 import type { ExerciseSummary } from '../../core/models/exercise.model';
+import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 
 @Component({
   selector: 'app-lesson',
@@ -20,6 +30,7 @@ import type { ExerciseSummary } from '../../core/models/exercise.model';
     IonIcon,
     IonContent,
     IonSpinner,
+    LoadingBounceComponent,
   ],
 })
 export class LessonPage {

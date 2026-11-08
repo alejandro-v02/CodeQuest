@@ -1,0 +1,131 @@
+:host {
+  display: flex;
+}
+
+.loading-bounce {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+svg {
+  width: 110px;
+  max-width: 40vw;
+  height: auto;
+  overflow: visible;
+}
+
+.floor {
+  stroke: var(--ion-text-color);
+  stroke-opacity: 0.2;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.shadow {
+  fill: var(--ion-text-color);
+  fill-opacity: 0.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: loading-bounce-shadow 0.9s infinite;
+}
+
+.box {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: loading-bounce-box 0.9s infinite;
+}
+
+.panel {
+  fill: var(--ion-item-background);
+  stroke: var(--ion-text-color);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+}
+
+.brackets {
+  fill: none;
+  stroke: var(--ion-color-secondary);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes loading-bounce-box {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  47% {
+    transform: translateY(54px);
+  }
+  50% {
+    transform: translateY(54px) scale(1.14, 0.78);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  53% {
+    transform: translateY(54px);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes loading-bounce-shadow {
+  0%,
+  100% {
+    transform: scale(0.45);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loading-text {
+  margin: 0;
+  font: 700 13px ui-monospace, Menlo, Consolas, 'Courier New', monospace;
+  color: var(--ion-text-color);
+  letter-spacing: 0.5px;
+
+  i {
+    font-style: normal;
+    color: var(--ion-color-secondary);
+  }
+
+  .dots::after {
+    content: '';
+    color: var(--ion-color-secondary);
+    animation: loading-bounce-dots 1.5s steps(1) infinite;
+  }
+}
+
+@keyframes loading-bounce-dots {
+  0% {
+    content: '';
+  }
+  25% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  75% {
+    content: '...';
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box,
+  .shadow {
+    animation: none;
+  }
+
+  .loading-text .dots::after {
+    animation: none;
+    content: '...';
+  }
+}
