@@ -2,8 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonContent, IonInput, IonButton, IonIcon } from '@ionic/angular';
+import { IonContent, IonInput, IonButton, IonIcon, ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
+import { StatusBarService } from '../../core/services/status-bar.service';
 import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
 
 @Component({
@@ -20,10 +21,11 @@ import { LoadingWaveComponent } from '../../shared/components/loading-wave/loadi
     LoadingWaveComponent,
   ],
 })
-export class RegisterPage {
+export class RegisterPage implements ViewWillEnter, ViewWillLeave {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly statusBarService = inject(StatusBarService);
 
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -33,6 +35,15 @@ export class RegisterPage {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
+
+  // See login.page.ts — same reasoning for the top-fade gradient.
+  ionViewWillEnter(): void {
+    void this.statusBarService.enableOverlay();
+  }
+
+  ionViewWillLeave(): void {
+    void this.statusBarService.disableOverlay();
+  }
 
   async submit(): Promise<void> {
     if (this.form.invalid || this.isSubmitting()) {
