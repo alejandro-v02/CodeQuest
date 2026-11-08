@@ -29,17 +29,18 @@ import {
 } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
-import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
+import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import type { LanguageSupport } from '@codemirror/language';
 import type { ProgrammingLanguageSlug } from '../../../core/models/user.model';
 
-// Same as the `codemirror` package's `basicSetup`, minus `lineNumbers()` and
-// `foldGutter()` — these exercises are 1-3 lines long, and on some Android
-// WebViews the gutter column fails to stay contained inside the fixed-height
-// editor box as lines are added, visually spilling over the rest of the page.
+// Same as the `codemirror` package's `basicSetup`, minus `lineNumbers()`,
+// `foldGutter()` and `autocompletion()` — these exercises are 1-3 lines long,
+// and on some Android WebViews both the gutter column and the autocomplete
+// popup fail to position/contain themselves inside the fixed-height editor
+// box, rendering on top of the rest of the page instead.
 const editorSetup = [
   highlightSpecialChars(),
   history(),
@@ -50,12 +51,11 @@ const editorSetup = [
   syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
   bracketMatching(),
   closeBrackets(),
-  autocompletion(),
   rectangularSelection(),
   crosshairCursor(),
   highlightActiveLine(),
   highlightSelectionMatches(),
-  keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap, ...completionKeymap]),
+  keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap]),
 ];
 
 function languageExtension(slug: ProgrammingLanguageSlug): LanguageSupport {
