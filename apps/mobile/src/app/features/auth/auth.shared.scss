@@ -10,6 +10,19 @@
   }
 }
 
+// Fades scrolled content out before it reaches the status bar (notch/clock/
+// battery icons), same trick iOS apps use instead of a hard content edge.
+.top-fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--ion-safe-area-top, 0px) + 32px);
+  background: linear-gradient(to bottom, var(--ion-background-color) 55%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
 .auth-shell {
   display: flex;
   flex-direction: column;
