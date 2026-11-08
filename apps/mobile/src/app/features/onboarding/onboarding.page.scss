@@ -1,5 +1,5 @@
 .onboarding-content {
-  --padding-top: 48px;
+  --padding-top: calc(var(--ion-safe-area-top, 0px) + 24px);
   --padding-start: 24px;
   --padding-end: 24px;
 }
@@ -51,6 +51,11 @@ section {
   font-size: 15px;
   font-weight: 600;
   font-family: inherit;
+  transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1), background 150ms ease;
+
+  &:active {
+    transform: scale(0.96);
+  }
 
   &.selected {
     border-color: var(--ion-color-primary);
@@ -74,6 +79,11 @@ section {
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
+  transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1), background 150ms ease;
+
+  &:active {
+    transform: scale(0.94);
+  }
 
   &.selected {
     border-color: var(--ion-color-secondary);

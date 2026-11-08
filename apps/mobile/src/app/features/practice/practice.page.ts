@@ -1,35 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonContent,
-  ViewWillEnter,
-} from '@ionic/angular';
+import { IonButton, IonIcon, IonContent, ViewWillEnter } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { ConceptsService } from '../../core/services/concepts.service';
 import { ExercisesService } from '../../core/services/exercises.service';
 import type { ConceptSummary } from '../../core/models/concept.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-practice',
   templateUrl: './practice.page.html',
   styleUrls: ['./practice.page.scss'],
-  imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonContent,
-    LoadingBounceComponent,
-  ],
+  imports: [IonButton, IonIcon, IonContent, LoadingBounceComponent, PageHeaderComponent],
 })
 export class PracticePage implements ViewWillEnter {
   private readonly authService = inject(AuthService);

@@ -1,8 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-title>CodeQuest</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-page-header title="CodeQuest"></app-page-header>
 
 <ion-content [fullscreen]="true">
   @if (isLoading()) {
@@ -27,8 +23,8 @@
       </ion-button>
     </div>
 
-    @for (module of overview.modules; track module.id) {
-      <section class="module">
+    @for (module of overview.modules; track module.id; let idx = $index) {
+      <section class="module" [style.animation-delay.ms]="80 * idx">
         <h2 class="module-title">{{ module.title }}</h2>
 
         <div class="lesson-list">

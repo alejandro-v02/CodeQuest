@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular';
 import { BootScreenComponent } from './core/boot/boot-screen.component';
+import { StatusBarService } from './core/services/status-bar.service';
 
 @Component({
   selector: 'app-root',
@@ -14,4 +15,11 @@ export class AppComponent {
   // app.config.ts), so removing the boot overlay never reveals a "loading"
   // app underneath; it just stops covering the one that's already ready.
   readonly showBoot = signal(true);
+
+  constructor() {
+    // Overlay mode used to be toggled per-page (auth only); now every page
+    // has a glass header/tab bar designed to sit under the status bar, so
+    // it's turned on once for the whole app instead.
+    void inject(StatusBarService).enableOverlay();
+  }
 }

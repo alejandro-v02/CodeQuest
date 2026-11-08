@@ -1,13 +1,4 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>Ejercicio</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-page-header title="Ejercicio" [showBack]="true" (back)="goBack()"></app-page-header>
 
 <ion-content [fullscreen]="true" class="exercise-content">
   @if (isLoading()) {

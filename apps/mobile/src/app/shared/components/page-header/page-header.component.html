@@ -1,0 +1,22 @@
+<ion-header class="glass-header ion-no-border">
+  <ion-toolbar class="glass-toolbar">
+    @if (showBack()) {
+      <ion-buttons slot="start">
+        <ion-button class="back-button" (click)="back.emit()">
+          <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
+
+    <div class="titles">
+      @if (eyebrow(); as label) {
+        <p class="eyebrow">{{ label }}</p>
+      }
+      <h1 class="title">{{ title() }}</h1>
+    </div>
+
+    <ion-buttons slot="end" class="actions">
+      <ng-content select="[actions]"></ng-content>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

@@ -1,38 +1,19 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonContent,
-  IonSpinner,
-  ViewWillEnter,
-} from '@ionic/angular';
+import { IonIcon, IonButton, IonContent, IonSpinner, ViewWillEnter } from '@ionic/angular';
 import { CoursesService } from '../../core/services/courses.service';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import type { LessonDetail } from '../../core/models/course.model';
 import type { ExerciseSummary } from '../../core/models/exercise.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-lesson',
   templateUrl: './lesson.page.html',
   styleUrls: ['./lesson.page.scss'],
-  imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonContent,
-    IonSpinner,
-    LoadingBounceComponent,
-  ],
+  imports: [IonIcon, IonButton, IonContent, IonSpinner, LoadingBounceComponent, PageHeaderComponent],
 })
 export class LessonPage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);

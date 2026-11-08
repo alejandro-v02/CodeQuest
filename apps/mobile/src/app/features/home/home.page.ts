@@ -1,24 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonIcon,
-  ViewWillEnter,
-} from '@ionic/angular';
+import { IonContent, IonButton, IonIcon, ViewWillEnter } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { CoursesService } from '../../core/services/courses.service';
 import type { LessonSummary, PathOverview } from '../../core/models/course.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, LoadingBounceComponent],
+  imports: [IonContent, IonButton, IonIcon, LoadingBounceComponent, PageHeaderComponent],
 })
 export class HomePage implements ViewWillEnter {
   private readonly authService = inject(AuthService);

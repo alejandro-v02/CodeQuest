@@ -1,15 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon } from '@ionic/angular';
+import { IonContent, IonButton, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { logOutOutline } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon],
+  imports: [IonContent, IonButton, IonIcon, PageHeaderComponent],
 })
 export class ProfilePage {
   private readonly authService = inject(AuthService);

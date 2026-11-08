@@ -1,15 +1,6 @@
 import { Component, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonContent,
-  ViewWillEnter,
-} from '@ionic/angular';
+import { IonButton, IonIcon, IonContent, ViewWillEnter } from '@ionic/angular';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
 import { QuizExerciseComponent } from '../../shared/components/quiz-exercise/quiz-exercise.component';
@@ -18,6 +9,7 @@ import { SortExerciseComponent } from '../../shared/components/sort-exercise/sor
 import { BugExerciseComponent } from '../../shared/components/bug-exercise/bug-exercise.component';
 import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import {
   isAnswerSubmitResult,
   type AnswerSubmitResult,
@@ -35,10 +27,6 @@ import {
   templateUrl: './exercise.page.html',
   styleUrls: ['./exercise.page.scss'],
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
     IonButton,
     IonIcon,
     IonContent,
@@ -49,6 +37,7 @@ import {
     BugExerciseComponent,
     LoadingWaveComponent,
     LoadingBounceComponent,
+    PageHeaderComponent,
   ],
 })
 export class ExercisePage implements ViewWillEnter {
