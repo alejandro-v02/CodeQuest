@@ -42,3 +42,14 @@
 ion-tabs ion-content {
   --padding-bottom: 104px;
 }
+
+// Hide the scrollbar track everywhere — native apps don't show one, and
+// the browser-style bar looked out of place in a webview.
+ion-content::part(scroll) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

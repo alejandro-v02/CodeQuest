@@ -67,7 +67,7 @@
   </ng-template>
 </ion-modal>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" [scrollY]="!isSettingsOpen()">
   @if (isLoading()) {
     <div class="state-pane">
       <app-loading-bounce></app-loading-bounce>
