@@ -38,7 +38,6 @@ export class DeveloperCreditComponent implements OnDestroy {
   readonly isOpen = signal(false);
   readonly message = signal('');
 
-  readonly spriteUrl = AVATAR_SPRITE_BASE64;
   readonly rawWidth = AVATAR_CANVAS_WIDTH;
   readonly rawHeight = AVATAR_CANVAS_HEIGHT;
   readonly displayWidth = AVATAR_CANVAS_WIDTH * DISPLAY_SCALE;

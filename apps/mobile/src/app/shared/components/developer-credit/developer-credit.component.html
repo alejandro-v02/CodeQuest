@@ -1,6 +1,5 @@
 <button type="button" class="dev-link" (click)="open()">
-  <span class="mini" [style.backgroundImage]="'url(' + spriteUrl + ')'" aria-hidden="true"></span>
-  <span>Desarrollado por <b>Alejo</b></span>
+  Desarrollado por <b>Alejo</b>
 </button>
 
 <div class="dev-overlay" [hidden]="!isOpen()" (click)="onBackdropClick($event)" (keydown)="onKeydown($event)">
@@ -26,7 +25,7 @@
     </div>
 
     <div class="info">
-      <h2>Alejo</h2>
+      <h2>Alejandro Vitovis</h2>
       <p class="role">&lt;Desarrollador full-stack/&gt;</p>
       <p class="bio">Diseñé y construí esta aplicación de punta a punta: backend, interfaz y despliegue.</p>
       <div class="chips">

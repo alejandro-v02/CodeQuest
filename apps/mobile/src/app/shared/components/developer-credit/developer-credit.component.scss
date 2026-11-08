@@ -3,15 +3,17 @@
 }
 
 .dev-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 9px;
+  justify-content: center;
+  width: 100%;
   background: none;
   border: 0;
   padding: 6px 8px;
   margin: 20px auto 0;
   color: var(--ion-color-step-600);
   font: 13px system-ui, -apple-system, 'Segoe UI', sans-serif;
+  text-align: center;
   cursor: pointer;
   border-radius: 8px;
   transition: color 0.2s ease;
@@ -25,19 +27,6 @@
     color: var(--ion-color-secondary);
     font-weight: 600;
   }
-}
-
-.mini {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  border: 2px solid var(--ion-color-secondary);
-  background-color: var(--ion-item-background);
-  background-position: -44px -60px;
-  background-size: 124px auto;
-  background-repeat: no-repeat;
-  image-rendering: pixelated;
 }
 
 .dev-overlay {
@@ -119,8 +108,8 @@
 
 .stage {
   position: relative;
-  height: 220px;
-  padding-top: 48px;
+  height: 360px;
+  padding-top: 56px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -174,11 +163,13 @@
   h2 {
     margin: 0;
     font-size: 22px;
-    color: var(--ion-text-color);
+    text-align: center;
+    color: var(--ion-color-secondary);
   }
 
   .role {
     margin: -6px 0 0;
+    text-align: center;
     color: var(--ion-color-secondary);
     font-size: 13px;
     font-weight: 700;
