@@ -24,17 +24,34 @@ import {
 import {
   indentOnInput,
   syntaxHighlighting,
-  defaultHighlightStyle,
+  HighlightStyle,
   bracketMatching,
+  indentUnit,
 } from '@codemirror/language';
-import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
+import { history, defaultKeymap, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+import { tags } from '@lezer/highlight';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import type { LanguageSupport } from '@codemirror/language';
 import type { ProgrammingLanguageSlug } from '../../../core/models/user.model';
+
+// `defaultHighlightStyle` is tuned for light backgrounds and reads as nearly
+// monochrome against this editor's near-black theme — define our own colors
+// instead so keywords, functions, strings, etc. are actually distinguishable.
+const CODE_HIGHLIGHT_STYLE = HighlightStyle.define([
+  { tag: tags.keyword, color: '#c792ea' },
+  { tag: [tags.function(tags.variableName), tags.definitionKeyword], color: 'var(--ion-color-secondary, #22d3ee)' },
+  { tag: [tags.string, tags.special(tags.string)], color: '#9ece6a' },
+  { tag: [tags.number, tags.bool, tags.null], color: '#f6a95a' },
+  { tag: tags.comment, color: '#6b7280', fontStyle: 'italic' },
+  { tag: [tags.operator, tags.punctuation], color: 'var(--ion-text-color, #f2f2f2)' },
+  { tag: [tags.className, tags.typeName], color: '#f0d26a' },
+  { tag: tags.propertyName, color: '#82aaff' },
+  { tag: tags.variableName, color: 'var(--ion-text-color, #f2f2f2)' },
+]);
 
 // Same as the `codemirror` package's `basicSetup`, minus `lineNumbers()`,
 // `foldGutter()` and `autocompletion()` — these exercises are 1-3 lines long,
@@ -47,15 +64,22 @@ const editorSetup = [
   drawSelection(),
   dropCursor(),
   EditorState.allowMultipleSelections.of(true),
+  indentUnit.of('    '),
   indentOnInput(),
-  syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+  syntaxHighlighting(CODE_HIGHLIGHT_STYLE, { fallback: true }),
   bracketMatching(),
   closeBrackets(),
   rectangularSelection(),
   crosshairCursor(),
   highlightActiveLine(),
   highlightSelectionMatches(),
-  keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap]),
+  keymap.of([
+    indentWithTab,
+    ...closeBracketsKeymap,
+    ...defaultKeymap,
+    ...searchKeymap,
+    ...historyKeymap,
+  ]),
 ];
 
 function languageExtension(slug: ProgrammingLanguageSlug): LanguageSupport {
@@ -89,6 +113,7 @@ const EDITOR_THEME = EditorView.theme(
       fontFamily: "ui-monospace, Menlo, Consolas, 'Courier New', monospace",
       caretColor: 'var(--ion-color-secondary, #22d3ee)',
       padding: '12px 14px',
+      whiteSpace: 'pre-wrap',
     },
     '.cm-cursor': { borderLeftColor: 'var(--ion-color-secondary, #22d3ee)' },
     '.cm-activeLine': { backgroundColor: 'rgba(255, 255, 255, 0.04)' },
