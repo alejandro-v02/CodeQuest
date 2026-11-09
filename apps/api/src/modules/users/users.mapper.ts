@@ -1,8 +1,9 @@
 import type { User } from './entities/user.entity';
 
-// placementDifficulty is internal bookkeeping for NextExerciseService, not
-// something the client needs to see.
-export type PublicUser = Omit<User, 'passwordHash' | 'githubId' | 'placementDifficulty'>;
+// placementDifficulty is internal bookkeeping for NextExerciseService, and
+// xp is exposed to the client via GET /gamification/me instead — neither is
+// something this type needs to carry.
+export type PublicUser = Omit<User, 'passwordHash' | 'githubId' | 'placementDifficulty' | 'xp'>;
 
 export function toPublicUser(user: User): PublicUser {
   return {

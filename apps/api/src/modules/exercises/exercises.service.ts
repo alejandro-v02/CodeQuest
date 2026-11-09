@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Concept } from '../concepts/entities/concept.entity';
 import { CoursesService } from '../courses/courses.service';
+import { GamificationService } from '../gamification/gamification.service';
 import { PistonService } from '../execution/piston.service';
 import type { ProgrammingLanguageSlug } from '../users/entities/user.entity';
 import { Exercise } from './entities/exercise.entity';
@@ -63,6 +64,7 @@ export class ExercisesService {
     @InjectRepository(Concept)
     private readonly conceptRepo: Repository<Concept>,
     private readonly coursesService: CoursesService,
+    private readonly gamificationService: GamificationService,
     private readonly pistonService: PistonService,
     private readonly recalibrationService: ExerciseRecalibrationService,
   ) {}
@@ -172,12 +174,16 @@ export class ExercisesService {
     }
 
     const result = await this.dispatchSubmit(exercise, userId, dto);
+    const passed = 'allPassed' in result ? result.allPassed : result.passed;
+
+    if (passed) {
+      await this.gamificationService.awardExerciseXp(userId, exercise.id);
+    }
 
     if (exercise.conceptId) {
       // Fase 5A "next exercise" serving reads this back to exclude seen
       // exercises and adapt difficulty — only concept-scoped (Fase 5A)
       // exercises are tracked here, lesson exercises use Attempt only.
-      const passed = 'allPassed' in result ? result.allPassed : result.passed;
       await this.historyRepo.update(
         { userId, exerciseId: exercise.id },
         { outcome: passed ? 'passed' : 'failed' },

@@ -75,7 +75,7 @@ export class AiController {
       where: { exerciseId, level: dto.level },
     });
     if (cached) {
-      await this.aiUsageService.record(user.id, 'hint', true);
+      await this.aiUsageService.record(user.id, 'hint', true, exerciseId);
       return { level: cached.level, text: cached.text };
     }
 
@@ -110,7 +110,7 @@ export class AiController {
         text: parsed.text,
       }),
     );
-    await this.aiUsageService.record(user.id, 'hint', false);
+    await this.aiUsageService.record(user.id, 'hint', false, exerciseId);
     return { level: hint.level, text: hint.text };
   }
 

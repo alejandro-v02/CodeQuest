@@ -37,9 +37,10 @@ export class AiUsageService {
     userId: string | null,
     kind: AiInteractionKind,
     cached: boolean,
+    exerciseId: string | null = null,
   ): Promise<void> {
     await this.interactionRepo.save(
-      this.interactionRepo.create({ userId, kind, cached }),
+      this.interactionRepo.create({ userId, kind, cached, exerciseId }),
     );
   }
 }

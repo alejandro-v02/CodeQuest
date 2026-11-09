@@ -7,6 +7,7 @@ import { Lesson } from './entities/lesson.entity';
 import { UserProgress } from './entities/user-progress.entity';
 import { CoursesController } from './courses.controller';
 import { CoursesService } from './courses.service';
+import { GamificationModule } from '../gamification/gamification.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CoursesService } from './courses.service';
       Lesson,
       UserProgress,
     ]),
+    GamificationModule,
   ],
   controllers: [CoursesController],
   providers: [CoursesService],

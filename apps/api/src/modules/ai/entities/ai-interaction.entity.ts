@@ -20,6 +20,11 @@ export class AiInteraction {
   @Column({ type: 'varchar', name: 'user_id', nullable: true })
   userId: string | null;
 
+  // Only set for exercise-scoped interactions (hint, explain_error) — lets
+  // GamificationService check "did this user use a hint on this exercise".
+  @Column({ type: 'varchar', name: 'exercise_id', nullable: true })
+  exerciseId: string | null;
+
   @Column({ type: 'varchar' })
   kind: AiInteractionKind;
 

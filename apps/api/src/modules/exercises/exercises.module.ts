@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConceptsModule } from '../concepts/concepts.module';
 import { CoursesModule } from '../courses/courses.module';
 import { ExecutionModule } from '../execution/execution.module';
+import { GamificationModule } from '../gamification/gamification.module';
 import { GenerationModule } from '../generation/generation.module';
 import { Exercise } from './entities/exercise.entity';
 import { TestCase } from './entities/test-case.entity';
@@ -28,6 +29,7 @@ import { ExerciseRecalibrationService } from './exercise-recalibration.service';
     ConceptsModule,
     CoursesModule,
     ExecutionModule,
+    GamificationModule,
     GenerationModule,
   ],
   controllers: [ExercisesController],

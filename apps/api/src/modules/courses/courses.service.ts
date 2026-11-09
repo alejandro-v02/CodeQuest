@@ -11,6 +11,7 @@ import { LearningPath } from './entities/learning-path.entity';
 import { CourseModule as CourseModuleEntity } from './entities/course-module.entity';
 import { Lesson } from './entities/lesson.entity';
 import { UserProgress } from './entities/user-progress.entity';
+import { GamificationService } from '../gamification/gamification.service';
 import type {
   LessonDetail,
   LessonSummary,
@@ -31,6 +32,7 @@ export class CoursesService {
     private readonly lessonRepo: Repository<Lesson>,
     @InjectRepository(UserProgress)
     private readonly progressRepo: Repository<UserProgress>,
+    private readonly gamificationService: GamificationService,
   ) {}
 
   // Only a "beginner" path exists per language so far (Fase 3); intermediate/
@@ -186,6 +188,7 @@ export class CoursesService {
       await this.progressRepo.save(
         this.progressRepo.create({ userId, lessonId }),
       );
+      await this.gamificationService.awardLessonXp(userId, lessonId, detail.xpReward);
     }
     return this.getLessonDetail(lessonId, userId);
   }

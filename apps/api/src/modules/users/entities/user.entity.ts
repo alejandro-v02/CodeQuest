@@ -44,6 +44,11 @@ export class User {
   @Column({ default: 'UTC' })
   timezone: string;
 
+  // Denormalized running total kept in sync with GamificationService's
+  // XpEvent inserts — XpEvent stays the source of truth for weekly ranking.
+  @Column({ type: 'int', default: 0 })
+  xp: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
