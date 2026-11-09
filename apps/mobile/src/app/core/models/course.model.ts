@@ -1,3 +1,5 @@
+import type { ProgrammingLanguageSlug } from './user.model';
+
 export type LessonStatus = 'locked' | 'available' | 'completed';
 
 export interface LessonSummary {
@@ -20,7 +22,7 @@ export interface PathOverview {
   title: string;
   description: string | null;
   level: 'beginner' | 'intermediate' | 'advanced';
-  languageSlug: string;
+  languageSlug: ProgrammingLanguageSlug;
   modules: ModuleSummary[];
 }
 
@@ -33,5 +35,5 @@ export interface LessonDetail {
   status: LessonStatus;
   contentMarkdown: string | null;
   xpReward: number;
-  languageSlug: string;
+  languageSlug: ProgrammingLanguageSlug;
 }

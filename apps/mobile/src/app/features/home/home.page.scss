@@ -23,34 +23,97 @@
   font-size: 14px;
 }
 
-.hero {
-  padding: 8px 20px 24px;
+.path-card {
+  margin: 8px 20px 16px;
+  padding: 22px 20px;
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 40px -14px var(--accent), 0 20px 48px rgba(0, 0, 0, 0.4);
   animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 
-  .eyebrow {
-    margin: 0 0 6px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ion-color-secondary);
+  .path-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
   }
 
-  h1 {
-    margin: 0 0 8px;
-    font-size: 26px;
+  .path-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 11px;
     font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    ion-icon {
+      font-size: 14px;
+    }
   }
 
-  .subtitle {
-    margin: 0;
+  .path-title {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .path-subtitle {
+    margin: 0 0 20px;
     color: var(--ion-color-step-700);
     font-size: 14px;
+    line-height: 1.5;
   }
 
-  .practice-button {
-    margin: 16px 0 0;
+  .path-progress {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
+
+  .path-progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .path-progress-count {
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  .path-progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+  }
+
+  .path-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+  }
+
+  .path-progress-message {
+    margin: 10px 0 0;
+    font-size: 13px;
+    color: var(--ion-color-step-700);
+  }
+}
+
+.practice-button {
+  display: block;
+  margin: 0 20px 24px;
 }
 
 .module {
@@ -249,7 +312,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero,
+  .path-card,
   .module {
     animation: none !important;
   }

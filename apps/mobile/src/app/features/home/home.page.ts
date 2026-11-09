@@ -6,11 +6,13 @@ import { CoursesService } from '../../core/services/courses.service';
 import type { LessonSummary, PathOverview } from '../../core/models/course.model';
 import {
   DAILY_GOAL_OPTIONS,
+  LANGUAGE_BRANDS,
   LANGUAGE_OPTIONS,
   type ProgrammingLanguageSlug,
 } from '../../core/models/user.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { LanguageBadgeComponent } from '../../shared/components/language-badge/language-badge.component';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +26,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
     IonSpinner,
     LoadingBounceComponent,
     PageHeaderComponent,
+    LanguageBadgeComponent,
   ],
 })
 export class HomePage implements ViewWillEnter {
@@ -137,5 +140,38 @@ export class HomePage implements ViewWillEnter {
       default:
         return 'ellipse-outline';
     }
+  }
+
+  pathAccent(overview: PathOverview): string {
+    return LANGUAGE_BRANDS[overview.languageSlug].colorFrom;
+  }
+
+  completedLessons(overview: PathOverview): number {
+    return overview.modules
+      .flatMap((module) => module.lessons)
+      .filter((lesson) => lesson.status === 'completed').length;
+  }
+
+  totalLessons(overview: PathOverview): number {
+    return overview.modules.flatMap((module) => module.lessons).length;
+  }
+
+  progressPercent(overview: PathOverview): number {
+    const total = this.totalLessons(overview);
+    return total === 0 ? 0 : Math.round((this.completedLessons(overview) / total) * 100);
+  }
+
+  progressMessage(overview: PathOverview): string {
+    const percent = this.progressPercent(overview);
+    if (percent === 0) {
+      return 'Empieza tu primera lección.';
+    }
+    if (percent === 100) {
+      return '¡Completaste toda la ruta!';
+    }
+    if (percent >= 50) {
+      return '¡Vas por buen camino!';
+    }
+    return '¡Sigue así!';
   }
 }

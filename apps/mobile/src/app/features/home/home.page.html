@@ -78,17 +78,36 @@
       <ion-button fill="outline" (click)="loadPath()">Reintentar</ion-button>
     </div>
   } @else if (path(); as overview) {
-    <div class="hero">
-      <p class="eyebrow">Ruta de aprendizaje</p>
-      <h1>{{ overview.title }}</h1>
+    <div class="path-card" [style.--accent]="pathAccent(overview)">
+      <div class="path-card-top">
+        <span class="path-badge">
+          <ion-icon name="school-outline"></ion-icon>
+          Tu ruta de aprendizaje
+        </span>
+        <app-language-badge [languageSlug]="overview.languageSlug"></app-language-badge>
+      </div>
+
+      <h1 class="path-title">{{ overview.title }}</h1>
       @if (overview.description) {
-        <p class="subtitle">{{ overview.description }}</p>
+        <p class="path-subtitle">{{ overview.description }}</p>
       }
-      <ion-button fill="outline" class="practice-button" (click)="openPractice()">
-        <ion-icon slot="start" name="flash-outline"></ion-icon>
-        Práctica libre
-      </ion-button>
+
+      <div class="path-progress">
+        <div class="path-progress-row">
+          <span>Tu progreso</span>
+          <span class="path-progress-count">{{ completedLessons(overview) }} de {{ totalLessons(overview) }}</span>
+        </div>
+        <div class="path-progress-bar">
+          <div class="path-progress-fill" [style.width.%]="progressPercent(overview)"></div>
+        </div>
+        <p class="path-progress-message">{{ progressMessage(overview) }}</p>
+      </div>
     </div>
+
+    <ion-button fill="outline" class="practice-button" (click)="openPractice()">
+      <ion-icon slot="start" name="flash-outline"></ion-icon>
+      Práctica libre
+    </ion-button>
 
     @for (module of overview.modules; track module.id; let idx = $index) {
       <section class="module" [style.animation-delay.ms]="80 * idx">
