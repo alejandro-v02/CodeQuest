@@ -96,10 +96,30 @@ export interface AdminExerciseStat {
   total: number;
 }
 
-// Fase 5B "conceptos débiles" — per-user pass rate for each concept they've
-// attempted in a language, used by Práctica libre to sort/flag weak ones.
+// Fase 5B "conceptos débiles" (+ Fase 7 "fuertes") — per-user pass rate for
+// each concept they've attempted in a language, used by Práctica libre to
+// sort/flag weak ones and by the Progreso stats summary for both ends.
 export interface ConceptStat {
   conceptId: string;
+  conceptName: string;
   passRate: number | null;
   isWeak: boolean;
+  isStrong: boolean;
+}
+
+export interface ConceptStatSummary {
+  conceptName: string;
+  passRate: number | null;
+}
+
+// Fase 7 "panel de progreso" — exercisesSolved/accuracy/activeDays are
+// global per user (not per language, see ExercisesService.getStatsSummary);
+// strongConcepts/weakConcepts stay per-language since they're backed by
+// getConceptStats.
+export interface StatsSummary {
+  exercisesSolved: number;
+  accuracy: number | null;
+  activeDays: number;
+  strongConcepts: ConceptStatSummary[];
+  weakConcepts: ConceptStatSummary[];
 }

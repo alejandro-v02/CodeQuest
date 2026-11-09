@@ -26,6 +26,7 @@ import type {
   ExerciseDetail,
   ExerciseSummary,
   RunResult,
+  StatsSummary,
   SubmitResult,
 } from './exercises.types';
 
@@ -75,6 +76,15 @@ export class ExercisesController {
     @CurrentUser() user: PublicUser,
   ): Promise<ConceptStat[]> {
     return this.exercisesService.getConceptStats(user.id, languageSlug);
+  }
+
+  // Fase 7 "panel de progreso" — same route-order note as above.
+  @Get('stats-summary')
+  getStatsSummary(
+    @Query('languageSlug') languageSlug: ProgrammingLanguageSlug,
+    @CurrentUser() user: PublicUser,
+  ): Promise<StatsSummary> {
+    return this.exercisesService.getStatsSummary(user.id, languageSlug);
   }
 
   @Get(':exerciseId')

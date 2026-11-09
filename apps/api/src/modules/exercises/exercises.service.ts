@@ -29,10 +29,12 @@ import type {
   AdminExerciseStat,
   AnswerSubmitResult,
   ConceptStat,
+  ConceptStatSummary,
   ExerciseDetail,
   ExercisePayloadView,
   ExerciseSummary,
   RunResult,
+  StatsSummary,
   SubmitResult,
   TestCaseResult,
 } from './exercises.types';
@@ -47,6 +49,9 @@ function normalize(output: string): string {
 // is trusted, and a weak concept is one the user fails more than it passes.
 const MIN_ATTEMPTS_FOR_WEAK = 3;
 const WEAK_PASS_RATE = 0.5;
+// Fase 7 "temas fuertes": symmetric threshold to isWeak, same minimum
+// attempts so a lucky single pass doesn't count as "strong".
+const STRONG_PASS_RATE = 0.8;
 
 @Injectable()
 export class ExercisesService {
@@ -293,35 +298,102 @@ export class ExercisesService {
         outcomes: ['passed', 'failed'],
       })
       .select('history.concept_id', 'conceptId')
+      .addSelect('concept.name', 'conceptName')
       .addSelect('history.outcome', 'outcome')
       .addSelect('COUNT(*)', 'count')
       .groupBy('history.concept_id')
+      .addGroupBy('concept.name')
       .addGroupBy('history.outcome')
       .getRawMany<{
         conceptId: string;
+        conceptName: string;
         outcome: 'passed' | 'failed';
         count: string;
       }>();
 
-    const byConcept = new Map<string, { passed: number; failed: number }>();
+    const byConcept = new Map<
+      string,
+      { conceptName: string; passed: number; failed: number }
+    >();
     for (const row of rows) {
-      const stat = byConcept.get(row.conceptId) ?? { passed: 0, failed: 0 };
+      const stat =
+        byConcept.get(row.conceptId) ??
+        { conceptName: row.conceptName, passed: 0, failed: 0 };
       stat[row.outcome] += Number(row.count);
       byConcept.set(row.conceptId, stat);
     }
 
-    return [...byConcept.entries()].map(([conceptId, { passed, failed }]) => {
-      const total = passed + failed;
-      const passRate = total === 0 ? null : passed / total;
-      return {
-        conceptId,
-        passRate,
-        isWeak:
-          total >= MIN_ATTEMPTS_FOR_WEAK &&
-          passRate !== null &&
-          passRate <= WEAK_PASS_RATE,
-      };
+    return [...byConcept.entries()].map(
+      ([conceptId, { conceptName, passed, failed }]) => {
+        const total = passed + failed;
+        const passRate = total === 0 ? null : passed / total;
+        return {
+          conceptId,
+          conceptName,
+          passRate,
+          isWeak:
+            total >= MIN_ATTEMPTS_FOR_WEAK &&
+            passRate !== null &&
+            passRate <= WEAK_PASS_RATE,
+          isStrong:
+            total >= MIN_ATTEMPTS_FOR_WEAK &&
+            passRate !== null &&
+            passRate >= STRONG_PASS_RATE,
+        };
+      },
+    );
+  }
+
+  // Fase 7 "panel de progreso": exercisesSolved/accuracy/activeDays are
+  // computed globally per user (not per language) — Attempt has no direct
+  // language column, and resolving it per-row would need a dual join (via
+  // Lesson or via Concept, see resolveLanguageSlug) for little real benefit
+  // since most users only ever practice in their preferredLanguage.
+  async getStatsSummary(
+    userId: string,
+    languageSlug: ProgrammingLanguageSlug,
+  ): Promise<StatsSummary> {
+    const totals = await this.attemptRepo
+      .createQueryBuilder('attempt')
+      .where('attempt.userId = :userId', { userId })
+      .select(
+        'COUNT(DISTINCT CASE WHEN attempt.passed THEN attempt.exerciseId END)',
+        'exercisesSolved',
+      )
+      .addSelect('COUNT(*)', 'totalAttempts')
+      .addSelect('SUM(CASE WHEN attempt.passed THEN 1 ELSE 0 END)', 'totalPassed')
+      .addSelect('COUNT(DISTINCT DATE(attempt.createdAt))', 'activeDays')
+      .getRawOne<{
+        exercisesSolved: string;
+        totalAttempts: string;
+        totalPassed: string;
+        activeDays: string;
+      }>();
+
+    const totalAttempts = Number(totals?.totalAttempts ?? 0);
+    const totalPassed = Number(totals?.totalPassed ?? 0);
+
+    const conceptStats = await this.getConceptStats(userId, languageSlug);
+    const toSummary = (stat: ConceptStat): ConceptStatSummary => ({
+      conceptName: stat.conceptName,
+      passRate: stat.passRate,
     });
+
+    return {
+      exercisesSolved: Number(totals?.exercisesSolved ?? 0),
+      accuracy: totalAttempts === 0 ? null : totalPassed / totalAttempts,
+      activeDays: Number(totals?.activeDays ?? 0),
+      strongConcepts: conceptStats
+        .filter((stat) => stat.isStrong)
+        .sort((a, b) => (b.passRate ?? 0) - (a.passRate ?? 0))
+        .slice(0, 3)
+        .map(toSummary),
+      weakConcepts: conceptStats
+        .filter((stat) => stat.isWeak)
+        .sort((a, b) => (a.passRate ?? 0) - (b.passRate ?? 0))
+        .slice(0, 3)
+        .map(toSummary),
+    };
   }
 
   private async dispatchSubmit(
