@@ -18,6 +18,15 @@
         </div>
       </dl>
 
+      <div class="toggle-row">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span class="toggle-label">Recordatorio diario</span>
+        <ion-toggle
+          [checked]="reminderEnabled()"
+          (ionChange)="toggleReminder($event.detail.checked)"
+        ></ion-toggle>
+      </div>
+
       <button type="button" class="admin-link" (click)="openAdmin()">Panel de administración</button>
 
       <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
