@@ -209,8 +209,8 @@ Pipeline de cada ejercicio generado:
 - [x] Pipeline de verificación por ejecución (solución de referencia vs tests, código inicial no debe pasar).
 - [x] Cola BullMQ + Redis que rellena el banco por concepto/nivel/tipo.
 - [x] Servicio "siguiente ejercicio": excluye vistos, adapta dificultad. Repaso de conceptos débiles queda pendiente.
-- [ ] Reportar ejercicio y recalibrar dificultad según aciertos.
-- [ ] Panel de administración mínimo para ver cuántos ejercicios hay por lenguaje/concepto y los descartados.
+- [x] Reportar ejercicio y recalibrar dificultad según aciertos.
+- [x] Panel de administración mínimo para ver cuántos ejercicios hay por lenguaje/concepto y los descartados.
 - **Entrega:** puedo hacer 50 ejercicios seguidos del mismo concepto sin ver ninguno repetido, todos con corrección correcta.
 
 ### Fase 5B — IA tutora
