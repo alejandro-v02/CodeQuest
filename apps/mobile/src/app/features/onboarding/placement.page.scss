@@ -27,18 +27,21 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ion-color-secondary);
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 h1 {
   margin: 0 0 8px;
   font-size: 26px;
   font-weight: 700;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .subtitle {
   margin: 0 0 28px;
   color: var(--ion-color-step-700);
   font-size: 14px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .progress {
@@ -59,6 +62,8 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 80ms;
 }
 
 .option-card {
@@ -81,4 +86,24 @@ h1 {
 
 .skip-button {
   margin-top: 20px;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  h1,
+  .subtitle,
+  .option-list {
+    animation: none !important;
+  }
 }

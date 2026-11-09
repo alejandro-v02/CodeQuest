@@ -26,15 +26,20 @@
   margin: 0 0 16px;
   font-size: 15px;
   line-height: 1.6;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .editor-shell {
   height: 260px;
   margin-bottom: 16px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 60ms;
 }
 
 .exercise-body {
   margin-bottom: 16px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 60ms;
 }
 
 .report-row {
@@ -272,5 +277,24 @@
   span {
     color: var(--ion-color-step-900);
     font-weight: 600;
+  }
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prompt,
+  .editor-shell,
+  .exercise-body {
+    animation: none !important;
   }
 }
