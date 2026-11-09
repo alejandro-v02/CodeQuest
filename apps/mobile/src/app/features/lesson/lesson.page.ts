@@ -27,6 +27,7 @@ export class LessonPage implements ViewWillEnter {
   readonly isLoading = signal(true);
   readonly isCompleting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly isOffline = signal(false);
 
   readonly renderedContent = computed(() => {
     const content = this.lesson()?.contentMarkdown;
@@ -52,7 +53,10 @@ export class LessonPage implements ViewWillEnter {
 
     try {
       this.lesson.set(await this.coursesService.getLesson(lessonId));
-      this.exercises.set(await this.exercisesService.getForLesson(lessonId));
+      this.isOffline.set(this.coursesService.isOffline());
+      // A failed exercises fetch shouldn't hide an otherwise-loaded (or
+      // cached, offline) lesson — it only loses the "Practicar" section.
+      this.exercises.set(await this.exercisesService.getForLesson(lessonId).catch(() => []));
     } catch {
       this.errorMessage.set('No se pudo cargar la lección.');
     } finally {
