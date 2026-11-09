@@ -16,12 +16,17 @@
   ion-tab-button {
     --color: var(--ion-color-step-600);
     --color-selected: var(--ion-color-step-900);
+    // Brighter neutral ripple than Ionic's dim default grey.
+    --ripple-color: rgba(255, 255, 255, 0.45);
     font-size: 11px;
+    transition: color 200ms ease;
   }
 
-  // Outline/filled icon pair, swapped by Ionic's own `.tab-selected` class —
-  // no motion, no glow, just a flat state change.
+  // Outline/filled icon pair, swapped by Ionic's own `.tab-selected` class.
+  // Both icons stay mounted and cross-fade/scale into place instead of an
+  // abrupt display toggle, so the pill reads as popping into place.
   .icon-chip {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,14 +34,22 @@
     height: 28px;
     border-radius: 14px;
     margin-bottom: 2px;
+    background: transparent;
+    transform: scale(1);
+    transition: background 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   ion-icon {
+    position: absolute;
     font-size: 20px;
+    opacity: 0;
+    transform: scale(0.5) rotate(-8deg);
+    transition: opacity 220ms ease, transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .icon-filled {
-    display: none;
+  .icon-outline {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
 
   .tab-selected .icon-chip {
@@ -44,11 +57,21 @@
   }
 
   .tab-selected .icon-outline {
-    display: none;
+    opacity: 0;
+    transform: scale(0.5) rotate(8deg);
   }
 
   .tab-selected .icon-filled {
-    display: block;
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
     color: var(--ion-color-primary-contrast);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ion-tab-button,
+    .icon-chip,
+    ion-icon {
+      transition: none !important;
+    }
   }
 }
