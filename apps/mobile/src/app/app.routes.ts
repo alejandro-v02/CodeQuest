@@ -24,6 +24,15 @@ export const routes: Routes = [
       import('./features/onboarding/onboarding.page').then((m) => m.OnboardingPage),
   },
   {
+    // Runs right after /onboarding, once preferredLanguage is already set —
+    // onboardingNotDoneGuard would bounce this to /tabs/home by then, so it
+    // only needs authGuard.
+    path: 'onboarding/placement',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/onboarding/placement.page').then((m) => m.PlacementPage),
+  },
+  {
     path: 'tabs',
     canActivate: [authGuard, onboardingGuard],
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.tabsRoutes),

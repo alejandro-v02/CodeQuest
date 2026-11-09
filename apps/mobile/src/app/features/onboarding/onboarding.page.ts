@@ -43,7 +43,7 @@ export class OnboardingPage {
     this.isSubmitting.set(true);
     try {
       await this.authService.updatePreferences(language, goal);
-      await this.router.navigateByUrl('/tabs/home');
+      await this.router.navigateByUrl('/onboarding/placement');
     } finally {
       this.isSubmitting.set(false);
     }

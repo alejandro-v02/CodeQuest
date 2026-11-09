@@ -1,0 +1,32 @@
+<ion-content [fullscreen]="true" class="placement-content">
+  @if (isLoading() || isSubmitting()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+      <ion-button fill="clear" (click)="skip()">Omitir por ahora</ion-button>
+    </div>
+  } @else if (questions()[currentIndex()]; as question) {
+    <p class="eyebrow">Paso 2 de 2</p>
+    <h1>Prueba de nivel</h1>
+    <p class="subtitle">
+      Unas preguntas rápidas para darte ejercicios del nivel justo desde el principio.
+    </p>
+
+    <p class="progress">Pregunta {{ currentIndex() + 1 }} de {{ questions().length }}</p>
+    <p class="question-prompt">{{ question.prompt }}</p>
+
+    <div class="option-list">
+      @for (option of question.options; track $index) {
+        <button type="button" class="option-card" (click)="selectAnswer($index)">
+          {{ option }}
+        </button>
+      }
+    </div>
+
+    <ion-button fill="clear" class="skip-button" (click)="skip()">Omitir por ahora</ion-button>
+  }
+</ion-content>
