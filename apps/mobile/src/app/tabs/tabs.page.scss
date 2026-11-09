@@ -14,18 +14,41 @@
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 
   ion-tab-button {
-    --color: var(--ion-color-step-700);
-    --color-selected: var(--ion-color-primary);
+    --color: var(--ion-color-step-600);
+    --color-selected: var(--ion-color-step-900);
     font-size: 11px;
+  }
 
-    ion-icon {
-      font-size: 22px;
-      transition: transform 0.15s ease-out, filter 0.15s ease-out;
-    }
+  // Outline/filled icon pair, swapped by Ionic's own `.tab-selected` class —
+  // no motion, no glow, just a flat state change.
+  .icon-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 28px;
+    border-radius: 14px;
+    margin-bottom: 2px;
+  }
 
-    &.tab-selected ion-icon {
-      transform: translateY(-2px) scale(1.05);
-      filter: drop-shadow(0 0 6px var(--ion-color-secondary));
-    }
+  ion-icon {
+    font-size: 20px;
+  }
+
+  .icon-filled {
+    display: none;
+  }
+
+  .tab-selected .icon-chip {
+    background: var(--ion-color-primary);
+  }
+
+  .tab-selected .icon-outline {
+    display: none;
+  }
+
+  .tab-selected .icon-filled {
+    display: block;
+    color: var(--ion-color-primary-contrast);
   }
 }

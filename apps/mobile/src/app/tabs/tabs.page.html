@@ -1,17 +1,26 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="quest-tab-bar">
     <ion-tab-button tab="home" href="/tabs/home">
-      <ion-icon name="home" aria-hidden="true"></ion-icon>
+      <div class="icon-chip">
+        <ion-icon name="map-outline" class="icon-outline" aria-hidden="true"></ion-icon>
+        <ion-icon name="map" class="icon-filled" aria-hidden="true"></ion-icon>
+      </div>
       <ion-label>Ruta</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="progress" href="/tabs/progress">
-      <ion-icon name="stats-chart" aria-hidden="true"></ion-icon>
+      <div class="icon-chip">
+        <ion-icon name="stats-chart-outline" class="icon-outline" aria-hidden="true"></ion-icon>
+        <ion-icon name="stats-chart" class="icon-filled" aria-hidden="true"></ion-icon>
+      </div>
       <ion-label>Progreso</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="profile" href="/tabs/profile">
-      <ion-icon name="person-circle" aria-hidden="true"></ion-icon>
+      <div class="icon-chip">
+        <ion-icon name="person-circle-outline" class="icon-outline" aria-hidden="true"></ion-icon>
+        <ion-icon name="person-circle" class="icon-filled" aria-hidden="true"></ion-icon>
+      </div>
       <ion-label>Perfil</ion-label>
     </ion-tab-button>
   </ion-tab-bar>

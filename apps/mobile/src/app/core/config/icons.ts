@@ -1,10 +1,11 @@
 import { addIcons } from 'ionicons';
 import {
-  home,
+  map,
+  mapOutline,
   statsChart,
   statsChartOutline,
   personCircle,
-  personOutline,
+  personCircleOutline,
   refresh,
   logoGithub,
   lockClosed,
@@ -30,11 +31,12 @@ import {
 // templates. Centralized here once instead of repeating addIcons() per page.
 export function registerIcons(): void {
   addIcons({
-    home,
+    map,
+    'map-outline': mapOutline,
     'stats-chart': statsChart,
     'stats-chart-outline': statsChartOutline,
     'person-circle': personCircle,
-    'person-outline': personOutline,
+    'person-circle-outline': personCircleOutline,
     refresh,
     'logo-github': logoGithub,
     'lock-closed': lockClosed,
