@@ -39,7 +39,7 @@
 
       <ion-button expand="block" type="submit" [disabled]="form.invalid || isSubmitting()">
         @if (isSubmitting()) {
-          <span class="btn-spinner" aria-hidden="true"></span>
+          <ion-spinner name="dots"></ion-spinner>
         } @else {
           Iniciar sesión
         }

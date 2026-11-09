@@ -6,7 +6,6 @@ import {
   statsChartOutline,
   personCircle,
   personCircleOutline,
-  refresh,
   logoGithub,
   lockClosed,
   checkmarkCircle,
@@ -33,6 +32,7 @@ import {
   starOutline,
   lockClosedOutline,
   notificationsOutline,
+  compassOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -45,7 +45,6 @@ export function registerIcons(): void {
     'stats-chart-outline': statsChartOutline,
     'person-circle': personCircle,
     'person-circle-outline': personCircleOutline,
-    refresh,
     'logo-github': logoGithub,
     'lock-closed': lockClosed,
     'checkmark-circle': checkmarkCircle,
@@ -72,5 +71,6 @@ export function registerIcons(): void {
     'star-outline': starOutline,
     'lock-closed-outline': lockClosedOutline,
     'notifications-outline': notificationsOutline,
+    'compass-outline': compassOutline,
   });
 }

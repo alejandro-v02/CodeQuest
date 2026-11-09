@@ -99,6 +99,13 @@ h2 {
   text-align: left;
 }
 
+.error-message {
+  width: 100%;
+  margin: -8px 0 16px;
+  font-size: 13px;
+  color: var(--ion-color-danger);
+}
+
 .admin-link {
   background: none;
   border: none;

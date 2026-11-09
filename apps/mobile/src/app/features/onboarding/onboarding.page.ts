@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonContent, IonButton } from '@ionic/angular';
+import { IonContent, IonButton, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import {
   DAILY_GOAL_OPTIONS,
@@ -12,7 +12,7 @@ import {
   selector: 'app-onboarding',
   templateUrl: './onboarding.page.html',
   styleUrls: ['./onboarding.page.scss'],
-  imports: [IonContent, IonButton],
+  imports: [IonContent, IonButton, IonSpinner],
 })
 export class OnboardingPage {
   private readonly authService = inject(AuthService);
@@ -24,6 +24,7 @@ export class OnboardingPage {
   readonly selectedLanguage = signal<ProgrammingLanguageSlug | null>(null);
   readonly selectedGoal = signal<number | null>(null);
   readonly isSubmitting = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
   selectLanguage(slug: ProgrammingLanguageSlug): void {
     this.selectedLanguage.set(slug);
@@ -41,9 +42,12 @@ export class OnboardingPage {
     }
 
     this.isSubmitting.set(true);
+    this.errorMessage.set(null);
     try {
       await this.authService.updatePreferences(language, goal);
       await this.router.navigateByUrl('/onboarding/placement');
+    } catch {
+      this.errorMessage.set('No se pudieron guardar tus preferencias. Intenta de nuevo.');
     } finally {
       this.isSubmitting.set(false);
     }

@@ -2,14 +2,22 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonContent, IonInput, IonButton, IonIcon } from '@ionic/angular';
+import { IonContent, IonInput, IonButton, IonIcon, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./auth.shared.scss'],
-  imports: [ReactiveFormsModule, RouterLink, IonContent, IonInput, IonButton, IonIcon],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    IonContent,
+    IonInput,
+    IonButton,
+    IonIcon,
+    IonSpinner,
+  ],
 })
 export class RegisterPage {
   private readonly fb = inject(FormBuilder);

@@ -12,6 +12,7 @@ import {
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { LanguageBadgeComponent } from '../../shared/components/language-badge/language-badge.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,7 @@ import { LanguageBadgeComponent } from '../../shared/components/language-badge/l
     LoadingBounceComponent,
     PageHeaderComponent,
     LanguageBadgeComponent,
+    EmptyStateComponent,
   ],
 })
 export class HomePage implements ViewWillEnter {
@@ -36,6 +38,7 @@ export class HomePage implements ViewWillEnter {
   readonly path = signal<PathOverview | null>(null);
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
+  readonly isOffline = signal(false);
 
   readonly languages = LANGUAGE_OPTIONS;
   readonly dailyGoals = DAILY_GOAL_OPTIONS;
@@ -56,6 +59,7 @@ export class HomePage implements ViewWillEnter {
   async loadPath(): Promise<void> {
     const language = this.authService.currentUser()?.preferredLanguage;
     if (!language) {
+      this.isLoading.set(false);
       return;
     }
 
@@ -64,6 +68,7 @@ export class HomePage implements ViewWillEnter {
 
     try {
       this.path.set(await this.coursesService.getPath(language));
+      this.isOffline.set(this.coursesService.isOffline());
     } catch {
       this.errorMessage.set('No se pudo cargar tu ruta de aprendizaje.');
     } finally {

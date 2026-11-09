@@ -18,20 +18,30 @@ export class ProfilePage implements OnInit {
 
   readonly user = this.authService.currentUser;
   readonly reminderEnabled = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
-    this.reminderEnabled.set(await this.notificationsService.isReminderEnabled());
+    try {
+      this.reminderEnabled.set(await this.notificationsService.isReminderEnabled());
+    } catch {
+      this.errorMessage.set('No se pudo cargar el estado del recordatorio.');
+    }
   }
 
   async toggleReminder(enabled: boolean): Promise<void> {
-    if (enabled) {
-      const granted = await this.notificationsService.enableDailyReminder(
-        this.user()?.dailyGoalMinutes ?? null,
-      );
-      this.reminderEnabled.set(granted);
-    } else {
-      await this.notificationsService.disableDailyReminder();
-      this.reminderEnabled.set(false);
+    this.errorMessage.set(null);
+    try {
+      if (enabled) {
+        const granted = await this.notificationsService.enableDailyReminder(
+          this.user()?.dailyGoalMinutes ?? null,
+        );
+        this.reminderEnabled.set(granted);
+      } else {
+        await this.notificationsService.disableDailyReminder();
+        this.reminderEnabled.set(false);
+      }
+    } catch {
+      this.errorMessage.set('No se pudo actualizar el recordatorio.');
     }
   }
 

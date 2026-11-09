@@ -1,5 +1,5 @@
 <app-page-header title="CodeQuest">
-  <ion-button actions fill="clear" class="settings-button" (click)="openSettings()">
+  <ion-button actions fill="clear" class="settings-button" aria-label="Ajustes" (click)="openSettings()">
     <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
   </ion-button>
 </app-page-header>
@@ -78,6 +78,10 @@
       <ion-button fill="outline" (click)="loadPath()">Reintentar</ion-button>
     </div>
   } @else if (path(); as overview) {
+    @if (isOffline()) {
+      <p class="offline-notice">Mostrando contenido guardado sin conexión.</p>
+    }
+
     <div class="path-card">
       <div class="path-card-top">
         <span class="path-badge">
@@ -129,5 +133,11 @@
         </div>
       </section>
     }
+  } @else {
+    <app-empty-state
+      icon="compass-outline"
+      title="Elige tu lenguaje"
+      subtitle="Ve a Ajustes para elegir un lenguaje y empezar tu ruta de aprendizaje."
+    ></app-empty-state>
   }
 </ion-content>

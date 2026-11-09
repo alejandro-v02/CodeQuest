@@ -8,8 +8,13 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
     </div>
   } @else if (lesson(); as current) {
+    @if (isOffline()) {
+      <p class="offline-notice">Mostrando contenido guardado sin conexión.</p>
+    }
+
     @if (renderedContent(); as html) {
       <div class="markdown-body" [innerHTML]="html"></div>
     } @else {

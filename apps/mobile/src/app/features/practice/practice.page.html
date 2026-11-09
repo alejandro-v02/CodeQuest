@@ -23,6 +23,12 @@
       <div class="state-pane">
         <app-loading-bounce></app-loading-bounce>
       </div>
+    } @else if (concepts().length === 0) {
+      <app-empty-state
+        icon="bulb-outline"
+        title="Nada que practicar todavía"
+        subtitle="Este lenguaje no tiene conceptos disponibles por ahora."
+      ></app-empty-state>
     } @else {
       <div class="concept-list">
         @for (concept of concepts(); track concept.id) {

@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonContent, IonInput, IonButton, IonIcon } from '@ionic/angular';
+import { IonContent, IonInput, IonButton, IonIcon, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { DeveloperCreditComponent } from '../../shared/components/developer-credit/developer-credit.component';
 
@@ -16,6 +16,7 @@ import { DeveloperCreditComponent } from '../../shared/components/developer-cred
     IonInput,
     IonButton,
     IonIcon,
+    IonSpinner,
     DeveloperCreditComponent,
   ],
 })

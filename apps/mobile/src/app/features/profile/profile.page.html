@@ -27,6 +27,10 @@
         ></ion-toggle>
       </div>
 
+      @if (errorMessage(); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
+
       <button type="button" class="admin-link" (click)="openAdmin()">Panel de administración</button>
 
       <ion-button expand="block" fill="outline" color="danger" (click)="logout()">

@@ -35,12 +35,20 @@
     </div>
   </section>
 
+  @if (errorMessage(); as message) {
+    <p class="error-message">{{ message }}</p>
+  }
+
   <ion-button
     expand="block"
     class="finish-button"
     [disabled]="!selectedLanguage() || !selectedGoal() || isSubmitting()"
     (click)="finish()"
   >
-    Comenzar
+    @if (isSubmitting()) {
+      <ion-spinner name="dots"></ion-spinner>
+    } @else {
+      Comenzar
+    }
   </ion-button>
 </ion-content>

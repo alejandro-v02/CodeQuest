@@ -157,23 +157,6 @@
   }
 }
 
-.btn-spinner {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  opacity: 0.85;
-  animation: btn-spin 0.7s linear infinite;
-}
-
-@keyframes btn-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes card-in {
   from {
     opacity: 0;
@@ -238,9 +221,5 @@
   .auth-card,
   .switch-link {
     animation: none !important;
-  }
-
-  .btn-spinner {
-    animation-duration: 1.4s;
   }
 }

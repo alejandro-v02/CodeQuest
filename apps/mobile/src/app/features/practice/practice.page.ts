@@ -8,6 +8,7 @@ import type { ConceptSummary } from '../../core/models/concept.model';
 import type { ConceptStat } from '../../core/models/exercise.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 // Fase 5B "conceptos débiles": the concept list annotated with whether this
 // user struggles with it, so Práctica libre can sort/flag it.
@@ -19,7 +20,14 @@ interface ConceptRow extends ConceptSummary {
   selector: 'app-practice',
   templateUrl: './practice.page.html',
   styleUrls: ['./practice.page.scss'],
-  imports: [IonButton, IonIcon, IonContent, LoadingBounceComponent, PageHeaderComponent],
+  imports: [
+    IonButton,
+    IonIcon,
+    IonContent,
+    LoadingBounceComponent,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class PracticePage implements ViewWillEnter {
   private readonly authService = inject(AuthService);
@@ -41,6 +49,7 @@ export class PracticePage implements ViewWillEnter {
   async loadConcepts(): Promise<void> {
     const language = this.authService.currentUser()?.preferredLanguage;
     if (!language) {
+      this.isLoading.set(false);
       return;
     }
 
