@@ -86,3 +86,11 @@ export function isAnswerSubmitResult(
 
 export type ExerciseReportReason =
   'wrong_solution' | 'unclear_prompt' | 'duplicate' | 'other';
+
+// Fase 5B "conceptos débiles" — per-user pass rate for a concept, read by
+// Práctica libre to sort/flag concepts worth reinforcing.
+export interface ConceptStat {
+  conceptId: string;
+  passRate: number | null;
+  isWeak: boolean;
+}

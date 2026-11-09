@@ -3,12 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type {
+  ConceptStat,
   ExerciseDetail,
   ExerciseReportReason,
   ExerciseSummary,
   RunResult,
   SubmitOutcome,
 } from '../models/exercise.model';
+import type { ProgrammingLanguageSlug } from '../models/user.model';
 
 // Only the field matching the exercise's own type is sent — see
 // SubmitAnswerDto on the backend for the mirrored shape.
@@ -59,6 +61,14 @@ export class ExercisesService {
   reportExercise(exerciseId: string, reason: ExerciseReportReason): Promise<void> {
     return firstValueFrom(
       this.http.post<void>(`${environment.apiUrl}/exercises/${exerciseId}/report`, { reason }),
+    );
+  }
+
+  getConceptStats(languageSlug: ProgrammingLanguageSlug): Promise<ConceptStat[]> {
+    return firstValueFrom(
+      this.http.get<ConceptStat[]>(`${environment.apiUrl}/exercises/concept-stats`, {
+        params: { languageSlug },
+      }),
     );
   }
 }

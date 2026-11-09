@@ -28,6 +28,9 @@
         @for (concept of concepts(); track concept.id) {
           <button type="button" class="concept-row" (click)="practice(concept)">
             <span class="concept-name">{{ concept.name }}</span>
+            @if (concept.isWeak) {
+              <span class="weak-badge">A reforzar</span>
+            }
             <ion-icon name="chevron-forward"></ion-icon>
           </button>
         }

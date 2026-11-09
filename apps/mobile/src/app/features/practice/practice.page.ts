@@ -5,8 +5,15 @@ import { AuthService } from '../../core/services/auth.service';
 import { ConceptsService } from '../../core/services/concepts.service';
 import { ExercisesService } from '../../core/services/exercises.service';
 import type { ConceptSummary } from '../../core/models/concept.model';
+import type { ConceptStat } from '../../core/models/exercise.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+
+// Fase 5B "conceptos débiles": the concept list annotated with whether this
+// user struggles with it, so Práctica libre can sort/flag it.
+interface ConceptRow extends ConceptSummary {
+  isWeak: boolean;
+}
 
 @Component({
   selector: 'app-practice',
@@ -20,7 +27,7 @@ export class PracticePage implements ViewWillEnter {
   private readonly exercisesService = inject(ExercisesService);
   private readonly router = inject(Router);
 
-  readonly concepts = signal<ConceptSummary[]>([]);
+  readonly concepts = signal<ConceptRow[]>([]);
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
   // Which concept's "next exercise" fetch is in flight, so only that row
@@ -41,7 +48,25 @@ export class PracticePage implements ViewWillEnter {
     this.errorMessage.set(null);
 
     try {
-      this.concepts.set(await this.conceptsService.listForLanguage(language));
+      const [concepts, stats] = await Promise.all([
+        this.conceptsService.listForLanguage(language),
+        // A failed stats fetch shouldn't block practicing — it only loses
+        // the weak-concept sort/badge, not the concept list itself.
+        this.exercisesService.getConceptStats(language).catch(() => [] as ConceptStat[]),
+      ]);
+
+      const weakIds = new Set(
+        stats.filter((stat) => stat.isWeak).map((stat) => stat.conceptId),
+      );
+      const rows: ConceptRow[] = concepts.map((concept) => ({
+        ...concept,
+        isWeak: weakIds.has(concept.id),
+      }));
+      // Array.prototype.sort is stable, so weak concepts move to the front
+      // without reshuffling the original order within each group.
+      rows.sort((a, b) => Number(b.isWeak) - Number(a.isWeak));
+
+      this.concepts.set(rows);
     } catch {
       this.errorMessage.set('No se pudieron cargar los conceptos.');
     } finally {
