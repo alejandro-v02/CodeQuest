@@ -33,40 +33,100 @@
       </div>
     </div>
 
-    <section class="section">
-      <h2 class="section-title">Logros</h2>
-      <div class="achievement-list">
-        @for (achievement of s.achievements; track achievement.slug) {
-          <div class="achievement-row" [class.unlocked]="achievement.unlockedAt">
-            <ion-icon [name]="achievement.unlockedAt ? achievement.icon : 'lock-closed-outline'"></ion-icon>
-            <div class="achievement-info">
-              <span class="achievement-title">{{ achievement.title }}</span>
-              <span class="achievement-description">{{ achievement.description }}</span>
-            </div>
+    @if (stats(); as st) {
+      <section class="section">
+        <h2 class="section-title">Estadísticas</h2>
+        <div class="stats-grid">
+          <div class="stat-tile">
+            <span class="stat-value">{{ st.exercisesSolved }}</span>
+            <span class="stat-label">Ejercicios resueltos</span>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-value">{{ accuracyPercent(st.accuracy) }}</span>
+            <span class="stat-label">Tasa de acierto</span>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-value">{{ st.activeDays }}</span>
+            <span class="stat-label">Días activos</span>
+          </div>
+        </div>
+
+        @if (st.strongConcepts.length > 0 || st.weakConcepts.length > 0) {
+          <div class="concept-lists">
+            @if (st.strongConcepts.length > 0) {
+              <div class="concept-list-block">
+                <span class="concept-list-title">Fuertes</span>
+                @for (concept of st.strongConcepts; track concept.conceptName) {
+                  <span class="concept-chip strong">{{ concept.conceptName }}</span>
+                }
+              </div>
+            }
+            @if (st.weakConcepts.length > 0) {
+              <div class="concept-list-block">
+                <span class="concept-list-title">A reforzar</span>
+                @for (concept of st.weakConcepts; track concept.conceptName) {
+                  <span class="concept-chip weak">{{ concept.conceptName }}</span>
+                }
+              </div>
+            }
           </div>
         }
-      </div>
+      </section>
+    }
+
+    <section class="section">
+      <h2 class="section-title">Logros</h2>
+      @if (s.achievements.length > 0) {
+        <div class="achievement-list">
+          @for (achievement of s.achievements; track achievement.slug) {
+            <div class="achievement-row" [class.unlocked]="achievement.unlockedAt">
+              <ion-icon [name]="achievement.unlockedAt ? achievement.icon : 'lock-closed-outline'"></ion-icon>
+              <div class="achievement-info">
+                <span class="achievement-title">{{ achievement.title }}</span>
+                <span class="achievement-description">{{ achievement.description }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          icon="trophy-outline"
+          title="Sin logros todavía"
+          subtitle="Sigue practicando para desbloquear tu primer logro."
+        ></app-empty-state>
+      }
     </section>
 
     @if (ranking(); as r) {
       <section class="section">
-        <h2 class="section-title">Ranking semanal</h2>
-        <div class="ranking-list">
-          @for (entry of r.top; track entry.userId) {
-            <div class="ranking-row" [class.me]="entry.userId === r.me.userId">
-              <span class="ranking-rank">#{{ entry.rank }}</span>
-              <span class="ranking-name">{{ entry.displayName }}</span>
-              <span class="ranking-xp">{{ entry.weeklyXp }} XP</span>
-            </div>
-          }
-          @if (!meInTop()) {
-            <div class="ranking-row me">
-              <span class="ranking-rank">#{{ r.me.rank }}</span>
-              <span class="ranking-name">Tú</span>
-              <span class="ranking-xp">{{ r.me.weeklyXp }} XP</span>
-            </div>
-          }
-        </div>
+        <h2 class="section-title">
+          <ion-icon name="trophy-outline"></ion-icon>
+          Ranking semanal
+        </h2>
+        @if (r.top.length > 0) {
+          <div class="ranking-list">
+            @for (entry of r.top; track entry.userId) {
+              <div class="ranking-row" [class.me]="entry.userId === r.me.userId">
+                <span class="ranking-rank">#{{ entry.rank }}</span>
+                <span class="ranking-name">{{ entry.displayName }}</span>
+                <span class="ranking-xp">{{ entry.weeklyXp }} XP</span>
+              </div>
+            }
+            @if (!meInTop()) {
+              <div class="ranking-row me">
+                <span class="ranking-rank">#{{ r.me.rank }}</span>
+                <span class="ranking-name">Tú</span>
+                <span class="ranking-xp">{{ r.me.weeklyXp }} XP</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <app-empty-state
+            icon="flame-outline"
+            title="Ranking vacío"
+            subtitle="Todavía no hay actividad esta semana. ¡Sé el primero!"
+          ></app-empty-state>
+        }
       </section>
     }
   }

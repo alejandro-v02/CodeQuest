@@ -87,10 +87,27 @@ export function isAnswerSubmitResult(
 export type ExerciseReportReason =
   'wrong_solution' | 'unclear_prompt' | 'duplicate' | 'other';
 
-// Fase 5B "conceptos débiles" — per-user pass rate for a concept, read by
-// Práctica libre to sort/flag concepts worth reinforcing.
+// Fase 5B "conceptos débiles" (+ Fase 7 "fuertes") — per-user pass rate for
+// a concept, read by Práctica libre to sort/flag concepts worth reinforcing
+// and by the Progreso stats summary for both ends.
 export interface ConceptStat {
   conceptId: string;
+  conceptName: string;
   passRate: number | null;
   isWeak: boolean;
+  isStrong: boolean;
+}
+
+export interface ConceptStatSummary {
+  conceptName: string;
+  passRate: number | null;
+}
+
+// Fase 7 "panel de progreso".
+export interface StatsSummary {
+  exercisesSolved: number;
+  accuracy: number | null;
+  activeDays: number;
+  strongConcepts: ConceptStatSummary[];
+  weakConcepts: ConceptStatSummary[];
 }

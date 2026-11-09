@@ -8,6 +8,7 @@ import type {
   ExerciseReportReason,
   ExerciseSummary,
   RunResult,
+  StatsSummary,
   SubmitOutcome,
 } from '../models/exercise.model';
 import type { ProgrammingLanguageSlug } from '../models/user.model';
@@ -67,6 +68,14 @@ export class ExercisesService {
   getConceptStats(languageSlug: ProgrammingLanguageSlug): Promise<ConceptStat[]> {
     return firstValueFrom(
       this.http.get<ConceptStat[]>(`${environment.apiUrl}/exercises/concept-stats`, {
+        params: { languageSlug },
+      }),
+    );
+  }
+
+  getStatsSummary(languageSlug: ProgrammingLanguageSlug): Promise<StatsSummary> {
+    return firstValueFrom(
+      this.http.get<StatsSummary>(`${environment.apiUrl}/exercises/stats-summary`, {
         params: { languageSlug },
       }),
     );

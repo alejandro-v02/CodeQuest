@@ -1,12 +1,16 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { IonButton, IonContent, IonIcon, ViewWillEnter } from '@ionic/angular';
+import { AuthService } from '../../core/services/auth.service';
+import { ExercisesService } from '../../core/services/exercises.service';
 import { GamificationService } from '../../core/services/gamification.service';
+import type { StatsSummary } from '../../core/models/exercise.model';
 import type {
   GamificationSummary,
   RankingResponse,
 } from '../../core/models/gamification.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 
 const XP_PER_LEVEL = 100;
 
@@ -14,13 +18,23 @@ const XP_PER_LEVEL = 100;
   selector: 'app-progress',
   templateUrl: './progress.page.html',
   styleUrls: ['./progress.page.scss'],
-  imports: [IonButton, IonContent, IonIcon, LoadingBounceComponent, PageHeaderComponent],
+  imports: [
+    IonButton,
+    IonContent,
+    IonIcon,
+    LoadingBounceComponent,
+    PageHeaderComponent,
+    EmptyStateComponent,
+  ],
 })
 export class ProgressPage implements ViewWillEnter {
+  private readonly authService = inject(AuthService);
+  private readonly exercisesService = inject(ExercisesService);
   private readonly gamificationService = inject(GamificationService);
 
   readonly summary = signal<GamificationSummary | null>(null);
   readonly ranking = signal<RankingResponse | null>(null);
+  readonly stats = signal<StatsSummary | null>(null);
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
 
@@ -38,12 +52,17 @@ export class ProgressPage implements ViewWillEnter {
     this.errorMessage.set(null);
 
     try {
-      const [summary, ranking] = await Promise.all([
+      const language = this.authService.currentUser()?.preferredLanguage;
+      const [summary, ranking, stats] = await Promise.all([
         this.gamificationService.getSummary(),
         this.gamificationService.getRanking(),
+        // A missing preferredLanguage shouldn't block XP/streak/ranking —
+        // stats just stay null (section is omitted) in that edge case.
+        language ? this.exercisesService.getStatsSummary(language) : Promise.resolve(null),
       ]);
       this.summary.set(summary);
       this.ranking.set(ranking);
+      this.stats.set(stats);
     } catch {
       this.errorMessage.set('No se pudo cargar tu progreso.');
     } finally {
@@ -57,5 +76,9 @@ export class ProgressPage implements ViewWillEnter {
 
   xpProgressPercent(xp: number): number {
     return (this.xpIntoLevel(xp) / XP_PER_LEVEL) * 100;
+  }
+
+  accuracyPercent(accuracy: number | null): string {
+    return accuracy === null ? '—' : `${Math.round(accuracy * 100)}%`;
   }
 }
