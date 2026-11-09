@@ -13,10 +13,12 @@ import { Concept } from '../../concepts/entities/concept.entity';
 export type ExerciseType = 'code' | 'quiz' | 'fill' | 'sort' | 'bug';
 
 // Fase 3/4 hand-authored exercises are born 'approved'. Fase 5A's generator
-// creates rows as 'pending_verification' until the execution+dedup pipeline
-// clears them for serving; 'rejected' ones are kept (not deleted) for
-// debugging the generator/prompts.
-export type ExerciseStatus = 'approved' | 'pending_verification' | 'rejected';
+// writes 'approved' or 'rejected' directly (verification is synchronous, so
+// there's no intermediate pending state) — 'rejected' ones are kept (not
+// deleted) for debugging the generator/prompts. 'retired' is different: it
+// means an exercise passed verification but real usage (Fase 5A.4) showed
+// it's broken — near-universal failure or several user reports.
+export type ExerciseStatus = 'approved' | 'rejected' | 'retired';
 
 export interface QuizPayload {
   code: string;

@@ -43,4 +43,9 @@ export const routes: Routes = [
     canActivate: [authGuard, onboardingGuard],
     loadComponent: () => import('./features/practice/practice.page').then((m) => m.PracticePage),
   },
+  {
+    path: 'admin',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/admin/admin.page').then((m) => m.AdminPage),
+  },
 ];

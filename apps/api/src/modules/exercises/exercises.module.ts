@@ -12,6 +12,7 @@ import { ExerciseReport } from './entities/exercise-report.entity';
 import { ExercisesController } from './exercises.controller';
 import { ExercisesService } from './exercises.service';
 import { NextExerciseService } from './next-exercise.service';
+import { ExerciseRecalibrationService } from './exercise-recalibration.service';
 
 @Module({
   imports: [
@@ -28,6 +29,10 @@ import { NextExerciseService } from './next-exercise.service';
     GenerationModule,
   ],
   controllers: [ExercisesController],
-  providers: [ExercisesService, NextExerciseService],
+  providers: [
+    ExercisesService,
+    NextExerciseService,
+    ExerciseRecalibrationService,
+  ],
 })
 export class ExercisesModule {}

@@ -20,4 +20,8 @@ export class ProfilePage {
     await this.authService.logout();
     await this.router.navigateByUrl('/auth/login');
   }
+
+  openAdmin(): void {
+    void this.router.navigateByUrl('/admin');
+  }
 }

@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import type {
   ExerciseDetail,
+  ExerciseReportReason,
   ExerciseSummary,
   RunResult,
   SubmitOutcome,
@@ -52,6 +53,12 @@ export class ExercisesService {
   submit(exerciseId: string, body: SubmitAnswerBody): Promise<SubmitOutcome> {
     return firstValueFrom(
       this.http.post<SubmitOutcome>(`${environment.apiUrl}/exercises/${exerciseId}/submit`, body),
+    );
+  }
+
+  reportExercise(exerciseId: string, reason: ExerciseReportReason): Promise<void> {
+    return firstValueFrom(
+      this.http.post<void>(`${environment.apiUrl}/exercises/${exerciseId}/report`, { reason }),
     );
   }
 }

@@ -81,3 +81,17 @@ export interface AnswerSubmitResult {
   correctAnswer: unknown;
   explanation: string | null;
 }
+
+// Fase 5A.4 admin panel — one row per language/concept, counting Fase
+// 5A-generated (concept-scoped) exercises by status. Lesson-scoped (Fase 3/4)
+// exercises have no concept/status model, so they're excluded entirely.
+export interface AdminExerciseStat {
+  languageSlug: ProgrammingLanguageSlug;
+  languageName: string;
+  conceptSlug: string;
+  conceptName: string;
+  approved: number;
+  rejected: number;
+  retired: number;
+  total: number;
+}

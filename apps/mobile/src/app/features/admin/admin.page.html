@@ -1,0 +1,38 @@
+<app-page-header title="Administración" eyebrow="Fase 5A" [showBack]="true" (back)="goBack()"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="loadStats()">Reintentar</ion-button>
+    </div>
+  } @else if (groups().length === 0) {
+    <div class="state-pane">
+      <p>Todavía no hay ejercicios generados por IA.</p>
+    </div>
+  } @else {
+    @for (group of groups(); track group.languageSlug) {
+      <div class="language-group">
+        <h2 class="language-name">{{ group.languageName }}</h2>
+
+        @for (concept of group.concepts; track concept.conceptSlug) {
+          <div class="concept-row">
+            <div class="concept-header">
+              <span class="concept-name">{{ concept.conceptName }}</span>
+              <span class="concept-total">{{ concept.total }} ejercicios</span>
+            </div>
+            <div class="concept-counts">
+              <span class="count approved">{{ concept.approved }} aprobados</span>
+              <span class="count rejected">{{ concept.rejected }} rechazados</span>
+              <span class="count retired">{{ concept.retired }} retirados</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</ion-content>

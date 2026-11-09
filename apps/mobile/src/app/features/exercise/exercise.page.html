@@ -123,5 +123,16 @@
         </div>
       }
     }
+
+    <div class="report-row">
+      @if (reportSent()) {
+        <p class="report-sent">Gracias, lo revisaremos.</p>
+      } @else {
+        <ion-button fill="clear" size="small" [disabled]="isReporting()" (click)="openReportSheet()">
+          <ion-icon name="flag-outline" slot="start"></ion-icon>
+          Reportar ejercicio
+        </ion-button>
+      }
+    </div>
   }
 </ion-content>

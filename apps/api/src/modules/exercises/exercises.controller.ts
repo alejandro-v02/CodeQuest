@@ -17,7 +17,9 @@ import { ExercisesService } from './exercises.service';
 import { NextExerciseService } from './next-exercise.service';
 import { RunCodeDto } from './dto/run-code.dto';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
+import { ReportExerciseDto } from './dto/report-exercise.dto';
 import type {
+  AdminExerciseStat,
   AnswerSubmitResult,
   ExerciseDetail,
   ExerciseSummary,
@@ -56,6 +58,13 @@ export class ExercisesController {
     return this.nextExerciseService.getNext(user.id, conceptId);
   }
 
+  // Fase 5A.4 admin panel — must be declared before ':exerciseId' so Nest's
+  // route matching doesn't treat "admin" as an exercise id.
+  @Get('admin/stats')
+  getAdminStats(): Promise<AdminExerciseStat[]> {
+    return this.exercisesService.getAdminStats();
+  }
+
   @Get(':exerciseId')
   getOne(
     @Param('exerciseId') exerciseId: string,
@@ -84,5 +93,20 @@ export class ExercisesController {
     @CurrentUser() user: PublicUser,
   ): Promise<SubmitResult | AnswerSubmitResult> {
     return this.exercisesService.submitAnswer(exerciseId, user.id, dto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post(':exerciseId/report')
+  report(
+    @Param('exerciseId') exerciseId: string,
+    @Body() dto: ReportExerciseDto,
+    @CurrentUser() user: PublicUser,
+  ): Promise<void> {
+    return this.exercisesService.reportExercise(
+      user.id,
+      exerciseId,
+      dto.reason,
+      dto.details,
+    );
   }
 }

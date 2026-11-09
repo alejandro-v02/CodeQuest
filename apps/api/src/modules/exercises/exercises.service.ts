@@ -20,8 +20,12 @@ import type {
 import { TestCase } from './entities/test-case.entity';
 import { Attempt } from './entities/attempt.entity';
 import { UserExerciseHistory } from './entities/user-exercise-history.entity';
+import { ExerciseReport } from './entities/exercise-report.entity';
+import type { ExerciseReportReason } from './entities/exercise-report.entity';
+import { ExerciseRecalibrationService } from './exercise-recalibration.service';
 import type { SubmitAnswerDto } from './dto/submit-answer.dto';
 import type {
+  AdminExerciseStat,
   AnswerSubmitResult,
   ExerciseDetail,
   ExercisePayloadView,
@@ -48,10 +52,13 @@ export class ExercisesService {
     private readonly attemptRepo: Repository<Attempt>,
     @InjectRepository(UserExerciseHistory)
     private readonly historyRepo: Repository<UserExerciseHistory>,
+    @InjectRepository(ExerciseReport)
+    private readonly reportRepo: Repository<ExerciseReport>,
     @InjectRepository(Concept)
     private readonly conceptRepo: Repository<Concept>,
     private readonly coursesService: CoursesService,
     private readonly pistonService: PistonService,
+    private readonly recalibrationService: ExerciseRecalibrationService,
   ) {}
 
   async getExercisesForLesson(
@@ -169,9 +176,90 @@ export class ExercisesService {
         { userId, exerciseId: exercise.id },
         { outcome: passed ? 'passed' : 'failed' },
       );
+      // Fire-and-forget: recalibration reads history/reports back from the
+      // DB, it doesn't need to block the response to the user.
+      this.recalibrationService.recalibrate(exercise.id).catch((error) => {
+        console.error('Exercise recalibration failed:', error);
+      });
     }
 
     return result;
+  }
+
+  async reportExercise(
+    userId: string,
+    exerciseId: string,
+    reason: ExerciseReportReason,
+    details: string | undefined,
+  ): Promise<void> {
+    await this.findExerciseOrThrow(exerciseId);
+    await this.reportRepo.save(
+      this.reportRepo.create({
+        userId,
+        exerciseId,
+        reason,
+        details: details ?? null,
+      }),
+    );
+    this.recalibrationService.recalibrate(exerciseId).catch((error) => {
+      console.error('Exercise recalibration failed:', error);
+    });
+  }
+
+  // Fase 5A.4 admin panel: per-language/concept counts of Fase 5A-generated
+  // exercises by status. Exercises without a concept (Fase 3/4, hand-
+  // authored) don't use this status model and are excluded.
+  async getAdminStats(): Promise<AdminExerciseStat[]> {
+    const rows = await this.exerciseRepo
+      .createQueryBuilder('exercise')
+      .innerJoin('exercise.concept', 'concept')
+      .innerJoin('concept.language', 'language')
+      .where('exercise.conceptId IS NOT NULL')
+      .select('language.slug', 'languageSlug')
+      .addSelect('language.name', 'languageName')
+      .addSelect('concept.slug', 'conceptSlug')
+      .addSelect('concept.name', 'conceptName')
+      .addSelect('exercise.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('language.slug')
+      .addGroupBy('language.name')
+      .addGroupBy('concept.slug')
+      .addGroupBy('concept.name')
+      .addGroupBy('exercise.status')
+      .orderBy('language.name', 'ASC')
+      .addOrderBy('concept.name', 'ASC')
+      .getRawMany<{
+        languageSlug: ProgrammingLanguageSlug;
+        languageName: string;
+        conceptSlug: string;
+        conceptName: string;
+        status: 'approved' | 'rejected' | 'retired';
+        count: string;
+      }>();
+
+    const byConcept = new Map<string, AdminExerciseStat>();
+    for (const row of rows) {
+      const key = `${row.languageSlug}:${row.conceptSlug}`;
+      let stat = byConcept.get(key);
+      if (!stat) {
+        stat = {
+          languageSlug: row.languageSlug,
+          languageName: row.languageName,
+          conceptSlug: row.conceptSlug,
+          conceptName: row.conceptName,
+          approved: 0,
+          rejected: 0,
+          retired: 0,
+          total: 0,
+        };
+        byConcept.set(key, stat);
+      }
+      const count = Number(row.count);
+      stat[row.status] += count;
+      stat.total += count;
+    }
+
+    return [...byConcept.values()];
   }
 
   private async dispatchSubmit(

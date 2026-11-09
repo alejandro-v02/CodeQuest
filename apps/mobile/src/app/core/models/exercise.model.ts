@@ -83,3 +83,6 @@ export function isAnswerSubmitResult(
 ): result is AnswerSubmitResult {
   return !('testCases' in result);
 }
+
+export type ExerciseReportReason =
+  'wrong_solution' | 'unclear_prompt' | 'duplicate' | 'other';

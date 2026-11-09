@@ -1,6 +1,12 @@
 import { Component, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonButton, IonIcon, IonContent, ViewWillEnter } from '@ionic/angular';
+import {
+  ActionSheetController,
+  IonButton,
+  IonIcon,
+  IonContent,
+  ViewWillEnter,
+} from '@ionic/angular';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
 import { QuizExerciseComponent } from '../../shared/components/quiz-exercise/quiz-exercise.component';
@@ -15,12 +21,20 @@ import {
   type AnswerSubmitResult,
   type BugPayload,
   type ExerciseDetail,
+  type ExerciseReportReason,
   type FillPayload,
   type QuizPayload,
   type RunResult,
   type SortPayload,
   type SubmitOutcome,
 } from '../../core/models/exercise.model';
+
+const REPORT_REASONS: { reason: ExerciseReportReason; label: string }[] = [
+  { reason: 'wrong_solution', label: 'La solución no funciona' },
+  { reason: 'unclear_prompt', label: 'El enunciado no se entiende' },
+  { reason: 'duplicate', label: 'Está repetido' },
+  { reason: 'other', label: 'Otro motivo' },
+];
 
 @Component({
   selector: 'app-exercise',
@@ -44,6 +58,7 @@ export class ExercisePage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly exercisesService = inject(ExercisesService);
+  private readonly actionSheetController = inject(ActionSheetController);
 
   @ViewChild(CodeEditorComponent) private codeEditor?: CodeEditorComponent;
 
@@ -61,6 +76,9 @@ export class ExercisePage implements ViewWillEnter {
   readonly errorMessage = signal<string | null>(null);
 
   readonly isAnswerResult = isAnswerSubmitResult;
+
+  readonly isReporting = signal(false);
+  readonly reportSent = signal(false);
 
   // Same IonicRouteStrategy caching issue as HomePage/LessonPage: revisiting
   // the exact same exercise (e.g. after submitting and going back) must not
@@ -85,6 +103,7 @@ export class ExercisePage implements ViewWillEnter {
       this.code.set(exercise.starterCode ?? '');
       this.answer.set(null);
       this.result.set(null);
+      this.reportSent.set(false);
     } catch {
       this.errorMessage.set('No se pudo cargar el ejercicio.');
     } finally {
@@ -214,5 +233,36 @@ export class ExercisePage implements ViewWillEnter {
   goBack(): void {
     const lessonId = this.exercise()?.lessonId;
     void this.router.navigateByUrl(lessonId ? `/lesson/${lessonId}` : '/tabs/home');
+  }
+
+  async openReportSheet(): Promise<void> {
+    const exercise = this.exercise();
+    if (!exercise || this.isReporting() || this.reportSent()) {
+      return;
+    }
+
+    const sheet = await this.actionSheetController.create({
+      header: '¿Qué está mal con este ejercicio?',
+      buttons: [
+        ...REPORT_REASONS.map(({ reason, label }) => ({
+          text: label,
+          handler: () => void this.sendReport(exercise.id, reason),
+        })),
+        { text: 'Cancelar', role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  private async sendReport(exerciseId: string, reason: ExerciseReportReason): Promise<void> {
+    this.isReporting.set(true);
+    try {
+      await this.exercisesService.reportExercise(exerciseId, reason);
+      this.reportSent.set(true);
+    } catch {
+      this.errorMessage.set('No se pudo enviar el reporte.');
+    } finally {
+      this.isReporting.set(false);
+    }
   }
 }
