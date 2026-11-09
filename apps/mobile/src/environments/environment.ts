@@ -4,5 +4,5 @@
 // Update it if your IP changes (e.g. `ipconfig` on Windows, look for Wi-Fi IPv4).
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.18.10:3000',
+  apiUrl: 'http://192.168.101.3:3000',
 };
