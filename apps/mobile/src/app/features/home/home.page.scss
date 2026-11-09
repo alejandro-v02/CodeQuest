@@ -117,6 +117,8 @@
   --border-radius: 20px;
   display: block;
   margin: 0 20px 24px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 60ms;
 }
 
 .module {
@@ -316,6 +318,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .path-card,
+  .practice-button,
   .module {
     animation: none !important;
   }
