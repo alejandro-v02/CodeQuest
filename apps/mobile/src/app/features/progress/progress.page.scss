@@ -23,6 +23,7 @@
     #060708;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .xp-card-top {
@@ -83,6 +84,8 @@
   padding: 14px 16px;
   border-radius: 16px;
   background: var(--ion-card-background);
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 60ms;
 
   ion-icon {
     font-size: 28px;
@@ -109,6 +112,8 @@
 
 .section {
   padding: 0 20px 24px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 120ms;
 }
 
 .section-title {
@@ -195,4 +200,23 @@
 .ranking-xp {
   font-weight: 700;
   color: var(--ion-color-secondary);
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-card,
+  .streak-card,
+  .section {
+    animation: none !important;
+  }
 }

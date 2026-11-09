@@ -214,21 +214,21 @@ Pipeline de cada ejercicio generado:
 - **Entrega:** puedo hacer 50 ejercicios seguidos del mismo concepto sin ver ninguno repetido, todos con corrección correcta.
 
 ### Fase 5B — IA tutora
-- [ ] Servicio `ai` con prompts versionados en archivos aparte y salida estructurada (JSON validado).
-- [ ] **Prueba de nivel adaptativa:** generar preguntas, evaluar respuestas y asignar nivel.
-- [ ] **Pistas graduales:** 3 niveles de pista, sin revelar la solución.
-- [ ] **Explicar errores:** el usuario envía su código + el error y recibe una explicación didáctica.
-- [ ] Priorizar en el motor 5A los conceptos débiles del usuario (basado en `Attempt`).
-- [ ] Límites de uso por usuario/día, caché y registro en `AiInteraction`.
-- **Entrega:** prueba de nivel funcional, pistas y explicación de errores dentro de la app.
+- [x] Servicio `ai` con prompts versionados en archivos aparte y salida estructurada (JSON validado).
+- [x] **Prueba de nivel adaptativa:** generar preguntas, evaluar respuestas y asignar nivel.
+- [x] **Pistas graduales:** 3 niveles de pista, sin revelar la solución.
+- [x] **Explicar errores:** el usuario envía su código + el error y recibe una explicación didáctica.
+- [x] Priorizar en el motor 5A los conceptos débiles del usuario (basado en `Attempt`).
+- [x] Límites de uso por usuario/día, caché y registro en `AiInteraction`.
+- **Entrega:** prueba de nivel funcional, pistas y explicación de errores dentro de la app. ✅ Confirmado en dispositivo real.
 
 ### Fase 6 — Gamificación
-- [ ] XP por lección/ejercicio, cálculo de nivel de usuario.
-- [ ] Racha diaria (respetando zona horaria) y su pantalla.
-- [ ] Logros (primer ejercicio, racha de 7 días, 10 ejercicios sin pistas, etc.).
-- [ ] Ranking semanal.
-- [ ] Recordatorios con notificaciones locales según la meta diaria.
-- **Entrega:** gano XP, mantengo racha y recibo recordatorios.
+- [x] XP por lección/ejercicio, cálculo de nivel de usuario.
+- [x] Racha diaria (respetando zona horaria) y su pantalla.
+- [x] Logros (primer ejercicio, racha de 7 días, 10 ejercicios sin pistas, etc.).
+- [x] Ranking semanal.
+- [x] Recordatorios con notificaciones locales según la meta diaria.
+- **Entrega:** gano XP, mantengo racha y recibo recordatorios. ✅ Confirmado en dispositivo real.
 
 ### Fase 7 — Panel de progreso y pulido
 - [ ] Estadísticas: tiempo de estudio, ejercicios resueltos, tasa de acierto, temas fuertes/débiles.
