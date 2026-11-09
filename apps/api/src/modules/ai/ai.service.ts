@@ -9,20 +9,11 @@ import type { AppConfig } from '../../config/configuration';
 
 const GENERATION_MODEL = 'gemini-3.6-flash';
 const EMBEDDING_MODEL = 'gemini-embedding-001';
-// gemini-embedding-001 natively outputs 3072 dimensions but supports MRL
-// truncation to smaller recommended sizes (768/1536/3072) — 1536 matches
-// `exercises.embedding vector(1536)` (see DatabaseBootstrapService) exactly,
-// so don't change one without the other.
 const EMBEDDING_DIMENSIONS = 1536;
 
-// Truncated (non-3072) gemini-embedding-001 output isn't unit-length by
-// itself (only the full 3072-dim output is pre-normalized) — re-normalizing
-// keeps cosine-distance comparisons well-behaved downstream.
 function normalizeVector(values: number[]): number[] {
   const magnitude = Math.sqrt(values.reduce((sum, v) => sum + v * v, 0));
-  if (magnitude === 0) {
-    return values;
-  }
+  if (magnitude === 0) return values;
   return values.map((v) => v / magnitude);
 }
 
@@ -40,15 +31,8 @@ export class AiService {
     return this.client !== null;
   }
 
-  // Returns the model's raw parsed JSON — callers validate the shape
-  // themselves (see GeneratedExerciseDto) rather than trusting "strict JSON"
-  // blindly.
-  async generateJson(
-    systemPrompt: string,
-    userPrompt: string,
-  ): Promise<unknown> {
+  async generateJson(systemPrompt: string, userPrompt: string): Promise<unknown> {
     const client = this.requireClient();
-
     let text: string | undefined;
     try {
       const response = await client.models.generateContent({
@@ -63,22 +47,13 @@ export class AiService {
       text = response.text;
     } catch (error) {
       this.logger.error('Gemini content generation failed', error);
-      throw new ServiceUnavailableException(
-        'No se pudo generar el ejercicio con IA.',
-      );
+      throw new ServiceUnavailableException('No se pudo generar el ejercicio con IA.');
     }
-
-    if (!text) {
-      throw new ServiceUnavailableException(
-        'Gemini devolvió una respuesta vacía.',
-      );
-    }
+    if (!text) throw new ServiceUnavailableException('Gemini devolvió una respuesta vacía.');
     try {
       return JSON.parse(text);
     } catch {
-      throw new ServiceUnavailableException(
-        'Gemini devolvió un JSON inválido.',
-      );
+      throw new ServiceUnavailableException('Gemini devolvió un JSON inválido.');
     }
   }
 
@@ -91,9 +66,7 @@ export class AiService {
         config: { outputDimensionality: EMBEDDING_DIMENSIONS },
       });
       const values = response.embeddings?.[0]?.values;
-      if (!values) {
-        throw new Error('No embedding values in response');
-      }
+      if (!values) throw new Error('No embedding values in response');
       return normalizeVector(values);
     } catch (error) {
       this.logger.error('Gemini embedding request failed', error);

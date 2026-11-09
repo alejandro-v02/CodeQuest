@@ -10,7 +10,7 @@ import { PistonService } from '../execution/piston.service';
 import { Exercise } from '../exercises/entities/exercise.entity';
 import { TestCase } from '../exercises/entities/test-case.entity';
 import type { ProgrammingLanguageSlug } from '../users/entities/user.entity';
-import { AiService } from './ai.service';
+import { AiService } from '../ai/ai.service';
 import {
   GeneratedExerciseDto,
   GeneratedTestCaseDto,
