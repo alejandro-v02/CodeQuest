@@ -1,9 +1,73 @@
 <app-page-header title="Progreso" eyebrow="Tu avance"></app-page-header>
 
 <ion-content [fullscreen]="true">
-  <app-coming-soon
-    icon="stats-chart-outline"
-    title="Tus estadísticas, pronto"
-    subtitle="Aquí verás tiempo de estudio, racha y conceptos fuertes/débiles (Fase 6-7)."
-  ></app-coming-soon>
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+    </div>
+  } @else if (summary(); as s) {
+    <div class="xp-card">
+      <div class="xp-card-top">
+        <span class="level-badge">
+          <ion-icon name="star-outline"></ion-icon>
+          Nivel {{ s.level }}
+        </span>
+        <span class="xp-count">{{ s.xp }} XP</span>
+      </div>
+      <div class="xp-progress-bar">
+        <div class="xp-progress-fill" [style.width.%]="xpProgressPercent(s.xp)"></div>
+      </div>
+      <p class="xp-progress-message">{{ xpIntoLevel(s.xp) }} / 100 XP para el siguiente nivel</p>
+    </div>
+
+    <div class="streak-card">
+      <ion-icon name="flame-outline"></ion-icon>
+      <div class="streak-info">
+        <span class="streak-current">{{ s.streak.current }} días seguidos</span>
+        <span class="streak-best">Mejor racha: {{ s.streak.longest }} días</span>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2 class="section-title">Logros</h2>
+      <div class="achievement-list">
+        @for (achievement of s.achievements; track achievement.slug) {
+          <div class="achievement-row" [class.unlocked]="achievement.unlockedAt">
+            <ion-icon [name]="achievement.unlockedAt ? achievement.icon : 'lock-closed-outline'"></ion-icon>
+            <div class="achievement-info">
+              <span class="achievement-title">{{ achievement.title }}</span>
+              <span class="achievement-description">{{ achievement.description }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    @if (ranking(); as r) {
+      <section class="section">
+        <h2 class="section-title">Ranking semanal</h2>
+        <div class="ranking-list">
+          @for (entry of r.top; track entry.userId) {
+            <div class="ranking-row" [class.me]="entry.userId === r.me.userId">
+              <span class="ranking-rank">#{{ entry.rank }}</span>
+              <span class="ranking-name">{{ entry.displayName }}</span>
+              <span class="ranking-xp">{{ entry.weeklyXp }} XP</span>
+            </div>
+          }
+          @if (!meInTop()) {
+            <div class="ranking-row me">
+              <span class="ranking-rank">#{{ r.me.rank }}</span>
+              <span class="ranking-name">Tú</span>
+              <span class="ranking-xp">{{ r.me.weeklyXp }} XP</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  }
 </ion-content>

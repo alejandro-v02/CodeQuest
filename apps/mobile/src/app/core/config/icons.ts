@@ -28,6 +28,11 @@ import {
   schoolOutline,
   bulbOutline,
   chatbubbleEllipsesOutline,
+  flameOutline,
+  trophyOutline,
+  starOutline,
+  lockClosedOutline,
+  notificationsOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -62,5 +67,10 @@ export function registerIcons(): void {
     'school-outline': schoolOutline,
     'bulb-outline': bulbOutline,
     'chatbubble-ellipses-outline': chatbubbleEllipsesOutline,
+    'flame-outline': flameOutline,
+    'trophy-outline': trophyOutline,
+    'star-outline': starOutline,
+    'lock-closed-outline': lockClosedOutline,
+    'notifications-outline': notificationsOutline,
   });
 }
