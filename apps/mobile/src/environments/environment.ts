@@ -1,8 +1,10 @@
 // Used by `ng serve` / `ionic cap run android -l --external` (development build).
-// IMPORTANT: this must be your computer's LAN IP, not "localhost" — the phone
-// reaches the backend over the network, not through its own loopback interface.
-// Update it if your IP changes (e.g. `ipconfig` on Windows, look for Wi-Fi IPv4).
+// Points at the phone's own loopback, forwarded to this machine's port 3000
+// over USB via `adb reverse tcp:3000 tcp:3000` — this avoids depending on
+// both devices being on the same Wi-Fi network (which breaks every time the
+// network changes, or on networks with client isolation). Re-run that adb
+// command after reconnecting the phone/restarting adb.
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.101.3:3000',
+  apiUrl: 'http://localhost:3000',
 };
