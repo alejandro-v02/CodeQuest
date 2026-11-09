@@ -27,7 +27,9 @@
   margin: 8px 20px 14px;
   padding: 16px 18px;
   border-radius: 22px;
-  background: linear-gradient(145deg, #0a0e16 0%, #0d1b2e 60%, #0a1422 100%);
+  background:
+    radial-gradient(130% 110% at 100% 0%, #15314f 0%, rgba(13, 27, 46, 0) 58%),
+    #060708;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
   animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
