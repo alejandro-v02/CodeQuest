@@ -6,7 +6,6 @@ import { CoursesService } from '../../core/services/courses.service';
 import type { LessonSummary, PathOverview } from '../../core/models/course.model';
 import {
   DAILY_GOAL_OPTIONS,
-  LANGUAGE_BRANDS,
   LANGUAGE_OPTIONS,
   type ProgrammingLanguageSlug,
 } from '../../core/models/user.model';
@@ -140,10 +139,6 @@ export class HomePage implements ViewWillEnter {
       default:
         return 'ellipse-outline';
     }
-  }
-
-  pathAccent(overview: PathOverview): string {
-    return LANGUAGE_BRANDS[overview.languageSlug].colorFrom;
   }
 
   completedLessons(overview: PathOverview): number {
