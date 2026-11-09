@@ -4,21 +4,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { IonContent, IonInput, IonButton, IonIcon } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
-import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./auth.shared.scss'],
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    IonContent,
-    IonInput,
-    IonButton,
-    IonIcon,
-    LoadingWaveComponent,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, IonContent, IonInput, IonButton, IonIcon],
 })
 export class RegisterPage {
   private readonly fb = inject(FormBuilder);
