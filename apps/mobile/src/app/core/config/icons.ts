@@ -26,6 +26,8 @@ import {
   logOutOutline,
   flagOutline,
   schoolOutline,
+  bulbOutline,
+  chatbubbleEllipsesOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -58,5 +60,7 @@ export function registerIcons(): void {
     'log-out-outline': logOutOutline,
     'flag-outline': flagOutline,
     'school-outline': schoolOutline,
+    'bulb-outline': bulbOutline,
+    'chatbubble-ellipses-outline': chatbubbleEllipsesOutline,
   });
 }

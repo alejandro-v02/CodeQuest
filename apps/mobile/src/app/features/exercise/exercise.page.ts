@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -7,6 +8,7 @@ import {
   IonContent,
   ViewWillEnter,
 } from '@ionic/angular';
+import { AiService } from '../../core/services/ai.service';
 import { ExercisesService } from '../../core/services/exercises.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
 import { QuizExerciseComponent } from '../../shared/components/quiz-exercise/quiz-exercise.component';
@@ -27,6 +29,7 @@ import {
   type RunResult,
   type SortPayload,
   type SubmitOutcome,
+  type TestCaseResult,
 } from '../../core/models/exercise.model';
 
 const REPORT_REASONS: { reason: ExerciseReportReason; label: string }[] = [
@@ -58,6 +61,7 @@ export class ExercisePage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly exercisesService = inject(ExercisesService);
+  private readonly aiService = inject(AiService);
   private readonly actionSheetController = inject(ActionSheetController);
 
   @ViewChild(CodeEditorComponent) private codeEditor?: CodeEditorComponent;
@@ -79,6 +83,17 @@ export class ExercisePage implements ViewWillEnter {
 
   readonly isReporting = signal(false);
   readonly reportSent = signal(false);
+
+  // Pistas graduales (Fase 5B): revealed one at a time, in order — the
+  // button always requests hints().length + 1, so there's no way to skip
+  // straight to level 3.
+  readonly hints = signal<string[]>([]);
+  readonly isLoadingHint = signal(false);
+  readonly hintError = signal<string | null>(null);
+
+  readonly isExplaining = signal(false);
+  readonly errorExplanation = signal<string | null>(null);
+  readonly explainErrorMessage = signal<string | null>(null);
 
   // Same IonicRouteStrategy caching issue as HomePage/LessonPage: revisiting
   // the exact same exercise (e.g. after submitting and going back) must not
@@ -104,6 +119,10 @@ export class ExercisePage implements ViewWillEnter {
       this.answer.set(null);
       this.result.set(null);
       this.reportSent.set(false);
+      this.hints.set([]);
+      this.hintError.set(null);
+      this.errorExplanation.set(null);
+      this.explainErrorMessage.set(null);
     } catch {
       this.errorMessage.set('No se pudo cargar el ejercicio.');
     } finally {
@@ -144,6 +163,8 @@ export class ExercisePage implements ViewWillEnter {
     this.isRunning.set(true);
     this.errorMessage.set(null);
     this.result.set(null);
+    this.errorExplanation.set(null);
+    this.explainErrorMessage.set(null);
 
     try {
       this.result.set(await this.exercisesService.run(exercise.id, this.code()));
@@ -163,6 +184,8 @@ export class ExercisePage implements ViewWillEnter {
     this.isChecking.set(true);
     this.errorMessage.set(null);
     this.result.set(null);
+    this.errorExplanation.set(null);
+    this.explainErrorMessage.set(null);
 
     try {
       const outcome = await this.exercisesService.submit(exercise.id, { code: this.code() });
@@ -263,6 +286,67 @@ export class ExercisePage implements ViewWillEnter {
       this.errorMessage.set('No se pudo enviar el reporte.');
     } finally {
       this.isReporting.set(false);
+    }
+  }
+
+  async requestHint(): Promise<void> {
+    const exercise = this.exercise();
+    if (!exercise || this.hints().length >= 3 || this.isLoadingHint()) {
+      return;
+    }
+
+    const nextLevel = (this.hints().length + 1) as 1 | 2 | 3;
+    this.isLoadingHint.set(true);
+    this.hintError.set(null);
+
+    try {
+      const hint = await this.aiService.getHint(exercise.id, nextLevel, exercise.languageSlug);
+      this.hints.update((hints) => [...hints, hint.text]);
+    } catch (error) {
+      this.hintError.set(
+        error instanceof HttpErrorResponse && error.status === 429
+          ? 'Alcanzaste el límite diario de usos de IA. Vuelve mañana.'
+          : 'No se pudo obtener la pista. Intenta de nuevo.',
+      );
+    } finally {
+      this.isLoadingHint.set(false);
+    }
+  }
+
+  firstFailingTestCase(result: RunResult): TestCaseResult | null {
+    return result.testCases.find((testCase) => !testCase.passed) ?? null;
+  }
+
+  async explainError(): Promise<void> {
+    const exercise = this.exercise();
+    const current = this.result();
+    if (!exercise || !current || this.isExplaining() || isAnswerSubmitResult(current)) {
+      return;
+    }
+    const failing = this.firstFailingTestCase(current);
+    if (!failing?.stderr) {
+      return;
+    }
+
+    this.isExplaining.set(true);
+    this.explainErrorMessage.set(null);
+
+    try {
+      const response = await this.aiService.explainError(
+        exercise.id,
+        exercise.languageSlug,
+        this.code(),
+        failing.stderr,
+      );
+      this.errorExplanation.set(response.explanation);
+    } catch (error) {
+      this.explainErrorMessage.set(
+        error instanceof HttpErrorResponse && error.status === 429
+          ? 'Alcanzaste el límite diario de usos de IA. Vuelve mañana.'
+          : 'No se pudo generar la explicación. Intenta de nuevo.',
+      );
+    } finally {
+      this.isExplaining.set(false);
     }
   }
 }

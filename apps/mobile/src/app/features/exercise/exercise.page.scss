@@ -90,6 +90,70 @@
   }
 }
 
+.hint-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.hint-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.hint-card {
+  border-radius: 14px;
+  border: 1px solid var(--ion-border-color);
+  background: var(--ion-item-background);
+  padding: 12px 16px;
+
+  .hint-level {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ion-color-secondary);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ion-color-step-800);
+  }
+}
+
+.inline-error {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--ion-color-danger);
+}
+
+.explain-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ion-border-color);
+}
+
+.explain-card {
+  padding: 0 2px;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ion-color-step-800);
+  }
+}
+
 .console-loading {
   display: flex;
   align-items: center;

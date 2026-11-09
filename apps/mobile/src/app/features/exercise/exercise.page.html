@@ -38,6 +38,32 @@
           Enviar
         </ion-button>
       </div>
+
+      <div class="hint-row">
+        <ion-button
+          fill="clear"
+          size="small"
+          [disabled]="hints().length >= 3 || isLoadingHint()"
+          (click)="requestHint()"
+        >
+          <ion-icon slot="start" name="bulb-outline"></ion-icon>
+          Pista ({{ hints().length }}/3)
+        </ion-button>
+        @if (hintError(); as hintErrorMessage) {
+          <p class="inline-error">{{ hintErrorMessage }}</p>
+        }
+      </div>
+
+      @if (hints().length > 0) {
+        <div class="hint-list">
+          @for (hint of hints(); track $index) {
+            <div class="hint-card">
+              <span class="hint-level">Pista {{ $index + 1 }}</span>
+              <p>{{ hint }}</p>
+            </div>
+          }
+        </div>
+      }
     } @else {
       <div class="exercise-body">
         @switch (current.type) {
@@ -119,6 +145,22 @@
 
           @if (currentResult.allPassed) {
             <p class="all-passed">¡Todos los casos pasaron!</p>
+          } @else if (firstFailingTestCase(currentResult)?.stderr) {
+            <div class="explain-row">
+              @if (errorExplanation(); as explanation) {
+                <div class="explain-card">
+                  <p>{{ explanation }}</p>
+                </div>
+              } @else {
+                <ion-button fill="clear" size="small" [disabled]="isExplaining()" (click)="explainError()">
+                  <ion-icon slot="start" name="chatbubble-ellipses-outline"></ion-icon>
+                  Explicar este error
+                </ion-button>
+                @if (explainErrorMessage(); as explainErr) {
+                  <p class="inline-error">{{ explainErr }}</p>
+                }
+              }
+            </div>
           }
         </div>
       }
