@@ -18,9 +18,11 @@ import { NextExerciseService } from './next-exercise.service';
 import { RunCodeDto } from './dto/run-code.dto';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
 import { ReportExerciseDto } from './dto/report-exercise.dto';
+import type { ProgrammingLanguageSlug } from '../users/entities/user.entity';
 import type {
   AdminExerciseStat,
   AnswerSubmitResult,
+  ConceptStat,
   ExerciseDetail,
   ExerciseSummary,
   RunResult,
@@ -63,6 +65,16 @@ export class ExercisesController {
   @Get('admin/stats')
   getAdminStats(): Promise<AdminExerciseStat[]> {
     return this.exercisesService.getAdminStats();
+  }
+
+  // Fase 5B "conceptos débiles" — same route-order note as above: declared
+  // before ':exerciseId' so "concept-stats" isn't matched as an id.
+  @Get('concept-stats')
+  getConceptStats(
+    @Query('languageSlug') languageSlug: ProgrammingLanguageSlug,
+    @CurrentUser() user: PublicUser,
+  ): Promise<ConceptStat[]> {
+    return this.exercisesService.getConceptStats(user.id, languageSlug);
   }
 
   @Get(':exerciseId')

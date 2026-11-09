@@ -95,3 +95,11 @@ export interface AdminExerciseStat {
   retired: number;
   total: number;
 }
+
+// Fase 5B "conceptos débiles" — per-user pass rate for each concept they've
+// attempted in a language, used by Práctica libre to sort/flag weak ones.
+export interface ConceptStat {
+  conceptId: string;
+  passRate: number | null;
+  isWeak: boolean;
+}

@@ -35,6 +35,12 @@ export class User {
   @Column({ type: 'int', nullable: true })
   dailyGoalMinutes: number | null;
 
+  // Set once by the Fase 5B placement test (POST /ai/placement/submit).
+  // Null until taken (or if skipped) — NextExerciseService falls back to its
+  // own DEFAULT_DIFFICULTY in that case.
+  @Column({ type: 'int', nullable: true })
+  placementDifficulty: number | null;
+
   @Column({ default: 'UTC' })
   timezone: string;
 

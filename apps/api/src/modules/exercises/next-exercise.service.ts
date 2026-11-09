@@ -4,6 +4,7 @@ import { In, Not, Repository } from 'typeorm';
 import { Concept } from '../concepts/entities/concept.entity';
 import { GenerationService } from '../generation/generation.service';
 import { TemplateGeneratorService } from '../generation/templates/template-generator.service';
+import { User } from '../users/entities/user.entity';
 import { Exercise } from './entities/exercise.entity';
 import { UserExerciseHistory } from './entities/user-exercise-history.entity';
 import type { ExerciseDetail } from './exercises.types';
@@ -31,6 +32,8 @@ export class NextExerciseService {
     private readonly historyRepo: Repository<UserExerciseHistory>,
     @InjectRepository(Concept)
     private readonly conceptRepo: Repository<Concept>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
     private readonly generationService: GenerationService,
     private readonly templateGeneratorService: TemplateGeneratorService,
     private readonly exercisesService: ExercisesService,
@@ -173,7 +176,10 @@ export class NextExerciseService {
       take: 5,
     });
     if (recent.length === 0) {
-      return DEFAULT_DIFFICULTY;
+      // No history yet for this concept — use the Fase 5B placement test's
+      // result (if the user took one) instead of always starting at 1.
+      const user = await this.userRepo.findOne({ where: { id: userId } });
+      return user?.placementDifficulty ?? DEFAULT_DIFFICULTY;
     }
 
     const exercises = await this.exerciseRepo.find({

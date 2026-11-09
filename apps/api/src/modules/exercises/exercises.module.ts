@@ -9,6 +9,7 @@ import { TestCase } from './entities/test-case.entity';
 import { Attempt } from './entities/attempt.entity';
 import { UserExerciseHistory } from './entities/user-exercise-history.entity';
 import { ExerciseReport } from './entities/exercise-report.entity';
+import { User } from '../users/entities/user.entity';
 import { ExercisesController } from './exercises.controller';
 import { ExercisesService } from './exercises.service';
 import { NextExerciseService } from './next-exercise.service';
@@ -22,6 +23,7 @@ import { ExerciseRecalibrationService } from './exercise-recalibration.service';
       Attempt,
       UserExerciseHistory,
       ExerciseReport,
+      User,
     ]),
     ConceptsModule,
     CoursesModule,

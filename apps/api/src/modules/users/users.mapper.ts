@@ -1,6 +1,8 @@
 import type { User } from './entities/user.entity';
 
-export type PublicUser = Omit<User, 'passwordHash' | 'githubId'>;
+// placementDifficulty is internal bookkeeping for NextExerciseService, not
+// something the client needs to see.
+export type PublicUser = Omit<User, 'passwordHash' | 'githubId' | 'placementDifficulty'>;
 
 export function toPublicUser(user: User): PublicUser {
   return {

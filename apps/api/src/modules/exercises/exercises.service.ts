@@ -27,6 +27,7 @@ import type { SubmitAnswerDto } from './dto/submit-answer.dto';
 import type {
   AdminExerciseStat,
   AnswerSubmitResult,
+  ConceptStat,
   ExerciseDetail,
   ExercisePayloadView,
   ExerciseSummary,
@@ -40,6 +41,11 @@ import type {
 function normalize(output: string): string {
   return output.replace(/\r\n/g, '\n').trim();
 }
+
+// Fase 5B "conceptos débiles": needs a few real attempts before a pass rate
+// is trusted, and a weak concept is one the user fails more than it passes.
+const MIN_ATTEMPTS_FOR_WEAK = 3;
+const WEAK_PASS_RATE = 0.5;
 
 @Injectable()
 export class ExercisesService {
@@ -260,6 +266,56 @@ export class ExercisesService {
     }
 
     return [...byConcept.values()];
+  }
+
+  // Fase 5B "conceptos débiles": per-concept pass rate for this user in this
+  // language, read by Práctica libre to sort/flag concepts worth reinforcing.
+  async getConceptStats(
+    userId: string,
+    languageSlug: ProgrammingLanguageSlug,
+  ): Promise<ConceptStat[]> {
+    const rows = await this.historyRepo
+      .createQueryBuilder('history')
+      // UserExerciseHistory.conceptId is a plain varchar (it's a bookkeeping
+      // entity with no relations), while concepts.id is uuid — needs an
+      // explicit cast or Postgres rejects the join outright.
+      .innerJoin('concepts', 'concept', 'concept.id::text = history.concept_id')
+      .innerJoin('languages', 'language', 'language.id = concept.language_id')
+      .where('history.user_id = :userId', { userId })
+      .andWhere('language.slug = :languageSlug', { languageSlug })
+      .andWhere('history.outcome IN (:...outcomes)', {
+        outcomes: ['passed', 'failed'],
+      })
+      .select('history.concept_id', 'conceptId')
+      .addSelect('history.outcome', 'outcome')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('history.concept_id')
+      .addGroupBy('history.outcome')
+      .getRawMany<{
+        conceptId: string;
+        outcome: 'passed' | 'failed';
+        count: string;
+      }>();
+
+    const byConcept = new Map<string, { passed: number; failed: number }>();
+    for (const row of rows) {
+      const stat = byConcept.get(row.conceptId) ?? { passed: 0, failed: 0 };
+      stat[row.outcome] += Number(row.count);
+      byConcept.set(row.conceptId, stat);
+    }
+
+    return [...byConcept.entries()].map(([conceptId, { passed, failed }]) => {
+      const total = passed + failed;
+      const passRate = total === 0 ? null : passed / total;
+      return {
+        conceptId,
+        passRate,
+        isWeak:
+          total >= MIN_ATTEMPTS_FOR_WEAK &&
+          passRate !== null &&
+          passRate <= WEAK_PASS_RATE,
+      };
+    });
   }
 
   private async dispatchSubmit(
