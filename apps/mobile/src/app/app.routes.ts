@@ -58,6 +58,17 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/admin.page').then((m) => m.AdminPage),
   },
   {
+    path: 'groups',
+    canActivate: [authGuard, onboardingGuard],
+    loadComponent: () => import('./features/groups/groups.page').then((m) => m.GroupsPage),
+  },
+  {
+    path: 'groups/:id',
+    canActivate: [authGuard, onboardingGuard],
+    loadComponent: () =>
+      import('./features/groups/group-detail.page').then((m) => m.GroupDetailPage),
+  },
+  {
     path: 'profile/:userId',
     canActivate: [authGuard, onboardingGuard],
     loadComponent: () =>

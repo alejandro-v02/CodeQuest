@@ -1,0 +1,106 @@
+<app-page-header [title]="detail()?.name ?? ''" [showBack]="true" (back)="goBack()"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
+    </div>
+  } @else if (detail(); as group) {
+    @if (group.code; as code) {
+      <div class="code-card">
+        <div class="code-info">
+          <span class="code-label">{{ 'groups.detail.codeLabel' | translate }}</span>
+          <span class="code-value">{{ code }}</span>
+          <span class="code-hint">{{ 'groups.detail.shareHint' | translate }}</span>
+        </div>
+        <ion-button fill="outline" size="small" (click)="copyCode(code)">
+          <ion-icon slot="start" name="copy-outline"></ion-icon>
+          {{ 'groups.detail.copy' | translate }}
+        </ion-button>
+      </div>
+    }
+
+    <div class="stats-grid">
+      <div class="stat-tile">
+        <span class="stat-value">{{ group.memberCount }}</span>
+        <span class="stat-label">{{ 'groups.detail.membersStat' | translate }}</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">{{ group.activeThisWeek }}</span>
+        <span class="stat-label">{{ 'groups.detail.activeStat' | translate }}</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-value">{{ group.weeklyXp }}</span>
+        <span class="stat-label">{{ 'groups.detail.xpStat' | translate }}</span>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2 class="section-title">
+        <ion-icon name="trophy-outline"></ion-icon>
+        {{ 'groups.detail.leaderboardHeading' | translate }}
+      </h2>
+      <div class="member-list">
+        @for (member of group.members; track member.userId) {
+          <div class="member-row" [class.me]="member.isMe">
+            <button type="button" class="member-main" (click)="openProfile(member.userId)">
+              <span class="member-rank">#{{ member.rank }}</span>
+              <span class="avatar" [style.background]="member.avatarColor">
+                <ion-icon [name]="member.avatarIcon"></ion-icon>
+              </span>
+              <span class="member-info">
+                <span class="member-name">
+                  {{ member.displayName }}
+                  @if (member.isMe) {
+                    <span class="tag you">{{ 'groups.detail.you' | translate }}</span>
+                  }
+                  @if (member.isOwner) {
+                    <span class="tag owner">{{ 'groups.ownerBadge' | translate }}</span>
+                  }
+                </span>
+                <span class="member-meta">
+                  {{ levelLabel(member.level) }}
+                  <span class="streak"><ion-icon name="flame-outline"></ion-icon>{{ member.currentStreak }}</span>
+                  @if (member.isStalled) {
+                    <span class="tag stalled">{{ 'groups.detail.stalled' | translate }}</span>
+                  }
+                </span>
+              </span>
+              <span class="member-xp">{{ member.weeklyXp }} XP</span>
+            </button>
+            @if (group.role === 'owner' && !member.isOwner) {
+              <button
+                type="button"
+                class="kick-button"
+                [attr.aria-label]="'groups.detail.removeMemberAria' | translate"
+                [disabled]="isBusy()"
+                (click)="kick(member)"
+              >
+                <ion-icon name="person-remove-outline"></ion-icon>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </section>
+
+    <div class="footer-actions">
+      @if (group.role === 'owner') {
+        <ion-button expand="block" fill="outline" color="danger" [disabled]="isBusy()" (click)="deleteGroup()">
+          <ion-icon slot="start" name="trash-outline"></ion-icon>
+          {{ 'groups.detail.deleteButton' | translate }}
+        </ion-button>
+      } @else {
+        <ion-button expand="block" fill="outline" color="danger" [disabled]="isBusy()" (click)="leave()">
+          <ion-icon slot="start" name="exit-outline"></ion-icon>
+          {{ 'groups.detail.leaveButton' | translate }}
+        </ion-button>
+      }
+    </div>
+  }
+</ion-content>
