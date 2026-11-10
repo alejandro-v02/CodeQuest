@@ -7,24 +7,24 @@
         <img src="assets/branding/logo-mark.png" alt="" class="brand-mark" />
         <p class="brand">CodeQuest</p>
       </div>
-      <h1>Bienvenido de vuelta</h1>
-      <p class="subtitle">Sigue tu racha donde la dejaste.</p>
+      <h1>{{ 'auth.login.heading' | translate }}</h1>
+      <p class="subtitle">{{ 'auth.login.subtitle' | translate }}</p>
     </div>
 
     <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
       <ion-input
-        label="Correo"
+        [label]="'auth.emailLabel' | translate"
         labelPlacement="stacked"
         type="email"
         inputmode="email"
         formControlName="email"
-        placeholder="tu@correo.com"
+        [placeholder]="'auth.emailPlaceholder' | translate"
         fill="outline"
         [disabled]="isSubmitting()"
       ></ion-input>
 
       <ion-input
-        label="Contraseña"
+        [label]="'auth.passwordLabel' | translate"
         labelPlacement="stacked"
         type="password"
         formControlName="password"
@@ -41,11 +41,11 @@
         @if (isSubmitting()) {
           <ion-spinner name="dots"></ion-spinner>
         } @else {
-          Iniciar sesión
+          {{ 'auth.login.submit' | translate }}
         }
       </ion-button>
 
-      <div class="divider"><span>o</span></div>
+      <div class="divider"><span>{{ 'auth.orDivider' | translate }}</span></div>
 
       <ion-button
         expand="block"
@@ -55,11 +55,11 @@
         (click)="continueWithGithub()"
       >
         <ion-icon name="logo-github" slot="start"></ion-icon>
-        Continuar con GitHub
+        {{ 'auth.continueWithGithub' | translate }}
       </ion-button>
 
       <p class="switch-link">
-        ¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a>
+        {{ 'auth.login.switchPrompt' | translate }} <a routerLink="/auth/register">{{ 'auth.login.switchLink' | translate }}</a>
       </p>
     </form>
 

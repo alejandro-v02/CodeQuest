@@ -1,5 +1,5 @@
 <app-page-header title="CodeQuest">
-  <ion-button actions fill="clear" class="settings-button" aria-label="Ajustes" (click)="openSettings()">
+  <ion-button actions fill="clear" class="settings-button" [attr.aria-label]="'common.settings' | translate" (click)="openSettings()">
     <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
   </ion-button>
 </app-page-header>
@@ -14,11 +14,11 @@
   <ng-template>
     <ion-content class="settings-modal-content">
       <div class="modal-handle"></div>
-      <p class="eyebrow">Ajustes</p>
-      <h1>Tus preferencias</h1>
-      <p class="subtitle">Cambia tu lenguaje y meta diaria cuando quieras.</p>
+      <p class="eyebrow">{{ 'common.settings' | translate }}</p>
+      <h1>{{ 'home.settingsHeading' | translate }}</h1>
+      <p class="subtitle">{{ 'home.settingsSubtitle' | translate }}</p>
 
-      <h2 class="section-title">Lenguaje preferido</h2>
+      <h2 class="section-title">{{ 'home.preferredLanguageLabel' | translate }}</h2>
       <div class="language-grid">
         @for (lang of languages; track lang.slug) {
           <button
@@ -32,7 +32,7 @@
         }
       </div>
 
-      <h2 class="section-title">Meta diaria</h2>
+      <h2 class="section-title">{{ 'profile.dailyGoalLabel' | translate }}</h2>
       <div class="goal-row">
         @for (minutes of dailyGoals; track minutes) {
           <button
@@ -55,13 +55,13 @@
         @if (isSavingPreferences()) {
           <ion-spinner name="dots"></ion-spinner>
         } @else {
-          Guardar cambios
+          {{ 'profile.saveChanges' | translate }}
         }
       </ion-button>
 
       <ion-button expand="block" fill="outline" color="danger" class="logout-button" (click)="logout()">
         <ion-icon slot="start" name="log-out-outline"></ion-icon>
-        Cerrar sesión
+        {{ 'profile.logoutButton' | translate }}
       </ion-button>
     </ion-content>
   </ng-template>
@@ -75,18 +75,18 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
-      <ion-button fill="outline" (click)="loadPath()">Reintentar</ion-button>
+      <ion-button fill="outline" (click)="loadPath()">{{ 'common.retry' | translate }}</ion-button>
     </div>
   } @else if (path(); as overview) {
     @if (isOffline()) {
-      <p class="offline-notice">Mostrando contenido guardado sin conexión.</p>
+      <p class="offline-notice">{{ 'home.offlineNotice' | translate }}</p>
     }
 
     <div class="path-card">
       <div class="path-card-top">
         <span class="path-badge">
           <ion-icon name="school-outline"></ion-icon>
-          Tu ruta de aprendizaje
+          {{ 'home.pathBadge' | translate }}
         </span>
         <app-language-badge [languageSlug]="overview.languageSlug"></app-language-badge>
       </div>
@@ -98,8 +98,8 @@
 
       <div class="path-progress">
         <div class="path-progress-row">
-          <span>Tu progreso</span>
-          <span class="path-progress-count">{{ completedLessons(overview) }} de {{ totalLessons(overview) }}</span>
+          <span>{{ 'home.progressLabel' | translate }}</span>
+          <span class="path-progress-count">{{ completedLessons(overview) }} {{ 'home.progressOf' | translate }} {{ totalLessons(overview) }}</span>
         </div>
         <div class="path-progress-bar">
           <div class="path-progress-fill" [style.width.%]="progressPercent(overview)"></div>
@@ -110,7 +110,7 @@
 
     <ion-button fill="outline" class="practice-button" (click)="openPractice()">
       <ion-icon slot="start" name="flash-outline"></ion-icon>
-      Práctica libre
+      {{ 'home.practiceButton' | translate }}
     </ion-button>
 
     @for (module of overview.modules; track module.id; let idx = $index) {
@@ -136,8 +136,8 @@
   } @else {
     <app-empty-state
       icon="compass-outline"
-      title="Elige tu lenguaje"
-      subtitle="Ve a Ajustes para elegir un lenguaje y empezar tu ruta de aprendizaje."
+      [title]="'home.emptyTitle' | translate"
+      [subtitle]="'home.emptySubtitle' | translate"
     ></app-empty-state>
   }
 </ion-content>

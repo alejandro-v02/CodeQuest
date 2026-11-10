@@ -13,6 +13,8 @@ import { LoadingBounceComponent } from '../../shared/components/loading-bounce/l
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { LanguageBadgeComponent } from '../../shared/components/language-badge/language-badge.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-home',
@@ -28,12 +30,14 @@ import { EmptyStateComponent } from '../../shared/components/empty-state/empty-s
     PageHeaderComponent,
     LanguageBadgeComponent,
     EmptyStateComponent,
+    TranslatePipe,
   ],
 })
 export class HomePage implements ViewWillEnter {
   private readonly authService = inject(AuthService);
   private readonly coursesService = inject(CoursesService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly path = signal<PathOverview | null>(null);
   readonly isLoading = signal(true);
@@ -70,7 +74,7 @@ export class HomePage implements ViewWillEnter {
       this.path.set(await this.coursesService.getPath(language));
       this.isOffline.set(this.coursesService.isOffline());
     } catch {
-      this.errorMessage.set('No se pudo cargar tu ruta de aprendizaje.');
+      this.errorMessage.set(this.i18n.t('home.errors.loadPathFailed'));
     } finally {
       this.isLoading.set(false);
     }
@@ -164,14 +168,14 @@ export class HomePage implements ViewWillEnter {
   progressMessage(overview: PathOverview): string {
     const percent = this.progressPercent(overview);
     if (percent === 0) {
-      return 'Empieza tu primera lección.';
+      return this.i18n.t('home.progress.start');
     }
     if (percent === 100) {
-      return '¡Completaste toda la ruta!';
+      return this.i18n.t('home.progress.complete');
     }
     if (percent >= 50) {
-      return '¡Vas por buen camino!';
+      return this.i18n.t('home.progress.onTrack');
     }
-    return '¡Sigue así!';
+    return this.i18n.t('home.progress.keepGoing');
   }
 }

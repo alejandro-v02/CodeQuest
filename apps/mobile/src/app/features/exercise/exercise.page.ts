@@ -19,6 +19,8 @@ import { BugExerciseComponent } from '../../shared/components/bug-exercise/bug-e
 import { LoadingWaveComponent } from '../../shared/components/loading-wave/loading-wave.component';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import {
   isAnswerSubmitResult,
   type AnswerSubmitResult,
@@ -33,11 +35,11 @@ import {
   type TestCaseResult,
 } from '../../core/models/exercise.model';
 
-const REPORT_REASONS: { reason: ExerciseReportReason; label: string }[] = [
-  { reason: 'wrong_solution', label: 'La solución no funciona' },
-  { reason: 'unclear_prompt', label: 'El enunciado no se entiende' },
-  { reason: 'duplicate', label: 'Está repetido' },
-  { reason: 'other', label: 'Otro motivo' },
+const REPORT_REASON_KEYS: { reason: ExerciseReportReason; labelKey: string }[] = [
+  { reason: 'wrong_solution', labelKey: 'exercise.report.wrongSolution' },
+  { reason: 'unclear_prompt', labelKey: 'exercise.report.unclearPrompt' },
+  { reason: 'duplicate', labelKey: 'exercise.report.duplicate' },
+  { reason: 'other', labelKey: 'exercise.report.other' },
 ];
 
 @Component({
@@ -56,6 +58,7 @@ const REPORT_REASONS: { reason: ExerciseReportReason; label: string }[] = [
     LoadingWaveComponent,
     LoadingBounceComponent,
     PageHeaderComponent,
+    TranslatePipe,
   ],
 })
 export class ExercisePage implements ViewWillEnter {
@@ -65,6 +68,7 @@ export class ExercisePage implements ViewWillEnter {
   private readonly aiService = inject(AiService);
   private readonly socialService = inject(SocialService);
   private readonly actionSheetController = inject(ActionSheetController);
+  private readonly i18n = inject(I18nService);
 
   @ViewChild(CodeEditorComponent) private codeEditor?: CodeEditorComponent;
 
@@ -130,7 +134,7 @@ export class ExercisePage implements ViewWillEnter {
       this.errorExplanation.set(null);
       this.explainErrorMessage.set(null);
     } catch {
-      this.errorMessage.set('No se pudo cargar el ejercicio.');
+      this.errorMessage.set(this.i18n.t('exercise.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }
@@ -175,7 +179,7 @@ export class ExercisePage implements ViewWillEnter {
     try {
       this.result.set(await this.exercisesService.run(exercise.id, this.code()));
     } catch {
-      this.errorMessage.set('No se pudo ejecutar el código.');
+      this.errorMessage.set(this.i18n.t('exercise.errors.runFailed'));
     } finally {
       this.isRunning.set(false);
     }
@@ -200,7 +204,7 @@ export class ExercisePage implements ViewWillEnter {
         this.exercise.set({ ...exercise, solved: true });
       }
     } catch {
-      this.errorMessage.set('No se pudo enviar la solución.');
+      this.errorMessage.set(this.i18n.t('exercise.errors.submitFailed'));
     } finally {
       this.isChecking.set(false);
     }
@@ -233,7 +237,7 @@ export class ExercisePage implements ViewWillEnter {
         this.exercise.set({ ...exercise, solved: true });
       }
     } catch {
-      this.errorMessage.set('No se pudo comprobar la respuesta.');
+      this.errorMessage.set(this.i18n.t('exercise.errors.checkFailed'));
     } finally {
       this.isChecking.set(false);
     }
@@ -249,7 +253,7 @@ export class ExercisePage implements ViewWillEnter {
       case 'sort':
         return (result.correctAnswer as string[]).join('\n');
       case 'bug':
-        return `Línea ${(result.correctAnswer as number) + 1}`;
+        return `${this.i18n.t('exercise.lineLabel')} ${(result.correctAnswer as number) + 1}`;
       default:
         return '';
     }
@@ -271,13 +275,13 @@ export class ExercisePage implements ViewWillEnter {
     }
 
     const sheet = await this.actionSheetController.create({
-      header: '¿Qué está mal con este ejercicio?',
+      header: this.i18n.t('exercise.report.header'),
       buttons: [
-        ...REPORT_REASONS.map(({ reason, label }) => ({
-          text: label,
+        ...REPORT_REASON_KEYS.map(({ reason, labelKey }) => ({
+          text: this.i18n.t(labelKey),
           handler: () => void this.sendReport(exercise.id, reason),
         })),
-        { text: 'Cancelar', role: 'cancel' },
+        { text: this.i18n.t('common.cancel'), role: 'cancel' },
       ],
     });
     await sheet.present();
@@ -289,7 +293,7 @@ export class ExercisePage implements ViewWillEnter {
       await this.exercisesService.reportExercise(exerciseId, reason);
       this.reportSent.set(true);
     } catch {
-      this.errorMessage.set('No se pudo enviar el reporte.');
+      this.errorMessage.set(this.i18n.t('exercise.errors.reportFailed'));
     } finally {
       this.isReporting.set(false);
     }
@@ -311,7 +315,7 @@ export class ExercisePage implements ViewWillEnter {
       });
       this.shared.set(true);
     } catch {
-      this.errorMessage.set('No se pudo compartir en el muro.');
+      this.errorMessage.set(this.i18n.t('exercise.errors.shareFailed'));
     } finally {
       this.isSharing.set(false);
     }
@@ -332,9 +336,11 @@ export class ExercisePage implements ViewWillEnter {
       this.hints.update((hints) => [...hints, hint.text]);
     } catch (error) {
       this.hintError.set(
-        error instanceof HttpErrorResponse && error.status === 429
-          ? 'Alcanzaste el límite diario de usos de IA. Vuelve mañana.'
-          : 'No se pudo obtener la pista. Intenta de nuevo.',
+        this.i18n.t(
+          error instanceof HttpErrorResponse && error.status === 429
+            ? 'exercise.errors.aiLimitReached'
+            : 'exercise.errors.hintFailed',
+        ),
       );
     } finally {
       this.isLoadingHint.set(false);
@@ -369,9 +375,11 @@ export class ExercisePage implements ViewWillEnter {
       this.errorExplanation.set(response.explanation);
     } catch (error) {
       this.explainErrorMessage.set(
-        error instanceof HttpErrorResponse && error.status === 429
-          ? 'Alcanzaste el límite diario de usos de IA. Vuelve mañana.'
-          : 'No se pudo generar la explicación. Intenta de nuevo.',
+        this.i18n.t(
+          error instanceof HttpErrorResponse && error.status === 429
+            ? 'exercise.errors.aiLimitReached'
+            : 'exercise.errors.explainFailed',
+        ),
       );
     } finally {
       this.isExplaining.set(false);

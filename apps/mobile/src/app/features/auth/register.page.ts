@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { IonContent, IonInput, IonButton, IonIcon, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-register',
@@ -17,12 +19,14 @@ import { AuthService } from '../../core/services/auth.service';
     IonButton,
     IonIcon,
     IonSpinner,
+    TranslatePipe,
   ],
 })
 export class RegisterPage {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -46,9 +50,11 @@ export class RegisterPage {
       await this.router.navigateByUrl('/onboarding');
     } catch (error) {
       this.errorMessage.set(
-        error instanceof HttpErrorResponse && error.status === 409
-          ? 'Ese correo ya está registrado.'
-          : 'No se pudo crear la cuenta. Intenta de nuevo.',
+        this.i18n.t(
+          error instanceof HttpErrorResponse && error.status === 409
+            ? 'auth.register.errors.emailTaken'
+            : 'auth.register.errors.createFailed',
+        ),
       );
     } finally {
       this.isSubmitting.set(false);

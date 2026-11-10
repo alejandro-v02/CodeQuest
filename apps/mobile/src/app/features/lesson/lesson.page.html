@@ -1,4 +1,4 @@
-<app-page-header [title]="lesson()?.title ?? 'Lección'" [showBack]="true" (back)="goBack()"></app-page-header>
+<app-page-header [title]="lesson()?.title ?? ('lesson.defaultTitle' | translate)" [showBack]="true" (back)="goBack()"></app-page-header>
 
 <ion-content [fullscreen]="true" class="lesson-content">
   @if (isLoading()) {
@@ -8,18 +8,18 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
-      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
     </div>
   } @else if (lesson(); as current) {
     @if (isOffline()) {
-      <p class="offline-notice">Mostrando contenido guardado sin conexión.</p>
+      <p class="offline-notice">{{ 'lesson.offlineNotice' | translate }}</p>
     }
 
     @if (renderedContent(); as html) {
       <div class="markdown-body" [innerHTML]="html"></div>
     } @else {
       <div class="state-pane">
-        <p>El contenido de esta lección llega en una fase posterior.</p>
+        <p>{{ 'lesson.contentComingSoon' | translate }}</p>
       </div>
     }
 
@@ -32,15 +32,15 @@
       @if (isCompleting()) {
         <ion-spinner name="dots"></ion-spinner>
       } @else if (current.status === 'completed') {
-        Completada
+        {{ 'lesson.completed' | translate }}
       } @else {
-        Marcar como completada
+        {{ 'lesson.markComplete' | translate }}
       }
     </ion-button>
 
     @if (exercises().length > 0) {
       <div class="exercises-section">
-        <h2>Practicar</h2>
+        <h2>{{ 'lesson.practiceHeading' | translate }}</h2>
         @for (exercise of exercises(); track exercise.id) {
           <button class="exercise-row" type="button" (click)="openExercise(exercise.id)">
             <ion-icon [name]="exerciseIcon(exercise.type)"></ion-icon>

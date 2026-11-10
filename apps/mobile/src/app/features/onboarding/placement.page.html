@@ -6,17 +6,17 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
-      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
-      <ion-button fill="clear" (click)="skip()">Omitir por ahora</ion-button>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
+      <ion-button fill="clear" (click)="skip()">{{ 'placement.skipForNow' | translate }}</ion-button>
     </div>
   } @else if (questions()[currentIndex()]; as question) {
-    <p class="eyebrow">Paso 2 de 2</p>
-    <h1>Prueba de nivel</h1>
+    <p class="eyebrow">{{ 'placement.stepTwoOfTwo' | translate }}</p>
+    <h1>{{ 'placement.heading' | translate }}</h1>
     <p class="subtitle">
-      Unas preguntas rápidas para darte ejercicios del nivel justo desde el principio.
+      {{ 'placement.subtitle' | translate }}
     </p>
 
-    <p class="progress">Pregunta {{ currentIndex() + 1 }} de {{ questions().length }}</p>
+    <p class="progress">{{ 'placement.questionLabel' | translate }} {{ currentIndex() + 1 }} {{ 'home.progressOf' | translate }} {{ questions().length }}</p>
     <p class="question-prompt">{{ question.prompt }}</p>
 
     <div class="option-list">
@@ -27,6 +27,6 @@
       }
     </div>
 
-    <ion-button fill="clear" class="skip-button" (click)="skip()">Omitir por ahora</ion-button>
+    <ion-button fill="clear" class="skip-button" (click)="skip()">{{ 'placement.skipForNow' | translate }}</ion-button>
   }
 </ion-content>

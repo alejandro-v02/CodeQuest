@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { IonContent, IonInput, IonButton, IonIcon, IonSpinner } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { DeveloperCreditComponent } from '../../shared/components/developer-credit/developer-credit.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-login',
@@ -18,12 +20,14 @@ import { DeveloperCreditComponent } from '../../shared/components/developer-cred
     IonIcon,
     IonSpinner,
     DeveloperCreditComponent,
+    TranslatePipe,
   ],
 })
 export class LoginPage {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly isSubmitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -45,7 +49,7 @@ export class LoginPage {
       await this.authService.login(this.form.getRawValue());
       await this.router.navigateByUrl('/tabs/home');
     } catch {
-      this.errorMessage.set('Correo o contraseña incorrectos.');
+      this.errorMessage.set(this.i18n.t('auth.login.errors.invalidCredentials'));
     } finally {
       this.isSubmitting.set(false);
     }

@@ -7,16 +7,19 @@ import {
   LANGUAGE_OPTIONS,
   type ProgrammingLanguageSlug,
 } from '../../core/models/user.model';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-onboarding',
   templateUrl: './onboarding.page.html',
   styleUrls: ['./onboarding.page.scss'],
-  imports: [IonContent, IonButton, IonSpinner],
+  imports: [IonContent, IonButton, IonSpinner, TranslatePipe],
 })
 export class OnboardingPage {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly languages = LANGUAGE_OPTIONS;
   readonly dailyGoals = DAILY_GOAL_OPTIONS;
@@ -47,7 +50,7 @@ export class OnboardingPage {
       await this.authService.updatePreferences(language, goal);
       await this.router.navigateByUrl('/onboarding/placement');
     } catch {
-      this.errorMessage.set('No se pudieron guardar tus preferencias. Intenta de nuevo.');
+      this.errorMessage.set(this.i18n.t('onboarding.errors.saveFailed'));
     } finally {
       this.isSubmitting.set(false);
     }

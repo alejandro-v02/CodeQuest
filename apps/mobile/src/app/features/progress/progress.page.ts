@@ -12,6 +12,8 @@ import type {
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 const XP_PER_LEVEL = 100;
 
@@ -26,6 +28,7 @@ const XP_PER_LEVEL = 100;
     LoadingBounceComponent,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslatePipe,
   ],
 })
 export class ProgressPage implements ViewWillEnter {
@@ -33,6 +36,7 @@ export class ProgressPage implements ViewWillEnter {
   private readonly exercisesService = inject(ExercisesService);
   private readonly gamificationService = inject(GamificationService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly summary = signal<GamificationSummary | null>(null);
   readonly ranking = signal<RankingResponse | null>(null);
@@ -66,7 +70,7 @@ export class ProgressPage implements ViewWillEnter {
       this.ranking.set(ranking);
       this.stats.set(stats);
     } catch {
-      this.errorMessage.set('No se pudo cargar tu progreso.');
+      this.errorMessage.set(this.i18n.t('progress.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }

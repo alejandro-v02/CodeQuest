@@ -8,12 +8,22 @@ import type { LessonDetail } from '../../core/models/course.model';
 import type { ExerciseSummary } from '../../core/models/exercise.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-lesson',
   templateUrl: './lesson.page.html',
   styleUrls: ['./lesson.page.scss'],
-  imports: [IonIcon, IonButton, IonContent, IonSpinner, LoadingBounceComponent, PageHeaderComponent],
+  imports: [
+    IonIcon,
+    IonButton,
+    IonContent,
+    IonSpinner,
+    LoadingBounceComponent,
+    PageHeaderComponent,
+    TranslatePipe,
+  ],
 })
 export class LessonPage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);
@@ -21,6 +31,7 @@ export class LessonPage implements ViewWillEnter {
   private readonly coursesService = inject(CoursesService);
   private readonly exercisesService = inject(ExercisesService);
   private readonly markdownService = inject(MarkdownService);
+  private readonly i18n = inject(I18nService);
 
   readonly lesson = signal<LessonDetail | null>(null);
   readonly exercises = signal<ExerciseSummary[]>([]);
@@ -58,7 +69,7 @@ export class LessonPage implements ViewWillEnter {
       // cached, offline) lesson — it only loses the "Practicar" section.
       this.exercises.set(await this.exercisesService.getForLesson(lessonId).catch(() => []));
     } catch {
-      this.errorMessage.set('No se pudo cargar la lección.');
+      this.errorMessage.set(this.i18n.t('lesson.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }
@@ -93,7 +104,7 @@ export class LessonPage implements ViewWillEnter {
     try {
       this.lesson.set(await this.coursesService.completeLesson(current.id));
     } catch {
-      this.errorMessage.set('No se pudo marcar la lección como completada.');
+      this.errorMessage.set(this.i18n.t('lesson.errors.completeFailed'));
     } finally {
       this.isCompleting.set(false);
     }

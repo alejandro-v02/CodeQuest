@@ -5,17 +5,20 @@ import { AiService } from '../../core/services/ai.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import type { PlacementAnswer, PlacementQuestion } from '../../core/models/ai.model';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-placement',
   templateUrl: './placement.page.html',
   styleUrls: ['./placement.page.scss'],
-  imports: [IonContent, IonButton, LoadingBounceComponent],
+  imports: [IonContent, IonButton, LoadingBounceComponent, TranslatePipe],
 })
 export class PlacementPage implements ViewWillEnter {
   private readonly aiService = inject(AiService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly questions = signal<PlacementQuestion[]>([]);
   readonly currentIndex = signal(0);
@@ -46,7 +49,7 @@ export class PlacementPage implements ViewWillEnter {
     try {
       this.questions.set(await this.aiService.getPlacementQuestions(language));
     } catch {
-      this.errorMessage.set('No se pudo cargar la prueba de nivel.');
+      this.errorMessage.set(this.i18n.t('placement.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }

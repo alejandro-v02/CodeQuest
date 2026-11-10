@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnChanges, Output, signal } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import type { SortPayload } from '../../../core/models/exercise.model';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-sort-exercise',
   templateUrl: './sort-exercise.component.html',
   styleUrls: ['./sort-exercise.component.scss'],
-  imports: [CdkDropList, CdkDrag],
+  imports: [CdkDropList, CdkDrag, TranslatePipe],
 })
 export class SortExerciseComponent implements OnChanges {
   @Input({ required: true }) payload!: SortPayload;

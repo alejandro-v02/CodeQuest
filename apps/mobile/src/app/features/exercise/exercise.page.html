@@ -1,4 +1,4 @@
-<app-page-header title="Ejercicio" [showBack]="true" (back)="goBack()"></app-page-header>
+<app-page-header [title]="'exercise.pageTitle' | translate" [showBack]="true" (back)="goBack()"></app-page-header>
 
 <ion-content [fullscreen]="true" class="exercise-content">
   @if (isLoading()) {
@@ -8,7 +8,7 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
-      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
     </div>
   } @else if (exercise(); as current) {
     <p class="prompt">{{ current.prompt }}</p>
@@ -22,7 +22,7 @@
         ></app-code-editor>
       </div>
 
-      <p class="editor-hint">Toca dentro del código donde quieras escribir, y usa estos símbolos para insertarlos ahí:</p>
+      <p class="editor-hint">{{ 'exercise.editorHint' | translate }}</p>
       <div class="symbol-bar">
         @for (symbol of symbols; track symbol) {
           <button type="button" class="symbol-key" (click)="insertSymbol(symbol)">{{ symbol }}</button>
@@ -32,11 +32,11 @@
       <div class="actions">
         <ion-button fill="outline" [disabled]="isRunning() || isChecking()" (click)="run()">
           <ion-icon name="play" slot="start"></ion-icon>
-          Ejecutar
+          {{ 'exercise.run' | translate }}
         </ion-button>
         <ion-button [disabled]="isRunning() || isChecking()" (click)="submit()">
           <ion-icon name="send" slot="start"></ion-icon>
-          Enviar
+          {{ 'exercise.submit' | translate }}
         </ion-button>
       </div>
 
@@ -48,7 +48,7 @@
           (click)="requestHint()"
         >
           <ion-icon slot="start" name="bulb-outline"></ion-icon>
-          Pista ({{ hints().length }}/3)
+          {{ 'exercise.hintButton' | translate }} ({{ hints().length }}/3)
         </ion-button>
         @if (hintError(); as hintErrorMessage) {
           <p class="inline-error">{{ hintErrorMessage }}</p>
@@ -59,7 +59,7 @@
         <div class="hint-list">
           @for (hint of hints(); track $index) {
             <div class="hint-card">
-              <span class="hint-level">Pista {{ $index + 1 }}</span>
+              <span class="hint-level">{{ 'exercise.hintLevel' | translate }} {{ $index + 1 }}</span>
               <p>{{ hint }}</p>
             </div>
           }
@@ -102,7 +102,7 @@
       <div class="actions">
         <ion-button [disabled]="!canCheck || isChecking()" (click)="checkAnswer()">
           <ion-icon name="checkmark-circle" slot="start"></ion-icon>
-          Comprobar
+          {{ 'exercise.check' | translate }}
         </ion-button>
       </div>
     }
@@ -116,10 +116,10 @@
         <div class="answer-result" [class.passed]="currentResult.passed" [class.failed]="!currentResult.passed">
           <div class="answer-result-header">
             <ion-icon [name]="currentResult.passed ? 'checkmark-circle' : 'close-circle'"></ion-icon>
-            <span>{{ currentResult.passed ? '¡Correcto!' : 'No es correcto' }}</span>
+            <span>{{ (currentResult.passed ? 'exercise.correct' : 'exercise.incorrect') | translate }}</span>
           </div>
           @if (!currentResult.passed) {
-            <p class="answer-result-line"><span>Respuesta correcta:</span> {{ formatCorrectAnswer(currentResult) }}</p>
+            <p class="answer-result-line"><span>{{ 'exercise.correctAnswerLabel' | translate }}</span> {{ formatCorrectAnswer(currentResult) }}</p>
             @if (currentResult.explanation) {
               <p class="answer-result-line">{{ currentResult.explanation }}</p>
             }
@@ -131,12 +131,12 @@
             <div class="test-case" [class.passed]="testCase.passed" [class.failed]="!testCase.passed">
               <div class="test-case-header">
                 <ion-icon [name]="testCase.passed ? 'checkmark-circle' : 'close-circle'"></ion-icon>
-                <span>{{ testCase.passed ? 'Caso correcto' : 'Caso incorrecto' }}</span>
+                <span>{{ (testCase.passed ? 'exercise.testCasePassed' : 'exercise.testCaseFailed') | translate }}</span>
               </div>
               @if (testCase.input !== null) {
-                <p class="test-case-line"><span>Entrada:</span> {{ testCase.input || '(vacía)' }}</p>
-                <p class="test-case-line"><span>Esperado:</span> {{ testCase.expectedOutput }}</p>
-                <p class="test-case-line"><span>Obtenido:</span> {{ testCase.actualOutput || '(sin salida)' }}</p>
+                <p class="test-case-line"><span>{{ 'exercise.inputLabel' | translate }}</span> {{ testCase.input || ('exercise.emptyValue' | translate) }}</p>
+                <p class="test-case-line"><span>{{ 'exercise.expectedLabel' | translate }}</span> {{ testCase.expectedOutput }}</p>
+                <p class="test-case-line"><span>{{ 'exercise.actualLabel' | translate }}</span> {{ testCase.actualOutput || ('exercise.noOutput' | translate) }}</p>
                 @if (testCase.stderr) {
                   <p class="test-case-line error">{{ testCase.stderr }}</p>
                 }
@@ -145,14 +145,14 @@
           }
 
           @if (currentResult.allPassed) {
-            <p class="all-passed">¡Todos los casos pasaron!</p>
+            <p class="all-passed">{{ 'exercise.allPassed' | translate }}</p>
             <div class="share-row">
               @if (shared()) {
-                <p class="share-sent">¡Compartido en tu muro!</p>
+                <p class="share-sent">{{ 'exercise.sharedSuccess' | translate }}</p>
               } @else {
                 <ion-button fill="clear" size="small" [disabled]="isSharing()" (click)="shareToFeed()">
                   <ion-icon slot="start" name="people-outline"></ion-icon>
-                  Compartir en el muro
+                  {{ 'exercise.shareToFeed' | translate }}
                 </ion-button>
               }
             </div>
@@ -165,7 +165,7 @@
               } @else {
                 <ion-button fill="clear" size="small" [disabled]="isExplaining()" (click)="explainError()">
                   <ion-icon slot="start" name="chatbubble-ellipses-outline"></ion-icon>
-                  Explicar este error
+                  {{ 'exercise.explainErrorButton' | translate }}
                 </ion-button>
                 @if (explainErrorMessage(); as explainErr) {
                   <p class="inline-error">{{ explainErr }}</p>
@@ -179,11 +179,11 @@
 
     <div class="report-row">
       @if (reportSent()) {
-        <p class="report-sent">Gracias, lo revisaremos.</p>
+        <p class="report-sent">{{ 'exercise.reportThanks' | translate }}</p>
       } @else {
         <ion-button fill="clear" size="small" [disabled]="isReporting()" (click)="openReportSheet()">
           <ion-icon name="flag-outline" slot="start"></ion-icon>
-          Reportar ejercicio
+          {{ 'exercise.reportExercise' | translate }}
         </ion-button>
       }
     </div>

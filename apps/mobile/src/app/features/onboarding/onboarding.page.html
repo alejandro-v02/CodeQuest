@@ -1,10 +1,10 @@
 <ion-content [fullscreen]="true" class="onboarding-content">
-  <p class="eyebrow">Paso 1 de 2</p>
-  <h1>Arma tu ruta</h1>
-  <p class="subtitle">Elige con qué lenguaje empiezas y cuánto tiempo quieres practicar al día.</p>
+  <p class="eyebrow">{{ 'onboarding.stepOneOfTwo' | translate }}</p>
+  <h1>{{ 'onboarding.heading' | translate }}</h1>
+  <p class="subtitle">{{ 'onboarding.subtitle' | translate }}</p>
 
   <section>
-    <h2>Lenguaje</h2>
+    <h2>{{ 'onboarding.languageLabel' | translate }}</h2>
     <div class="language-grid">
       @for (lang of languages; track lang.slug) {
         <button
@@ -20,7 +20,7 @@
   </section>
 
   <section>
-    <h2>Meta diaria</h2>
+    <h2>{{ 'profile.dailyGoalLabel' | translate }}</h2>
     <div class="goal-row">
       @for (minutes of dailyGoals; track minutes) {
         <button
@@ -48,7 +48,7 @@
     @if (isSubmitting()) {
       <ion-spinner name="dots"></ion-spinner>
     } @else {
-      Comenzar
+      {{ 'onboarding.finishButton' | translate }}
     }
   </ion-button>
 </ion-content>

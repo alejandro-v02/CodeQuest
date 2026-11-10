@@ -9,6 +9,8 @@ import type { ConceptStat } from '../../core/models/exercise.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 // Fase 5B "conceptos débiles": the concept list annotated with whether this
 // user struggles with it, so Práctica libre can sort/flag it.
@@ -27,6 +29,7 @@ interface ConceptRow extends ConceptSummary {
     LoadingBounceComponent,
     PageHeaderComponent,
     EmptyStateComponent,
+    TranslatePipe,
   ],
 })
 export class PracticePage implements OnInit, ViewWillEnter {
@@ -34,6 +37,7 @@ export class PracticePage implements OnInit, ViewWillEnter {
   private readonly conceptsService = inject(ConceptsService);
   private readonly exercisesService = inject(ExercisesService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly concepts = signal<ConceptRow[]>([]);
   readonly isLoading = signal(true);
@@ -86,7 +90,7 @@ export class PracticePage implements OnInit, ViewWillEnter {
 
       this.concepts.set(rows);
     } catch {
-      this.errorMessage.set('No se pudieron cargar los conceptos.');
+      this.errorMessage.set(this.i18n.t('practice.errors.loadConceptsFailed'));
     } finally {
       this.isLoading.set(false);
     }
@@ -104,7 +108,7 @@ export class PracticePage implements OnInit, ViewWillEnter {
       const exercise = await this.exercisesService.getNext(concept.id);
       await this.router.navigateByUrl(`/exercise/${exercise.id}`);
     } catch {
-      this.errorMessage.set('No se pudo generar un ejercicio. Intenta de nuevo.');
+      this.errorMessage.set(this.i18n.t('practice.errors.generateFailed'));
       this.startingConceptId.set(null);
     }
   }
