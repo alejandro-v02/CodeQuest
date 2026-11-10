@@ -16,6 +16,7 @@ import { ExercisesModule } from './modules/exercises/exercises.module';
 import { GenerationModule } from './modules/generation/generation.module';
 import { AiModule } from './modules/ai/ai.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
+import { SocialModule } from './modules/social/social.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { GamificationModule } from './modules/gamification/gamification.module';
     GenerationModule,
     AiModule,
     GamificationModule,
+    SocialModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

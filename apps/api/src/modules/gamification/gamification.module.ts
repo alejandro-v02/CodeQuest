@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AiInteraction } from '../ai/entities/ai-interaction.entity';
+import { SocialModule } from '../social/social.module';
 import { User } from '../users/entities/user.entity';
 import { GamificationController } from './gamification.controller';
 import { GamificationService } from './gamification.service';
@@ -10,7 +11,14 @@ import { XpEvent } from './entities/xp-event.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([XpEvent, Streak, UserAchievement, User, AiInteraction]),
+    TypeOrmModule.forFeature([
+      XpEvent,
+      Streak,
+      UserAchievement,
+      User,
+      AiInteraction,
+    ]),
+    SocialModule,
   ],
   controllers: [GamificationController],
   providers: [GamificationService],

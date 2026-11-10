@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AiInteraction } from '../ai/entities/ai-interaction.entity';
+import { SocialService } from '../social/social.service';
 import { User } from '../users/entities/user.entity';
 import { ACHIEVEMENTS_CATALOG } from './achievements.catalog';
 import { Streak } from './entities/streak.entity';
@@ -31,7 +32,11 @@ function startOfIsoWeekUtc(): Date {
   const day = now.getUTCDay();
   const diffToMonday = day === 0 ? 6 : day - 1;
   return new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - diffToMonday),
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() - diffToMonday,
+    ),
   );
 }
 
@@ -48,6 +53,7 @@ export class GamificationService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(AiInteraction)
     private readonly aiInteractionRepo: Repository<AiInteraction>,
+    private readonly socialService: SocialService,
   ) {}
 
   // Only pays XP the first time this exerciseId is passed by this user —
@@ -61,7 +67,9 @@ export class GamificationService {
     }
 
     const isFirstEverExercise =
-      (await this.xpEventRepo.count({ where: { userId, reason: 'exercise' } })) === 0;
+      (await this.xpEventRepo.count({
+        where: { userId, reason: 'exercise' },
+      })) === 0;
 
     await this.xpEventRepo.save(
       this.xpEventRepo.create({
@@ -71,7 +79,7 @@ export class GamificationService {
         sourceId: exerciseId,
       }),
     );
-    await this.userRepo.increment({ id: userId }, 'xp', EXERCISE_XP);
+    await this.applyXpGain(userId, EXERCISE_XP);
     await this.recordActivity(userId);
 
     if (isFirstEverExercise) {
@@ -91,7 +99,11 @@ export class GamificationService {
 
   // Only pays XP the first time this lessonId is completed by this user —
   // called from the branch that already guards against duplicate UserProgress.
-  async awardLessonXp(userId: string, lessonId: string, xpReward: number): Promise<void> {
+  async awardLessonXp(
+    userId: string,
+    lessonId: string,
+    xpReward: number,
+  ): Promise<void> {
     const alreadyAwarded = await this.xpEventRepo.findOne({
       where: { userId, reason: 'lesson', sourceId: lessonId },
     });
@@ -107,8 +119,23 @@ export class GamificationService {
         sourceId: lessonId,
       }),
     );
-    await this.userRepo.increment({ id: userId }, 'xp', xpReward);
+    await this.applyXpGain(userId, xpReward);
     await this.recordActivity(userId);
+  }
+
+  // Centralizes XP application so a level-up can be detected (increment()
+  // alone doesn't return the pre-update value needed to compute oldLevel).
+  private async applyXpGain(userId: string, amount: number): Promise<void> {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    const previousXp = user?.xp ?? 0;
+    const oldLevel = Math.floor(previousXp / XP_PER_LEVEL);
+    const newLevel = Math.floor((previousXp + amount) / XP_PER_LEVEL);
+
+    await this.userRepo.increment({ id: userId }, 'xp', amount);
+
+    if (newLevel > oldLevel) {
+      await this.socialService.createMilestoneLevelUpPost(userId, newLevel + 1);
+    }
   }
 
   async getSummary(userId: string): Promise<GamificationSummary> {
@@ -117,7 +144,10 @@ export class GamificationService {
     const streak = await this.streakRepo.findOne({ where: { userId } });
     const unlocked = await this.achievementRepo.find({ where: { userId } });
     const unlockedMap = new Map(
-      unlocked.map((achievement) => [achievement.achievementSlug, achievement.unlockedAt]),
+      unlocked.map((achievement) => [
+        achievement.achievementSlug,
+        achievement.unlockedAt,
+      ]),
     );
 
     return {
@@ -140,7 +170,11 @@ export class GamificationService {
       .createQueryBuilder('event')
       // XpEvent.userId is varchar while User.id is uuid — Postgres rejects a
       // bare `=` across those types (same mismatch fixed for concept-stats).
-      .innerJoin(User, 'rankedUser', 'CAST(rankedUser.id AS varchar) = event.userId')
+      .innerJoin(
+        User,
+        'rankedUser',
+        'CAST(rankedUser.id AS varchar) = event.userId',
+      )
       .select('event.userId', 'userId')
       .addSelect('rankedUser.displayName', 'displayName')
       .addSelect('SUM(event.amount)', 'weeklyXp')
@@ -184,7 +218,9 @@ export class GamificationService {
     }
 
     streak.currentStreak =
-      streak.lastActivityDate === previousDateString(today) ? streak.currentStreak + 1 : 1;
+      streak.lastActivityDate === previousDateString(today)
+        ? streak.currentStreak + 1
+        : 1;
     streak.longestStreak = Math.max(streak.longestStreak, streak.currentStreak);
     streak.lastActivityDate = today;
     await this.streakRepo.save(streak);
@@ -212,5 +248,6 @@ export class GamificationService {
     await this.achievementRepo.save(
       this.achievementRepo.create({ userId, achievementSlug: slug }),
     );
+    await this.socialService.createMilestoneAchievementPost(userId, slug);
   }
 }

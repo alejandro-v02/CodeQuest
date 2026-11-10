@@ -231,10 +231,10 @@ Pipeline de cada ejercicio generado:
 - **Entrega:** gano XP, mantengo racha y recibo recordatorios. ✅ Confirmado en dispositivo real.
 
 ### Fase 7 — Panel de progreso y pulido
-- [ ] Estadísticas: tiempo de estudio, ejercicios resueltos, tasa de acierto, temas fuertes/débiles.
-- [ ] Estados de carga, vacíos y errores en todas las pantallas; modo offline básico (mostrar lecciones ya cargadas).
-- [ ] Accesibilidad básica, animaciones suaves, iconos y splash screen.
-- **Entrega:** app consistente y agradable de usar.
+- [x] Estadísticas: ejercicios resueltos, tasa de acierto, días activos (sustituye "tiempo de estudio", que no se registra en ningún lado), temas fuertes/débiles.
+- [x] Estados de carga, vacíos y errores en todas las pantallas; modo offline básico (mostrar lecciones ya cargadas).
+- [x] Accesibilidad básica, animaciones suaves, iconos y splash screen.
+- **Entrega:** app consistente y agradable de usar. ✅ Confirmado en dispositivo real
 
 ### Fase 8 — Calidad y despliegue
 - [ ] Tests: unitarios del backend (servicios clave), e2e de auth y ejecución; pruebas de componentes críticos del front.

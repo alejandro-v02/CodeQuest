@@ -49,6 +49,22 @@ export class User {
   @Column({ type: 'int', default: 0 })
   xp: number;
 
+  // Social module profile fields — no file-upload infra exists in this
+  // project, so the "avatar" is an icon+color pair instead of a photo.
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  bio: string | null;
+
+  @Column({ type: 'varchar', default: 'person-circle' })
+  avatarIcon: string;
+
+  @Column({ type: 'varchar', default: '#22d3ee' })
+  avatarColor: string;
+
+  // References ACHIEVEMENTS_CATALOG's slug; validated against the user's own
+  // unlocked UserAchievement rows in UsersService, not at the column level.
+  @Column({ type: 'varchar', nullable: true })
+  pinnedAchievementSlug: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 

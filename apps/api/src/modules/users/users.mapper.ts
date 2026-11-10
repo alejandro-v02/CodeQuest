@@ -3,7 +3,10 @@ import type { User } from './entities/user.entity';
 // placementDifficulty is internal bookkeeping for NextExerciseService, and
 // xp is exposed to the client via GET /gamification/me instead — neither is
 // something this type needs to carry.
-export type PublicUser = Omit<User, 'passwordHash' | 'githubId' | 'placementDifficulty' | 'xp'>;
+export type PublicUser = Omit<
+  User,
+  'passwordHash' | 'githubId' | 'placementDifficulty' | 'xp'
+>;
 
 export function toPublicUser(user: User): PublicUser {
   return {
@@ -13,6 +16,10 @@ export function toPublicUser(user: User): PublicUser {
     preferredLanguage: user.preferredLanguage,
     dailyGoalMinutes: user.dailyGoalMinutes,
     timezone: user.timezone,
+    bio: user.bio,
+    avatarIcon: user.avatarIcon,
+    avatarColor: user.avatarColor,
+    pinnedAchievementSlug: user.pinnedAchievementSlug,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
