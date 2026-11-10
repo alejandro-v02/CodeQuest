@@ -5,6 +5,8 @@ import { SocialService } from '../../../../core/services/social.service';
 import type { NotificationItem } from '../../../../core/models/social.model';
 import { LoadingBounceComponent } from '../../../../shared/components/loading-bounce/loading-bounce.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { I18nService } from '../../../../core/services/i18n.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 const TYPE_ICON: Record<NotificationItem['type'], string> = {
   follow: 'person-add-outline',
@@ -12,21 +14,22 @@ const TYPE_ICON: Record<NotificationItem['type'], string> = {
   comment: 'chatbubble-outline',
 };
 
-const TYPE_MESSAGE: Record<NotificationItem['type'], string> = {
-  follow: 'empezó a seguirte',
-  reaction: 'reaccionó a tu publicación',
-  comment: 'comentó tu publicación',
+const TYPE_MESSAGE_KEY: Record<NotificationItem['type'], string> = {
+  follow: 'notifications.type.follow',
+  reaction: 'notifications.type.reaction',
+  comment: 'notifications.type.comment',
 };
 
 @Component({
   selector: 'app-notifications-sheet',
   templateUrl: './notifications-sheet.component.html',
   styleUrls: ['./notifications-sheet.component.scss'],
-  imports: [IonContent, IonIcon, IonModal, LoadingBounceComponent, EmptyStateComponent],
+  imports: [IonContent, IonIcon, IonModal, LoadingBounceComponent, EmptyStateComponent, TranslatePipe],
 })
 export class NotificationsSheetComponent {
   private readonly router = inject(Router);
   private readonly socialService = inject(SocialService);
+  private readonly i18n = inject(I18nService);
 
   @ViewChild(IonModal) private readonly modal?: IonModal;
 
@@ -49,7 +52,7 @@ export class NotificationsSheetComponent {
         this.unreadCleared.emit();
       }
     } catch {
-      this.errorMessage.set('No se pudieron cargar las notificaciones.');
+      this.errorMessage.set(this.i18n.t('notifications.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }
@@ -64,7 +67,7 @@ export class NotificationsSheetComponent {
   }
 
   messageFor(notification: NotificationItem): string {
-    return TYPE_MESSAGE[notification.type];
+    return this.i18n.t(TYPE_MESSAGE_KEY[notification.type]);
   }
 
   async open(notification: NotificationItem): Promise<void> {
@@ -80,18 +83,18 @@ export class NotificationsSheetComponent {
     const diffMs = Date.now() - new Date(iso).getTime();
     const minutes = Math.floor(diffMs / 60_000);
     if (minutes < 1) {
-      return 'ahora';
+      return this.i18n.t('postCard.justNow');
     }
     if (minutes < 60) {
-      return `hace ${minutes} min`;
+      return this.i18n.t('postCard.minutesAgo').replace('{n}', String(minutes));
     }
     const hours = Math.floor(minutes / 60);
     if (hours < 24) {
-      return `hace ${hours} h`;
+      return this.i18n.t('postCard.hoursAgo').replace('{n}', String(hours));
     }
     const days = Math.floor(hours / 24);
     if (days < 7) {
-      return `hace ${days} d`;
+      return this.i18n.t('postCard.daysAgo').replace('{n}', String(days));
     }
     return new Date(iso).toLocaleDateString();
   }

@@ -2,12 +2,13 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { SocialService } from '../../../../core/services/social.service';
 import type { UserResult } from '../../../../core/models/social.model';
 import { UserResultRowComponent } from '../user-result-row/user-result-row.component';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-suggested-users',
   templateUrl: './suggested-users.component.html',
   styleUrls: ['./suggested-users.component.scss'],
-  imports: [UserResultRowComponent],
+  imports: [UserResultRowComponent, TranslatePipe],
 })
 export class SuggestedUsersComponent implements OnInit {
   private readonly socialService = inject(SocialService);

@@ -4,7 +4,7 @@
       type="button"
       class="reaction-button"
       [class.active]="reactions().myReaction === option.icon"
-      [attr.aria-label]="option.label"
+      [attr.aria-label]="option.labelKey | translate"
       (click)="toggle(option.icon)"
     >
       <ion-icon

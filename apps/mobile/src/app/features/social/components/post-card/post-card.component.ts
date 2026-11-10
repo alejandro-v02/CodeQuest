@@ -8,18 +8,27 @@ import type { PostDto, ReactionSummary, SocialReportReason } from '../../../../c
 import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
 import { CommentsSheetComponent } from '../comments-sheet/comments-sheet.component';
 import { PostMenuSheetComponent } from '../post-menu-sheet/post-menu-sheet.component';
+import { I18nService } from '../../../../core/services/i18n.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-post-card',
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.scss'],
-  imports: [IonIcon, ReactionBarComponent, CommentsSheetComponent, PostMenuSheetComponent],
+  imports: [
+    IonIcon,
+    ReactionBarComponent,
+    CommentsSheetComponent,
+    PostMenuSheetComponent,
+    TranslatePipe,
+  ],
 })
 export class PostCardComponent {
   private readonly authService = inject(AuthService);
   private readonly socialService = inject(SocialService);
   private readonly toastController = inject(ToastController);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly post = input.required<PostDto>();
   readonly delayMs = input(0);
@@ -50,14 +59,16 @@ export class PostCardComponent {
     if (!slug) {
       return '';
     }
-    return findAchievement(slug)?.title ?? 'Logro desbloqueado';
+    return findAchievement(slug)
+      ? this.i18n.t(`achievements.${slug}.title`)
+      : this.i18n.t('postCard.unlockedAchievementFallback');
   }
 
   achievementDescription(slug: string | null): string {
     if (!slug) {
       return '';
     }
-    return findAchievement(slug)?.description ?? '';
+    return findAchievement(slug) ? this.i18n.t(`achievements.${slug}.description`) : '';
   }
 
   achievementIcon(slug: string | null): string {
@@ -71,18 +82,18 @@ export class PostCardComponent {
     const diffMs = Date.now() - new Date(iso).getTime();
     const minutes = Math.floor(diffMs / 60_000);
     if (minutes < 1) {
-      return 'ahora';
+      return this.i18n.t('postCard.justNow');
     }
     if (minutes < 60) {
-      return `hace ${minutes} min`;
+      return this.i18n.t('postCard.minutesAgo').replace('{n}', String(minutes));
     }
     const hours = Math.floor(minutes / 60);
     if (hours < 24) {
-      return `hace ${hours} h`;
+      return this.i18n.t('postCard.hoursAgo').replace('{n}', String(hours));
     }
     const days = Math.floor(hours / 24);
     if (days < 7) {
-      return `hace ${days} d`;
+      return this.i18n.t('postCard.daysAgo').replace('{n}', String(days));
     }
     return new Date(iso).toLocaleDateString();
   }
@@ -121,9 +132,9 @@ export class PostCardComponent {
     try {
       await this.socialService.deletePost(postId);
       this.deleted.emit(postId);
-      await this.showToast('Publicación borrada.');
+      await this.showToast(this.i18n.t('postCard.deleted'));
     } catch {
-      await this.showToast('No se pudo borrar la publicación. Intenta de nuevo.', true);
+      await this.showToast(this.i18n.t('postCard.errors.deleteFailed'), true);
     }
   }
 
@@ -132,9 +143,9 @@ export class PostCardComponent {
     const postId = this.post().id;
     try {
       await this.socialService.report('post', postId, reason);
-      await this.showToast('Gracias, revisaremos esta publicación.');
+      await this.showToast(this.i18n.t('postCard.reportThanks'));
     } catch {
-      await this.showToast('No se pudo enviar el reporte. Intenta de nuevo.', true);
+      await this.showToast(this.i18n.t('postCard.errors.reportFailed'), true);
     }
   }
 

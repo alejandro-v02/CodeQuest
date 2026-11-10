@@ -8,12 +8,12 @@
   <ng-template>
     <div class="compose-modal-content">
       <div class="modal-handle"></div>
-      <p class="eyebrow">Nueva publicación</p>
-      <h1>¿Qué quieres compartir?</h1>
+      <p class="eyebrow">{{ 'compose.eyebrow' | translate }}</p>
+      <h1>{{ 'compose.heading' | translate }}</h1>
 
       <ion-textarea
         [(ngModel)]="body"
-        placeholder="Escribe algo para tus seguidores..."
+        [placeholder]="'compose.placeholder' | translate"
         [autoGrow]="true"
         [maxlength]="500"
         [rows]="4"
@@ -32,7 +32,7 @@
         @if (isSending()) {
           <ion-spinner name="dots"></ion-spinner>
         } @else {
-          Publicar
+          {{ 'feed.publish' | translate }}
         }
       </ion-button>
     </div>

@@ -9,7 +9,7 @@
   <ng-template>
     <ion-content class="notifications-modal-content">
       <div class="modal-handle"></div>
-      <h1>Notificaciones</h1>
+      <h1>{{ 'feed.notifications' | translate }}</h1>
 
       @if (isLoading()) {
         <div class="state-pane">
@@ -20,8 +20,8 @@
       } @else if (notifications().length === 0) {
         <app-empty-state
           icon="notifications-outline"
-          title="Sin notificaciones"
-          subtitle="Cuando alguien te siga, reaccione o comente, lo verás aquí."
+          [title]="'notifications.emptyTitle' | translate"
+          [subtitle]="'notifications.emptySubtitle' | translate"
         ></app-empty-state>
       } @else {
         <div class="notification-list">

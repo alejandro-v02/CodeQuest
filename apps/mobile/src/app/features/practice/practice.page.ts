@@ -60,6 +60,12 @@ export class PracticePage implements OnInit, ViewWillEnter {
   }
 
   async loadConcepts(): Promise<void> {
+    // Clears the leftover spinner-lock from a concept tapped just before
+    // navigating to /exercise/:id — that tap never clears it on success
+    // (only on error), so revisiting this cached page instance would
+    // otherwise show the "starting" spinner forever instead of the list.
+    this.startingConceptId.set(null);
+
     const language = this.authService.currentUser()?.preferredLanguage;
     if (!language) {
       this.isLoading.set(false);

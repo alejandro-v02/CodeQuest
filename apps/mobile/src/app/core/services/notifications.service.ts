@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Preferences } from '@capacitor/preferences';
+import { I18nService } from './i18n.service';
 
 const REMINDER_ENABLED_KEY = 'codequest.dailyReminderEnabled';
 const REMINDER_NOTIFICATION_ID = 1;
@@ -10,6 +11,8 @@ const REMINDER_HOUR = 20;
 
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
+  private readonly i18n = inject(I18nService);
+
   async isReminderEnabled(): Promise<boolean> {
     const { value } = await Preferences.get({ key: REMINDER_ENABLED_KEY });
     return value === 'true';
@@ -23,15 +26,15 @@ export class NotificationsService {
       return false;
     }
 
-    const goalText = dailyGoalMinutes
-      ? `tus ${dailyGoalMinutes} minutos de hoy`
-      : 'tu práctica de hoy';
+    const body = dailyGoalMinutes
+      ? this.i18n.t('reminder.bodyWithGoal').replace('{minutes}', String(dailyGoalMinutes))
+      : this.i18n.t('reminder.bodyNoGoal');
     await LocalNotifications.schedule({
       notifications: [
         {
           id: REMINDER_NOTIFICATION_ID,
-          title: 'No rompas tu racha 🔥',
-          body: `¿Ya completaste ${goalText} en CodeQuest?`,
+          title: this.i18n.t('reminder.title'),
+          body,
           schedule: { on: { hour: REMINDER_HOUR, minute: 0 }, repeats: true, allowWhileIdle: true },
         },
       ],

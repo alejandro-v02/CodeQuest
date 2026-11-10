@@ -1,5 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import type { HeatmapDay } from '../../../../core/models/social.model';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 interface HeatmapCell {
   date: string;
@@ -13,6 +14,7 @@ const DAYS_BACK = 364;
   selector: 'app-contribution-heatmap',
   templateUrl: './contribution-heatmap.component.html',
   styleUrls: ['./contribution-heatmap.component.scss'],
+  imports: [TranslatePipe],
 })
 export class ContributionHeatmapComponent {
   readonly heatmapDays = input.required<HeatmapDay[]>();

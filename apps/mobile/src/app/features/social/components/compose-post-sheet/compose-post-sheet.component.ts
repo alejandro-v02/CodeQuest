@@ -3,15 +3,18 @@ import { FormsModule } from '@angular/forms';
 import { IonButton, IonModal, IonSpinner, IonTextarea } from '@ionic/angular';
 import { SocialService } from '../../../../core/services/social.service';
 import type { PostDto } from '../../../../core/models/social.model';
+import { I18nService } from '../../../../core/services/i18n.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-compose-post-sheet',
   templateUrl: './compose-post-sheet.component.html',
   styleUrls: ['./compose-post-sheet.component.scss'],
-  imports: [FormsModule, IonButton, IonModal, IonSpinner, IonTextarea],
+  imports: [FormsModule, IonButton, IonModal, IonSpinner, IonTextarea, TranslatePipe],
 })
 export class ComposePostSheetComponent {
   private readonly socialService = inject(SocialService);
+  private readonly i18n = inject(I18nService);
 
   readonly isOpen = input.required<boolean>();
   readonly closed = output<void>();
@@ -40,7 +43,7 @@ export class ComposePostSheetComponent {
       this.posted.emit(post);
       this.dismiss();
     } catch {
-      this.errorMessage.set('No se pudo publicar. Intenta de nuevo.');
+      this.errorMessage.set(this.i18n.t('compose.errors.publishFailed'));
     } finally {
       this.isSending.set(false);
     }

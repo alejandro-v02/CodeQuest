@@ -1,4 +1,4 @@
-<app-page-header title="Perfil" [showBack]="true" (back)="goBack()"></app-page-header>
+<app-page-header [title]="'profile.pageTitle' | translate" [showBack]="true" (back)="goBack()"></app-page-header>
 
 <ion-content [fullscreen]="true">
   @if (isLoading()) {
@@ -8,7 +8,7 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
-      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
     </div>
   } @else if (profile(); as p) {
     <div class="profile-card">
@@ -18,12 +18,12 @@
       <h2>{{ p.displayName }}</h2>
       <span class="level-badge">
         <ion-icon name="star-outline"></ion-icon>
-        Nivel {{ p.level }}
+        {{ 'progress.levelLabel' | translate }} {{ p.level }}
       </span>
 
       <div class="follow-counts">
-        <span>{{ p.followersCount }} seguidores</span>
-        <span>{{ p.followingCount }} siguiendo</span>
+        <span>{{ p.followersCount }} {{ 'publicProfile.followers' | translate }}</span>
+        <span>{{ p.followingCount }} {{ 'publicProfile.following' | translate }}</span>
       </div>
 
       @if (!p.isSelf) {
@@ -33,15 +33,15 @@
           (click)="toggleFollow()"
         >
           <ion-icon slot="start" [name]="p.isFollowedByMe ? 'person-remove-outline' : 'person-add-outline'"></ion-icon>
-          {{ p.isFollowedByMe ? 'Dejar de seguir' : 'Seguir' }}
+          {{ (p.isFollowedByMe ? 'publicProfile.unfollow' : 'publicProfile.follow') | translate }}
         </ion-button>
       }
 
       @if (!p.unlocked) {
         <app-empty-state
           icon="lock-closed-outline"
-          title="Perfil privado"
-          subtitle="Sigue a esta persona para ver su muro, logros y actividad."
+          [title]="'publicProfile.privateTitle' | translate"
+          [subtitle]="'publicProfile.privateSubtitle' | translate"
         ></app-empty-state>
       } @else {
         @if (p.bio) {
@@ -59,12 +59,12 @@
         }
 
         <section class="section">
-          <h3 class="section-title">Actividad</h3>
+          <h3 class="section-title">{{ 'publicProfile.activityHeading' | translate }}</h3>
           <app-contribution-heatmap [heatmapDays]="heatmap()"></app-contribution-heatmap>
         </section>
 
         <section class="section wall-section">
-          <h3 class="section-title">Muro</h3>
+          <h3 class="section-title">{{ 'publicProfile.wallHeading' | translate }}</h3>
           @if (wall().length > 0) {
             @for (post of wall(); track post.id; let idx = $index) {
               <app-post-card
@@ -76,8 +76,8 @@
           } @else {
             <app-empty-state
               icon="chatbubble-outline"
-              title="Sin publicaciones"
-              subtitle="Todavía no ha compartido nada."
+              [title]="'publicProfile.noPostsTitle' | translate"
+              [subtitle]="'publicProfile.noPostsSubtitle' | translate"
             ></app-empty-state>
           }
         </section>

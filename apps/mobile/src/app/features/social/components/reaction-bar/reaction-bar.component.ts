@@ -2,24 +2,25 @@ import { Component, inject, input, output, signal } from '@angular/core';
 import { IonIcon } from '@ionic/angular';
 import { SocialService } from '../../../../core/services/social.service';
 import type { ReactionIcon, ReactionSummary } from '../../../../core/models/social.model';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 interface ReactionOption {
   icon: ReactionIcon;
-  label: string;
+  labelKey: string;
 }
 
 const REACTION_OPTIONS: ReactionOption[] = [
-  { icon: 'flame', label: 'Fuego' },
-  { icon: 'flash', label: 'Chispa' },
-  { icon: 'rocket', label: 'Cohete' },
-  { icon: 'thumbs_up', label: 'Me gusta' },
+  { icon: 'flame', labelKey: 'reaction.flame' },
+  { icon: 'flash', labelKey: 'reaction.flash' },
+  { icon: 'rocket', labelKey: 'reaction.rocket' },
+  { icon: 'thumbs_up', labelKey: 'reaction.thumbsUp' },
 ];
 
 @Component({
   selector: 'app-reaction-bar',
   templateUrl: './reaction-bar.component.html',
   styleUrls: ['./reaction-bar.component.scss'],
-  imports: [IonIcon],
+  imports: [IonIcon, TranslatePipe],
 })
 export class ReactionBarComponent {
   private readonly socialService = inject(SocialService);

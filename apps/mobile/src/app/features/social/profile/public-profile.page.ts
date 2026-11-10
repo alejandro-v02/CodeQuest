@@ -10,6 +10,8 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { ContributionHeatmapComponent } from '../components/contribution-heatmap/contribution-heatmap.component';
+import { I18nService } from '../../../core/services/i18n.service';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-public-profile',
@@ -24,6 +26,7 @@ import { ContributionHeatmapComponent } from '../components/contribution-heatmap
     EmptyStateComponent,
     PostCardComponent,
     ContributionHeatmapComponent,
+    TranslatePipe,
   ],
 })
 export class PublicProfilePage implements ViewWillEnter {
@@ -31,6 +34,7 @@ export class PublicProfilePage implements ViewWillEnter {
   private readonly location = inject(Location);
   private readonly authService = inject(AuthService);
   private readonly socialService = inject(SocialService);
+  private readonly i18n = inject(I18nService);
 
   readonly profile = signal<ProfileResponse | null>(null);
   readonly heatmap = signal<HeatmapDay[]>([]);
@@ -67,7 +71,7 @@ export class PublicProfilePage implements ViewWillEnter {
         this.wall.set(wall.items);
       }
     } catch {
-      this.errorMessage.set('No se pudo cargar este perfil.');
+      this.errorMessage.set(this.i18n.t('publicProfile.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }

@@ -1,4 +1,4 @@
-<div class="heatmap" role="img" aria-label="Mapa de actividad del último año">
+<div class="heatmap" role="img" [attr.aria-label]="'heatmap.ariaLabel' | translate">
   @for (week of weeks(); track $index) {
     <div class="heatmap-column">
       @for (day of week; track day.date) {

@@ -9,7 +9,7 @@
   <ng-template>
     <ion-content class="comments-modal-content">
       <div class="modal-handle"></div>
-      <h1>Comentarios</h1>
+      <h1>{{ 'comments.heading' | translate }}</h1>
 
       @if (isLoading()) {
         <div class="state-pane">
@@ -20,8 +20,8 @@
       } @else if (comments().length === 0) {
         <app-empty-state
           icon="chatbubble-outline"
-          title="Sin comentarios"
-          subtitle="Sé el primero en comentar."
+          [title]="'comments.emptyTitle' | translate"
+          [subtitle]="'comments.emptySubtitle' | translate"
         ></app-empty-state>
       } @else {
         <div class="comment-list">
@@ -38,7 +38,7 @@
                 <button
                   type="button"
                   class="comment-delete"
-                  aria-label="Borrar comentario"
+                  [attr.aria-label]="'comments.deleteAria' | translate"
                   (click)="remove(comment)"
                 >
                   <ion-icon name="close-circle"></ion-icon>
@@ -52,7 +52,7 @@
       <div class="composer">
         <ion-textarea
           [(ngModel)]="draft"
-          placeholder="Escribe un comentario..."
+          [placeholder]="'comments.placeholder' | translate"
           [autoGrow]="true"
           [maxlength]="300"
         ></ion-textarea>

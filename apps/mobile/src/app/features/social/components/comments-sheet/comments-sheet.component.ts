@@ -6,6 +6,8 @@ import { SocialService } from '../../../../core/services/social.service';
 import type { CommentDto } from '../../../../core/models/social.model';
 import { LoadingBounceComponent } from '../../../../shared/components/loading-bounce/loading-bounce.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { I18nService } from '../../../../core/services/i18n.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-comments-sheet',
@@ -21,11 +23,13 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     IonTextarea,
     LoadingBounceComponent,
     EmptyStateComponent,
+    TranslatePipe,
   ],
 })
 export class CommentsSheetComponent {
   private readonly authService = inject(AuthService);
   private readonly socialService = inject(SocialService);
+  private readonly i18n = inject(I18nService);
 
   readonly isOpen = input.required<boolean>();
   readonly postId = input.required<string>();
@@ -46,7 +50,7 @@ export class CommentsSheetComponent {
     try {
       this.comments.set(await this.socialService.getComments(this.postId()));
     } catch {
-      this.errorMessage.set('No se pudieron cargar los comentarios.');
+      this.errorMessage.set(this.i18n.t('comments.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }
@@ -70,7 +74,7 @@ export class CommentsSheetComponent {
       this.draft.set('');
       this.countChanged.emit(this.comments().length);
     } catch {
-      this.errorMessage.set('No se pudo enviar el comentario.');
+      this.errorMessage.set(this.i18n.t('comments.errors.sendFailed'));
     } finally {
       this.isSending.set(false);
     }
@@ -82,7 +86,7 @@ export class CommentsSheetComponent {
       this.comments.update((list) => list.filter((c) => c.id !== comment.id));
       this.countChanged.emit(this.comments().length);
     } catch {
-      this.errorMessage.set('No se pudo borrar el comentario.');
+      this.errorMessage.set(this.i18n.t('comments.errors.deleteFailed'));
     }
   }
 }

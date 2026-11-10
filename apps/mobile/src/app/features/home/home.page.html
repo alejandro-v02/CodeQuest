@@ -91,9 +91,9 @@
         <app-language-badge [languageSlug]="overview.languageSlug"></app-language-badge>
       </div>
 
-      <h1 class="path-title">{{ overview.title }}</h1>
+      <h1 class="path-title">{{ pathTitle(overview) }}</h1>
       @if (overview.description) {
-        <p class="path-subtitle">{{ overview.description }}</p>
+        <p class="path-subtitle">{{ pathDescription(overview) }}</p>
       }
 
       <div class="path-progress">
@@ -115,7 +115,7 @@
 
     @for (module of overview.modules; track module.id; let idx = $index) {
       <section class="module" [style.animation-delay.ms]="80 * idx">
-        <h2 class="module-title">{{ module.title }}</h2>
+        <h2 class="module-title">{{ moduleTitle(module) }}</h2>
 
         <div class="lesson-list">
           @for (lesson of module.lessons; track lesson.id) {

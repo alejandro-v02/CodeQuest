@@ -12,6 +12,8 @@ import { ComposePostSheetComponent } from '../components/compose-post-sheet/comp
 import { UserResultRowComponent } from '../components/user-result-row/user-result-row.component';
 import { SuggestedUsersComponent } from '../components/suggested-users/suggested-users.component';
 import { NotificationsSheetComponent } from '../components/notifications-sheet/notifications-sheet.component';
+import { I18nService } from '../../../core/services/i18n.service';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 const SEARCH_DEBOUNCE_MS = 300;
 
@@ -33,12 +35,14 @@ const SEARCH_DEBOUNCE_MS = 300;
     UserResultRowComponent,
     SuggestedUsersComponent,
     NotificationsSheetComponent,
+    TranslatePipe,
   ],
 })
 export class FeedPage implements ViewWillEnter {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly socialService = inject(SocialService);
+  private readonly i18n = inject(I18nService);
   private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
 
   readonly posts = signal<PostDto[]>([]);
@@ -100,7 +104,7 @@ export class FeedPage implements ViewWillEnter {
       this.posts.set(page.items);
       this.nextCursor.set(page.nextCursor);
     } catch {
-      this.errorMessage.set('No se pudo cargar el muro.');
+      this.errorMessage.set(this.i18n.t('feed.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }

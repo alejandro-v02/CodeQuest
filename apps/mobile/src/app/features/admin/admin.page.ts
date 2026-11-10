@@ -5,6 +5,8 @@ import { AdminService } from '../../core/services/admin.service';
 import type { AdminExerciseStat } from '../../core/models/admin.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { I18nService } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 interface AdminLanguageGroup {
   languageSlug: string;
@@ -16,11 +18,12 @@ interface AdminLanguageGroup {
   selector: 'app-admin',
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
-  imports: [IonButton, IonContent, LoadingBounceComponent, PageHeaderComponent],
+  imports: [IonButton, IonContent, LoadingBounceComponent, PageHeaderComponent, TranslatePipe],
 })
 export class AdminPage implements ViewWillEnter {
   private readonly adminService = inject(AdminService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(I18nService);
 
   readonly groups = signal<AdminLanguageGroup[]>([]);
   readonly isLoading = signal(true);
@@ -38,7 +41,7 @@ export class AdminPage implements ViewWillEnter {
       const stats = await this.adminService.getStats();
       this.groups.set(this.groupByLanguage(stats));
     } catch {
-      this.errorMessage.set('No se pudieron cargar las estadísticas.');
+      this.errorMessage.set(this.i18n.t('admin.errors.loadFailed'));
     } finally {
       this.isLoading.set(false);
     }

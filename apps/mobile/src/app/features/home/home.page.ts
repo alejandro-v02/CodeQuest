@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { IonContent, IonButton, IonIcon, IonModal, IonSpinner, ViewWillEnter } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { CoursesService } from '../../core/services/courses.service';
-import type { LessonSummary, PathOverview } from '../../core/models/course.model';
+import type { LessonSummary, ModuleSummary, PathOverview } from '../../core/models/course.model';
 import {
   DAILY_GOAL_OPTIONS,
   LANGUAGE_OPTIONS,
@@ -15,6 +15,16 @@ import { LanguageBadgeComponent } from '../../shared/components/language-badge/l
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { I18nService } from '../../core/services/i18n.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+
+// The curriculum (course titles, descriptions, module/lesson titles) is
+// seeded in Spanish in the backend database — it's content, not UI chrome,
+// so the i18n dictionary doesn't reach it. Course title/description and
+// module titles are overridden client-side by language slug / exact title
+// match; a module title with no match here just falls back to the raw
+// (Spanish) text from the backend.
+const MODULE_TITLE_KEYS: Record<string, string> = {
+  Fundamentos: 'course.moduleFundamentos',
+};
 
 @Component({
   selector: 'app-home',
@@ -163,6 +173,19 @@ export class HomePage implements ViewWillEnter {
   progressPercent(overview: PathOverview): number {
     const total = this.totalLessons(overview);
     return total === 0 ? 0 : Math.round((this.completedLessons(overview) / total) * 100);
+  }
+
+  pathTitle(overview: PathOverview): string {
+    return this.i18n.t(`course.${overview.languageSlug}.title`);
+  }
+
+  pathDescription(overview: PathOverview): string {
+    return this.i18n.t(`course.${overview.languageSlug}.description`);
+  }
+
+  moduleTitle(module: ModuleSummary): string {
+    const key = MODULE_TITLE_KEYS[module.title];
+    return key ? this.i18n.t(key) : module.title;
   }
 
   progressMessage(overview: PathOverview): string {

@@ -14,7 +14,7 @@
       </div>
     </button>
 
-    <button type="button" class="menu-button" aria-label="Más opciones" (click)="openMenu()">
+    <button type="button" class="menu-button" [attr.aria-label]="'postCard.moreOptions' | translate" (click)="openMenu()">
       <ion-icon name="alert-circle-outline"></ion-icon>
     </button>
   </header>
@@ -24,7 +24,7 @@
       <div class="milestone-body">
         <ion-icon [name]="achievementIcon(displayPost().achievementSlug)" class="milestone-icon"></ion-icon>
         <div>
-          <p class="milestone-title">Desbloqueó: {{ achievementTitle(displayPost().achievementSlug) }}</p>
+          <p class="milestone-title">{{ 'postCard.unlocked' | translate }} {{ achievementTitle(displayPost().achievementSlug) }}</p>
           <p class="milestone-subtitle">{{ achievementDescription(displayPost().achievementSlug) }}</p>
         </div>
       </div>
@@ -33,7 +33,7 @@
       <div class="milestone-body">
         <ion-icon name="star-outline" class="milestone-icon"></ion-icon>
         <div>
-          <p class="milestone-title">¡Subió a nivel {{ displayPost().level }}!</p>
+          <p class="milestone-title">{{ ('postCard.leveledUp' | translate).replace('{level}', '' + displayPost().level) }}</p>
         </div>
       </div>
     }

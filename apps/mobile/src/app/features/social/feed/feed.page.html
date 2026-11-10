@@ -3,13 +3,13 @@
     <ion-icon [name]="myAvatarIcon()"></ion-icon>
   </button>
 
-  <ion-button actions fill="clear" class="bell-button" aria-label="Notificaciones" (click)="openNotifications()">
+  <ion-button actions fill="clear" class="bell-button" [attr.aria-label]="'feed.notifications' | translate" (click)="openNotifications()">
     <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
     @if (unreadCount() > 0) {
       <span class="unread-dot"></span>
     }
   </ion-button>
-  <ion-button actions fill="clear" class="search-button" aria-label="Buscar personas" (click)="toggleSearch()">
+  <ion-button actions fill="clear" class="search-button" [attr.aria-label]="'feed.searchPeople' | translate" (click)="toggleSearch()">
     <ion-icon slot="icon-only" [name]="isSearchOpen() ? 'close-circle' : 'search-outline'"></ion-icon>
   </ion-button>
 </app-page-header>
@@ -34,7 +34,7 @@
         <ion-input
           [value]="searchQuery()"
           (ionInput)="onSearchInput($event.detail.value ?? '')"
-          placeholder="Buscar por nombre o @usuario"
+          [placeholder]="'feed.searchPlaceholder' | translate"
           autofocus
         ></ion-input>
       </div>
@@ -44,9 +44,9 @@
           <ion-spinner name="dots"></ion-spinner>
         </div>
       } @else if (searchQuery().trim().length === 0) {
-        <p class="search-hint">Escribe un nombre o nombre de usuario para buscar.</p>
+        <p class="search-hint">{{ 'feed.searchHint' | translate }}</p>
       } @else if (searchResults().length === 0) {
-        <p class="search-hint">Nadie coincide con "{{ searchQuery() }}".</p>
+        <p class="search-hint">{{ 'feed.searchNoMatch' | translate }} "{{ searchQuery() }}".</p>
       } @else {
         <div class="search-results">
           @for (user of searchResults(); track user.userId) {
@@ -62,14 +62,14 @@
   } @else if (errorMessage(); as message) {
     <div class="state-pane">
       <p class="error-message">{{ message }}</p>
-      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
     </div>
   } @else if (posts().length === 0) {
     <app-suggested-users></app-suggested-users>
     <app-empty-state
       icon="people-outline"
-      title="Tu muro está vacío"
-      subtitle="Sigue a otras personas o publica algo para empezar."
+      [title]="'feed.emptyTitle' | translate"
+      [subtitle]="'feed.emptySubtitle' | translate"
     ></app-empty-state>
   } @else {
     <div class="post-list">
@@ -91,7 +91,7 @@
           @if (isLoadingMore()) {
             <ion-spinner name="dots"></ion-spinner>
           } @else {
-            Cargar más
+            {{ 'feed.loadMore' | translate }}
           }
         </ion-button>
       </div>
@@ -99,7 +99,7 @@
   }
 
   @if (!isSearchOpen()) {
-    <button type="button" class="compose-fab" aria-label="Publicar" (click)="openCompose()">
+    <button type="button" class="compose-fab" [attr.aria-label]="'feed.publish' | translate" (click)="openCompose()">
       <ion-icon name="create-outline"></ion-icon>
     </button>
   }

@@ -1,6 +1,6 @@
 @if (suggestions().length > 0) {
   <section class="suggestions">
-    <h3 class="suggestions-title">Personas que quizás conozcas</h3>
+    <h3 class="suggestions-title">{{ 'suggestedUsers.heading' | translate }}</h3>
     <div class="suggestions-row">
       @for (user of suggestions(); track user.userId) {
         <app-user-result-row
