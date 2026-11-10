@@ -57,6 +57,7 @@ import {
   addCircleOutline,
   exitOutline,
   trashOutline,
+  medalOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -120,5 +121,6 @@ export function registerIcons(): void {
     'add-circle-outline': addCircleOutline,
     'exit-outline': exitOutline,
     'trash-outline': trashOutline,
+    'medal-outline': medalOutline,
   });
 }
