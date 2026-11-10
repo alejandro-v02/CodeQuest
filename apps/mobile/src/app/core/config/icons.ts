@@ -52,6 +52,11 @@ import {
   diamondOutline,
   searchOutline,
   globeOutline,
+  copyOutline,
+  keyOutline,
+  addCircleOutline,
+  exitOutline,
+  trashOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -110,5 +115,10 @@ export function registerIcons(): void {
     'diamond-outline': diamondOutline,
     'search-outline': searchOutline,
     'globe-outline': globeOutline,
+    'copy-outline': copyOutline,
+    'key-outline': keyOutline,
+    'add-circle-outline': addCircleOutline,
+    'exit-outline': exitOutline,
+    'trash-outline': trashOutline,
   });
 }
