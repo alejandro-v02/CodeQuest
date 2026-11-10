@@ -24,6 +24,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 // (Spanish) text from the backend.
 const MODULE_TITLE_KEYS: Record<string, string> = {
   Fundamentos: 'course.moduleFundamentos',
+  'Entrada, salida y lógica': 'course.module.entradaSalida',
+  'Cadenas de texto': 'course.module.cadenas',
+  'Estructuras de datos': 'course.module.estructuras',
+  'Funciones a fondo': 'course.module.funciones',
+  'Errores y depuración': 'course.module.errores',
+  'Mini proyectos': 'course.module.proyectos',
 };
 
 @Component({

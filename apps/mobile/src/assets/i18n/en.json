@@ -273,5 +273,13 @@
   "course.typescript.description": "The topic map is ready; full lessons arrive in a later phase.",
   "course.cpp.title": "C++ for beginners",
   "course.cpp.description": "The topic map is ready; full lessons arrive in a later phase.",
-  "course.moduleFundamentos": "Fundamentals"
+  "course.moduleFundamentos": "Fundamentals",
+  "course.module.entradaSalida": "Input, output and logic",
+  "course.module.cadenas": "Text strings",
+  "course.module.estructuras": "Data structures",
+  "course.module.funciones": "Functions in depth",
+  "course.module.errores": "Errors and debugging",
+  "course.module.proyectos": "Mini projects",
+
+  "common.comingSoon": "Coming soon"
 }

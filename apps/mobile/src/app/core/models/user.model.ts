@@ -3,13 +3,16 @@ export type ProgrammingLanguageSlug = 'python' | 'javascript' | 'typescript' | '
 export interface LanguageOption {
   slug: ProgrammingLanguageSlug;
   label: string;
+  // Languages whose learning path still has no written lessons are shown
+  // as "coming soon" and can't be picked.
+  available: boolean;
 }
 
 export const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { slug: 'python', label: 'Python' },
-  { slug: 'javascript', label: 'JavaScript' },
-  { slug: 'typescript', label: 'TypeScript' },
-  { slug: 'cpp', label: 'C++' },
+  { slug: 'python', label: 'Python', available: true },
+  { slug: 'javascript', label: 'JavaScript', available: true },
+  { slug: 'typescript', label: 'TypeScript', available: false },
+  { slug: 'cpp', label: 'C++', available: false },
 ];
 
 export const DAILY_GOAL_OPTIONS: number[] = [5, 15, 30, 60];

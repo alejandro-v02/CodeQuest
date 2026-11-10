@@ -66,3 +66,17 @@ ion-content::part(scroll) {
   font-size: 12px;
   font-weight: 600;
 }
+
+// Languages without written lessons yet (see LANGUAGE_OPTIONS.available).
+.language-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.coming-soon-tag {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+}

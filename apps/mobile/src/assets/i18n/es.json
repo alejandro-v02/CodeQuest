@@ -273,5 +273,13 @@
   "course.typescript.description": "El mapa de temas está listo; las lecciones completas llegan en una fase posterior.",
   "course.cpp.title": "C++ para principiantes",
   "course.cpp.description": "El mapa de temas está listo; las lecciones completas llegan en una fase posterior.",
-  "course.moduleFundamentos": "Fundamentos"
+  "course.moduleFundamentos": "Fundamentos",
+  "course.module.entradaSalida": "Entrada, salida y lógica",
+  "course.module.cadenas": "Cadenas de texto",
+  "course.module.estructuras": "Estructuras de datos",
+  "course.module.funciones": "Funciones a fondo",
+  "course.module.errores": "Errores y depuración",
+  "course.module.proyectos": "Mini proyectos",
+
+  "common.comingSoon": "Próximamente"
 }

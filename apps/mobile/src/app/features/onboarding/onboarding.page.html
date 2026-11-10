@@ -11,9 +11,13 @@
           type="button"
           class="language-card"
           [class.selected]="selectedLanguage() === lang.slug"
+          [disabled]="!lang.available"
           (click)="selectLanguage(lang.slug)"
         >
           {{ lang.label }}
+          @if (!lang.available) {
+            <span class="coming-soon-tag">{{ 'common.comingSoon' | translate }}</span>
+          }
         </button>
       }
     </div>

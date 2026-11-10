@@ -16,15 +16,15 @@ Un programa útil se comunica: **muestra** información (salida) y **recibe** da
 
 §§§python
 print("Hola, mundo")
-print("Tengo", 3, "gatos")     # varios valores, separados por un espacio
+print("Tengo", 3, "gatos") # varios valores, separados por un espacio
 §§§
 
 Dos opciones útiles de §print()§:
 
 §§§python
-print("a", "b", "c", sep="-")     # a-b-c   (separador)
-print("Cargando", end="...")      # no salta de línea al final
-print("listo")                    # Cargando...listo
+print("a", "b", "c", sep="-") # a-b-c (separador)
+print("Cargando", end="...") # no salta de línea al final
+print("listo") # Cargando...listo
 §§§
 
 ## Entrada con §input()§
@@ -45,7 +45,8 @@ print("El año que viene tendrás", edad + 1)
 
 **Error típico:** olvidar la conversión. §"5" + 1§ falla porque no se puede sumar texto con número.
 
-En los ejercicios de CodeQuest la entrada llega **una línea por cada §input()§**, en orden.`,
+En los ejercicios de CodeQuest la entrada llega **una línea por cada §input()§**, en orden.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -62,7 +63,8 @@ En los ejercicios de CodeQuest la entrada llega **una línea por cada §input()�
           prompt: 'Pide el nombre al usuario y salúdalo.',
           difficulty: 1,
           payload: {
-            template: 'nombre = {{0}}("¿Cómo te llamas? ")\nprint("Hola,", {{1}})',
+            template:
+              'nombre = {{0}}("¿Cómo te llamas? ")\nprint("Hola,", {{1}})',
             blanks: ['input', 'nombre'],
           },
         },
@@ -75,8 +77,16 @@ En los ejercicios de CodeQuest la entrada llega **una línea por cada §input()�
             'nombre = input()\napellido = input()\nprint(f"{apellido}, {nombre}")\n',
           difficulty: 1,
           testCases: [
-            { input: 'Ana\nPérez', expectedOutput: 'Pérez, Ana', isHidden: false },
-            { input: 'Luis\nGómez', expectedOutput: 'Gómez, Luis', isHidden: false },
+            {
+              input: 'Ana\nPérez',
+              expectedOutput: 'Pérez, Ana',
+              isHidden: false,
+            },
+            {
+              input: 'Luis\nGómez',
+              expectedOutput: 'Gómez, Luis',
+              isHidden: false,
+            },
             { input: 'Eva\nRuiz', expectedOutput: 'Ruiz, Eva', isHidden: true },
           ],
         },
@@ -96,16 +106,17 @@ En los ejercicios de CodeQuest la entrada llega **una línea por cada §input()�
         },
         {
           type: 'bug',
-          prompt: 'Este programa debería mostrar la edad, pero falla al ejecutarse. ¿Qué línea tiene el error?',
+          prompt:
+            'Este programa debería mostrar la edad, pero falla al ejecutarse. ¿Qué línea tiene el error?',
           difficulty: 2,
           payload: {
-            lines: [
-              'edad = int(input())',
-              'print("Tienes " + edad + " años")',
-            ],
+            lines: ['edad = int(input())', 'print("Tienes " + edad + " años")'],
             buggyLineIndex: 1,
             explanation:
-              'No se puede concatenar texto con un número usando §+§ (TypeError). Usa §print("Tienes", edad, "años")§ o un f-string.'.replace(/§/g, '`'),
+              'No se puede concatenar texto con un número usando §+§ (TypeError). Usa §print("Tienes", edad, "años")§ o un f-string.'.replace(
+                /§/g,
+                '`',
+              ),
           },
         },
       ],
@@ -116,23 +127,23 @@ En los ejercicios de CodeQuest la entrada llega **una línea por cada §input()�
       contentMarkdown: md`
 # Operadores aritméticos
 
-| Operador | Significado | Ejemplo | Resultado |
-|---|---|---|---|
-| §+§ | suma | §7 + 2§ | §9§ |
-| §-§ | resta | §7 - 2§ | §5§ |
-| §*§ | multiplicación | §7 * 2§ | §14§ |
-| §/§ | división (siempre da §float§) | §7 / 2§ | §3.5§ |
-| §//§ | división entera | §7 // 2§ | §3§ |
-| §%§ | resto (módulo) | §7 % 2§ | §1§ |
-| §**§ | potencia | §2 ** 3§ | §8§ |
+| Operador | Significado                   | Ejemplo  | Resultado |
+| -------- | ----------------------------- | -------- | --------- |
+| §+§      | suma                          | §7 + 2§  | §9§       |
+| §-§      | resta                         | §7 - 2§  | §5§       |
+| §*§      | multiplicación                | §7 * 2§  | §14§      |
+| §/§      | división (siempre da §float§) | §7 / 2§  | §3.5§     |
+| §//§     | división entera               | §7 // 2§ | §3§       |
+| §%§      | resto (módulo)                | §7 % 2§  | §1§       |
+| §**§     | potencia                      | §2 ** 3§ | §8§       |
 
 ## Precedencia
 
 Python respeta el orden matemático: primero §**§, luego §*§ §/§ §//§ §%§, y al final §+§ §-§. Los paréntesis mandan:
 
 §§§python
-print(2 + 3 * 4)     # 14
-print((2 + 3) * 4)   # 20
+print(2 + 3 * 4) # 14
+print((2 + 3) * 4) # 20
 §§§
 
 ## Para qué sirve el resto §%§
@@ -145,9 +156,10 @@ print((2 + 3) * 4)   # 20
 
 §§§python
 total = 10
-total += 5    # 15
-total *= 2    # 30
-§§§`,
+total += 5 # 15
+total *= 2 # 30
+§§§
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -171,7 +183,8 @@ total *= 2    # 30
         },
         {
           type: 'fill',
-          prompt: 'Usa el operador correcto para obtener el resto y la potencia.',
+          prompt:
+            'Usa el operador correcto para obtener el resto y la potencia.',
           difficulty: 1,
           payload: {
             template: 'print(17 {{0}} 5)   # 2\nprint(2 {{1}} 3)    # 8',
@@ -194,8 +207,7 @@ total *= 2    # 30
         },
         {
           type: 'code',
-          prompt:
-            'Lee un entero positivo e imprime su último dígito.',
+          prompt: 'Lee un entero positivo e imprime su último dígito.',
           starterCode: 'n = int(input())\n',
           solution: 'n = int(input())\nprint(n % 10)\n',
           difficulty: 1,
@@ -222,13 +234,22 @@ total *= 2    # 30
         },
         {
           type: 'bug',
-          prompt: 'Debería calcular el promedio de `a` y `b`, pero el resultado es incorrecto. ¿Qué línea falla?',
+          prompt:
+            'Debería calcular el promedio de `a` y `b`, pero el resultado es incorrecto. ¿Qué línea falla?',
           difficulty: 2,
           payload: {
-            lines: ['a = 10', 'b = 20', 'promedio = a + b / 2', 'print(promedio)'],
+            lines: [
+              'a = 10',
+              'b = 20',
+              'promedio = a + b / 2',
+              'print(promedio)',
+            ],
             buggyLineIndex: 2,
             explanation:
-              'La división se ejecuta antes que la suma: queda §10 + 10§ = 20. Hacen falta paréntesis: §(a + b) / 2§.'.replace(/§/g, '`'),
+              'La división se ejecuta antes que la suma: queda §10 + 10§ = 20. Hacen falta paréntesis: §(a + b) / 2§.'.replace(
+                /§/g,
+                '`',
+              ),
           },
         },
       ],
@@ -242,28 +263,28 @@ total *= 2    # 30
 Una comparación produce un valor **booleano**: §True§ o §False§.
 
 §§§python
-5 > 3        # True
-5 == 5       # True  (igual)
-5 != 5       # False (distinto)
-"a" < "b"    # True  (orden alfabético)
+5 > 3 # True
+5 == 5 # True (igual)
+5 != 5 # False (distinto)
+"a" < "b" # True (orden alfabético)
 §§§
 
 ## Combinar condiciones
 
-| Operador | Es verdadero cuando... |
-|---|---|
-| §A and B§ | **ambas** son verdaderas |
-| §A or B§ | **al menos una** es verdadera |
-| §not A§ | A es falsa |
+| Operador  | Es verdadero cuando...        |
+| --------- | ----------------------------- |
+| §A and B§ | **ambas** son verdaderas      |
+| §A or B§  | **al menos una** es verdadera |
+| §not A§   | A es falsa                    |
 
 Tabla de verdad de §and§ y §or§:
 
-| A | B | A and B | A or B |
-|---|---|---|---|
-| True | True | True | True |
-| True | False | False | True |
-| False | True | False | True |
-| False | False | False | False |
+| A     | B     | A and B | A or B |
+| ----- | ----- | ------- | ------ |
+| True  | True  | True    | True   |
+| True  | False | False   | True   |
+| False | True  | False   | True   |
+| False | False | False   | False  |
 
 ## Comparaciones encadenadas
 
@@ -271,14 +292,15 @@ Python permite escribir como en matemáticas:
 
 §§§python
 x = 7
-print(1 < x < 10)   # True
+print(1 < x < 10) # True
 §§§
 
 **Error típico:** §x > 1 and < 10§ no es válido; cada lado de §and§ debe ser una comparación completa (§x > 1 and x < 10§).
 
 ## Cortocircuito
 
-En §A and B§, si A es falso Python ni siquiera evalúa B. En §A or B§, si A es verdadero tampoco evalúa B.`,
+En §A and B§, si A es falso Python ni siquiera evalúa B. En §A or B§, si A es verdadero tampoco evalúa B.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -340,7 +362,8 @@ En §A and B§, si A es falso Python ni siquiera evalúa B. En §A or B§, si A 
         },
         {
           type: 'sort',
-          prompt: 'Ordena las líneas para mostrar un aviso solo si la temperatura está entre 25 y 35.',
+          prompt:
+            'Ordena las líneas para mostrar un aviso solo si la temperatura está entre 25 y 35.',
           difficulty: 1,
           payload: {
             blocks: [
@@ -352,13 +375,21 @@ En §A and B§, si A es falso Python ni siquiera evalúa B. En §A or B§, si A 
         },
         {
           type: 'bug',
-          prompt: 'Esta comparación lanza un error de sintaxis. ¿Qué línea falla?',
+          prompt:
+            'Esta comparación lanza un error de sintaxis. ¿Qué línea falla?',
           difficulty: 2,
           payload: {
-            lines: ['nota = 75', 'if nota > 60 and < 100:', '    print("válida")'],
+            lines: [
+              'nota = 75',
+              'if nota > 60 and < 100:',
+              '    print("válida")',
+            ],
             buggyLineIndex: 1,
             explanation:
-              'Cada lado de §and§ necesita una comparación completa: §nota > 60 and nota < 100§ (o §60 < nota < 100§).'.replace(/§/g, '`'),
+              'Cada lado de §and§ necesita una comparación completa: §nota > 60 and nota < 100§ (o §60 < nota < 100§).'.replace(
+                /§/g,
+                '`',
+              ),
           },
         },
       ],
@@ -373,7 +404,7 @@ Antes de escribir código hay que saber **qué pasos** hay que dar. Una lista de
 
 ## De la idea al código
 
-Problema: *calcular el total a pagar con un descuento*.
+Problema: _calcular el total a pagar con un descuento_.
 
 1. Pedir el precio.
 2. Pedir el porcentaje de descuento.
@@ -396,7 +427,7 @@ print(total)
 Python ejecuta **de arriba hacia abajo, una línea a la vez**. No puedes usar una variable antes de crearla:
 
 §§§python
-print(total)    # NameError: name 'total' is not defined
+print(total) # NameError: name 'total' is not defined
 total = 10
 §§§
 
@@ -411,12 +442,12 @@ x = y
 y = x + 1
 §§§
 
-| Línea | x | y |
-|---|---|---|
-| §x = 2§ | 2 | – |
-| §y = 3§ | 2 | 3 |
-| §x = y§ | 3 | 3 |
-| §y = x + 1§ | 3 | 4 |
+| Línea       | x   | y   |
+| ----------- | --- | --- |
+| §x = 2§     | 2   | –   |
+| §y = 3§     | 2   | 3   |
+| §x = y§     | 3   | 3   |
+| §y = x + 1§ | 3   | 4   |
 
 ## Pseudocódigo
 
@@ -424,14 +455,15 @@ Es una forma de escribir el algoritmo en palabras antes de programar:
 
 §§§text
 SI edad >= 18 ENTONCES
-    mostrar "mayor de edad"
+mostrar "mayor de edad"
 SINO
-    mostrar "menor de edad"
+mostrar "menor de edad"
 §§§
 
 Traducirlo a Python es casi directo: §if§, §else§, dos puntos e indentación.
 
-**Consejo:** si no sabes cómo empezar, resuelve el problema a mano con un ejemplo pequeño y anota cada paso que hiciste.`,
+**Consejo:** si no sabes cómo empezar, resuelve el problema a mano con un ejemplo pequeño y anota cada paso que hiciste.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -469,7 +501,8 @@ Traducirlo a Python es casi directo: §if§, §else§, dos puntos e indentación
         },
         {
           type: 'sort',
-          prompt: 'Ordena los pasos del algoritmo: calcular el área de un triángulo.',
+          prompt:
+            'Ordena los pasos del algoritmo: calcular el área de un triángulo.',
           difficulty: 1,
           payload: {
             blocks: [

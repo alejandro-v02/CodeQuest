@@ -26,8 +26,7 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
     },
     {
       type: 'code',
-      prompt:
-        'Lee dos números enteros (uno por línea) e imprime su suma.',
+      prompt: 'Lee dos números enteros (uno por línea) e imprime su suma.',
       starterCode: 'a = int(input())\nb = int(input())\n',
       solution: 'a = int(input())\nb = int(input())\nprint(a + b)\n',
       difficulty: 1,
@@ -42,13 +41,7 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
       prompt: 'Este programa debería intercambiar `a` y `b`. ¿Qué línea falla?',
       difficulty: 2,
       payload: {
-        lines: [
-          'a = 1',
-          'b = 2',
-          'a = b',
-          'b = a',
-          'print(a, b)',
-        ],
+        lines: ['a = 1', 'b = 2', 'a = b', 'b = a', 'print(a, b)'],
         buggyLineIndex: 2,
         explanation:
           'Al hacer `a = b` se pierde el valor original de `a`; después `b = a` copia el mismo valor. Hace falta una variable temporal (o `a, b = b, a`).',
@@ -85,7 +78,12 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
       difficulty: 2,
       payload: {
         code: 'resultado = 7 / 2\nprint(type(resultado))',
-        options: ["<class 'int'>", "<class 'float'>", "<class 'str'>", "<class 'bool'>"],
+        options: [
+          "<class 'int'>",
+          "<class 'float'>",
+          "<class 'str'>",
+          "<class 'bool'>",
+        ],
         correctIndex: 1,
       },
     },
@@ -98,9 +96,21 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
         'nombre = input()\nedad = int(input())\nprint(f"{nombre} tiene {edad} años")\n',
       difficulty: 2,
       testCases: [
-        { input: 'Luis\n30', expectedOutput: 'Luis tiene 30 años', isHidden: false },
-        { input: 'Eva\n8', expectedOutput: 'Eva tiene 8 años', isHidden: false },
-        { input: 'Sofía\n101', expectedOutput: 'Sofía tiene 101 años', isHidden: true },
+        {
+          input: 'Luis\n30',
+          expectedOutput: 'Luis tiene 30 años',
+          isHidden: false,
+        },
+        {
+          input: 'Eva\n8',
+          expectedOutput: 'Eva tiene 8 años',
+          isHidden: false,
+        },
+        {
+          input: 'Sofía\n101',
+          expectedOutput: 'Sofía tiene 101 años',
+          isHidden: true,
+        },
       ],
     },
   ],
@@ -146,14 +156,11 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
     },
     {
       type: 'bug',
-      prompt: 'Este código debería imprimir "mayor" solo si la edad es 18 o más. ¿Qué línea tiene el error?',
+      prompt:
+        'Este código debería imprimir "mayor" solo si la edad es 18 o más. ¿Qué línea tiene el error?',
       difficulty: 2,
       payload: {
-        lines: [
-          'edad = 18',
-          'if edad = 18:',
-          '    print("mayor")',
-        ],
+        lines: ['edad = 18', 'if edad = 18:', '    print("mayor")'],
         buggyLineIndex: 1,
         explanation:
           'Para comparar se usa `==` (o `>=` en este caso); un solo `=` es una asignación y provoca un SyntaxError dentro de un `if`.',
@@ -210,14 +217,11 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
     },
     {
       type: 'bug',
-      prompt: 'Este bucle debería terminar, pero se queda corriendo para siempre. ¿Qué línea falla?',
+      prompt:
+        'Este bucle debería terminar, pero se queda corriendo para siempre. ¿Qué línea falla?',
       difficulty: 2,
       payload: {
-        lines: [
-          'contador = 0',
-          'while contador < 5:',
-          '    print(contador)',
-        ],
+        lines: ['contador = 0', 'while contador < 5:', '    print(contador)'],
         buggyLineIndex: 2,
         explanation:
           'Falta incrementar `contador` dentro del bucle (`contador += 1`); sin eso la condición siempre es verdadera y el bucle es infinito.',
@@ -252,7 +256,8 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
     },
     {
       type: 'sort',
-      prompt: 'Ordena las líneas para definir y usar una función que suma dos números.',
+      prompt:
+        'Ordena las líneas para definir y usar una función que suma dos números.',
       difficulty: 1,
       payload: {
         blocks: [
@@ -296,7 +301,8 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
       prompt: 'Agrega un elemento al final de la lista y muestra cuántos hay.',
       difficulty: 1,
       payload: {
-        template: 'numeros = [1, 2, 3]\nnumeros.{{0}}(4)\nprint({{1}}(numeros))',
+        template:
+          'numeros = [1, 2, 3]\nnumeros.{{0}}(4)\nprint({{1}}(numeros))',
         blanks: ['append', 'len'],
       },
     },
@@ -330,7 +336,8 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
     },
     {
       type: 'bug',
-      prompt: 'Esta lista tiene 3 elementos, pero el código falla. ¿Qué línea tiene el error?',
+      prompt:
+        'Esta lista tiene 3 elementos, pero el código falla. ¿Qué línea tiene el error?',
       difficulty: 2,
       payload: {
         lines: [
@@ -374,14 +381,19 @@ export const pythonExtraExercises: Record<string, SeedExercise[]> = {
         'palabra = input()\nconteo = {}\nfor letra in palabra:\n    conteo[letra] = conteo.get(letra, 0) + 1\nfor letra, cantidad in conteo.items():\n    print(f"{letra}: {cantidad}")\n',
       difficulty: 3,
       testCases: [
-        { input: 'hola', expectedOutput: 'h: 1\no: 1\nl: 1\na: 1', isHidden: false },
+        {
+          input: 'hola',
+          expectedOutput: 'h: 1\no: 1\nl: 1\na: 1',
+          isHidden: false,
+        },
         { input: 'casa', expectedOutput: 'c: 1\na: 2\ns: 1', isHidden: false },
         { input: 'aaa', expectedOutput: 'a: 3', isHidden: true },
       ],
     },
     {
       type: 'bug',
-      prompt: 'Este código debería imprimir la edad de Luis, pero lanza un error. ¿Qué línea falla?',
+      prompt:
+        'Este código debería imprimir la edad de Luis, pero lanza un error. ¿Qué línea falla?',
       difficulty: 2,
       payload: {
         lines: [

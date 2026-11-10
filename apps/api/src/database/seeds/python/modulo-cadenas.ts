@@ -20,19 +20,19 @@ otro = 'mundo'
 ## Operaciones básicas
 
 §§§python
-len("hola mundo")        # 10  (cuenta también el espacio)
-"Hola" + " " + "mundo"  # "Hola mundo"  (concatenar)
-"ja" * 3                # "jajaja"      (repetir)
-"a" in "casa"           # True          (contiene)
+len("hola mundo") # 10 (cuenta también el espacio)
+"Hola" + " " + "mundo" # "Hola mundo" (concatenar)
+"ja" * 3 # "jajaja" (repetir)
+"a" in "casa" # True (contiene)
 §§§
 
 ## Mayúsculas, minúsculas y espacios
 
 §§§python
-nombre = "  Ana María  "
-nombre.upper()    # "  ANA MARÍA  "
-nombre.lower()    # "  ana maría  "
-nombre.strip()    # "Ana María"   (quita espacios de los extremos)
+nombre = " Ana María "
+nombre.upper() # " ANA MARÍA "
+nombre.lower() # " ana maría "
+nombre.strip() # "Ana María" (quita espacios de los extremos)
 §§§
 
 Los métodos **no modifican** el string original: devuelven uno nuevo. Hay que guardar el resultado:
@@ -47,13 +47,14 @@ No puedes cambiar un carácter "en el sitio":
 
 §§§python
 palabra = "casa"
-palabra[0] = "m"   # TypeError
-palabra = "m" + palabra[1:]   # forma correcta: crear uno nuevo
+palabra[0] = "m" # TypeError
+palabra = "m" + palabra[1:] # forma correcta: crear uno nuevo
 §§§
 
 ## Comparar
 
-§"a" == "a"§ es §True§. Python distingue mayúsculas: §"Hola" == "hola"§ es §False§. Para comparar sin importar mayúsculas, pasa ambos a §.lower()§.`,
+§"a" == "a"§ es §True§. Python distingue mayúsculas: §"Hola" == "hola"§ es §False§. Para comparar sin importar mayúsculas, pasa ambos a §.lower()§.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -120,13 +121,22 @@ palabra = "m" + palabra[1:]   # forma correcta: crear uno nuevo
           difficulty: 2,
           testCases: [
             { input: 'Hola\nhOLA', expectedOutput: 'iguales', isHidden: false },
-            { input: 'casa\ncasas', expectedOutput: 'distintas', isHidden: false },
-            { input: 'PYTHON\npython', expectedOutput: 'iguales', isHidden: true },
+            {
+              input: 'casa\ncasas',
+              expectedOutput: 'distintas',
+              isHidden: false,
+            },
+            {
+              input: 'PYTHON\npython',
+              expectedOutput: 'iguales',
+              isHidden: true,
+            },
           ],
         },
         {
           type: 'bug',
-          prompt: 'Se quiere cambiar la primera letra de "Ana" por "E", pero el programa falla. ¿Qué línea tiene el error?',
+          prompt:
+            'Se quiere cambiar la primera letra de "Ana" por "E", pero el programa falla. ¿Qué línea tiene el error?',
           difficulty: 2,
           payload: {
             lines: ['nombre = "Ana"', 'nombre[0] = "E"', 'print(nombre)'],
@@ -145,17 +155,17 @@ palabra = "m" + palabra[1:]   # forma correcta: crear uno nuevo
 
 Cada carácter de un string tiene una **posición** (índice). Se empieza a contar en **0**:
 
-| P | y | t | h | o | n |
-|---|---|---|---|---|---|
-| 0 | 1 | 2 | 3 | 4 | 5 |
-| -6 | -5 | -4 | -3 | -2 | -1 |
+| P   | y   | t   | h   | o   | n   |
+| --- | --- | --- | --- | --- | --- |
+| 0   | 1   | 2   | 3   | 4   | 5   |
+| -6  | -5  | -4  | -3  | -2  | -1  |
 
 §§§python
 palabra = "Python"
-palabra[0]    # "P"
-palabra[5]    # "n"
-palabra[-1]   # "n"  (el último)
-palabra[6]    # IndexError: no existe esa posición
+palabra[0] # "P"
+palabra[5] # "n"
+palabra[-1] # "n" (el último)
+palabra[6] # IndexError: no existe esa posición
 §§§
 
 ## Slicing: tomar un trozo
@@ -163,10 +173,10 @@ palabra[6]    # IndexError: no existe esa posición
 §texto[inicio:fin]§ incluye §inicio§ y **excluye** §fin§:
 
 §§§python
-palabra[1:4]   # "yth"
-palabra[:2]    # "Py"     (desde el principio)
-palabra[3:]    # "hon"    (hasta el final)
-palabra[-3:]   # "hon"    (últimos tres)
+palabra[1:4] # "yth"
+palabra[:2] # "Py" (desde el principio)
+palabra[3:] # "hon" (hasta el final)
+palabra[-3:] # "hon" (últimos tres)
 §§§
 
 ## Paso (step)
@@ -174,23 +184,24 @@ palabra[-3:]   # "hon"    (últimos tres)
 §texto[inicio:fin:paso]§:
 
 §§§python
-palabra[::2]    # "Pto"      (de dos en dos)
-palabra[::-1]   # "nohtyP"   (al revés)
+palabra[::2] # "Pto" (de dos en dos)
+palabra[::-1] # "nohtyP" (al revés)
 §§§
 
 ## Recorrer con índices
 
 §§§python
 for i in range(len(palabra)):
-    print(i, palabra[i])
+print(i, palabra[i])
 §§§
 
 o directamente por letra:
 
 §§§python
 for letra in palabra:
-    print(letra)
-§§§`,
+print(letra)
+§§§
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -217,7 +228,8 @@ for letra in palabra:
           prompt: 'Obtén la última letra y el texto al revés.',
           difficulty: 2,
           payload: {
-            template: 'palabra = "hola"\nprint(palabra[{{0}}])     # a\nprint(palabra[::{{1}}])    # aloh',
+            template:
+              'palabra = "hola"\nprint(palabra[{{0}}])     # a\nprint(palabra[::{{1}}])    # aloh',
             blanks: ['-1', '-1'],
           },
         },
@@ -255,8 +267,16 @@ for letra in palabra:
             'palabra = input()\nif palabra == palabra[::-1]:\n    print("palindromo")\nelse:\n    print("no palindromo")\n',
           difficulty: 3,
           testCases: [
-            { input: 'reconocer', expectedOutput: 'palindromo', isHidden: false },
-            { input: 'python', expectedOutput: 'no palindromo', isHidden: false },
+            {
+              input: 'reconocer',
+              expectedOutput: 'palindromo',
+              isHidden: false,
+            },
+            {
+              input: 'python',
+              expectedOutput: 'no palindromo',
+              isHidden: false,
+            },
             { input: 'oso', expectedOutput: 'palindromo', isHidden: true },
             { input: 'ab', expectedOutput: 'no palindromo', isHidden: true },
           ],
@@ -276,10 +296,15 @@ for letra in palabra:
         },
         {
           type: 'bug',
-          prompt: '"hola" tiene 4 letras, pero el programa falla. ¿Qué línea tiene el error?',
+          prompt:
+            '"hola" tiene 4 letras, pero el programa falla. ¿Qué línea tiene el error?',
           difficulty: 2,
           payload: {
-            lines: ['palabra = "hola"', 'print(palabra[0])', 'print(palabra[4])'],
+            lines: [
+              'palabra = "hola"',
+              'print(palabra[0])',
+              'print(palabra[4])',
+            ],
             buggyLineIndex: 2,
             explanation:
               'Los índices válidos van de 0 a 3. `palabra[4]` lanza `IndexError`; la última letra es `palabra[3]` o `palabra[-1]`.',
@@ -298,8 +323,8 @@ Los strings traen muchos métodos listos para usar.
 ## Dividir y unir
 
 §§§python
-"a,b,c".split(",")        # ["a", "b", "c"]
-"hola mundo".split()      # ["hola", "mundo"]  (separa por espacios)
+"a,b,c".split(",") # ["a", "b", "c"]
+"hola mundo".split() # ["hola", "mundo"] (separa por espacios)
 "-".join(["x", "y", "z"]) # "x-y-z"
 §§§
 
@@ -309,33 +334,34 @@ Los strings traen muchos métodos listos para usar.
 
 §§§python
 frase = "banana"
-frase.replace("a", "o")   # "bonono"
-frase.count("a")          # 3
-frase.find("n")           # 2   (posición; -1 si no existe)
-frase.startswith("ba")    # True
-frase.endswith("na")      # True
+frase.replace("a", "o") # "bonono"
+frase.count("a") # 3
+frase.find("n") # 2 (posición; -1 si no existe)
+frase.startswith("ba") # True
+frase.endswith("na") # True
 §§§
 
 ## Comprobar el contenido
 
 §§§python
-"123".isdigit()     # True
-"12a".isdigit()     # False
-"hola".isalpha()    # True
-"hola mundo".title()      # "Hola Mundo"
-"hola".capitalize()       # "Hola"
+"123".isdigit() # True
+"12a".isdigit() # False
+"hola".isalpha() # True
+"hola mundo".title() # "Hola Mundo"
+"hola".capitalize() # "Hola"
 §§§
 
 ## Encadenar métodos
 
 §§§python
-entrada = "  JUAN  "
-limpio = entrada.strip().lower().capitalize()   # "Juan"
+entrada = " JUAN "
+limpio = entrada.strip().lower().capitalize() # "Juan"
 §§§
 
 Recuerda: cada método devuelve un string nuevo; el original no cambia.
 
-**Error típico:** llamar §"a-b-c".split()§ sin separador cuando el texto no tiene espacios: devuelve la lista con un solo elemento.`,
+**Error típico:** llamar §"a-b-c".split()§ sin separador cuando el texto no tiene espacios: devuelve la lista con un solo elemento.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -359,7 +385,8 @@ Recuerda: cada método devuelve un string nuevo; el original no cambia.
         },
         {
           type: 'fill',
-          prompt: 'Cuenta las "a" de banana y comprueba si "hola" empieza por "h".',
+          prompt:
+            'Cuenta las "a" de banana y comprueba si "hola" empieza por "h".',
           difficulty: 2,
           payload: {
             template: 'print("banana".{{0}}("a"))\nprint("hola".{{1}}("h"))',
@@ -380,12 +407,17 @@ Recuerda: cada método devuelve un string nuevo; el original no cambia.
         },
         {
           type: 'code',
-          prompt: 'Lee una frase e imprímela reemplazando los espacios por guiones bajos.',
+          prompt:
+            'Lee una frase e imprímela reemplazando los espacios por guiones bajos.',
           starterCode: 'frase = input()\n',
           solution: 'frase = input()\nprint(frase.replace(" ", "_"))\n',
           difficulty: 1,
           testCases: [
-            { input: 'mi nombre es Ana', expectedOutput: 'mi_nombre_es_Ana', isHidden: false },
+            {
+              input: 'mi nombre es Ana',
+              expectedOutput: 'mi_nombre_es_Ana',
+              isHidden: false,
+            },
             { input: 'hola', expectedOutput: 'hola', isHidden: false },
             { input: 'a b', expectedOutput: 'a_b', isHidden: true },
           ],
@@ -398,8 +430,16 @@ Recuerda: cada método devuelve un string nuevo; el original no cambia.
           solution: 'frase = input()\nprint(frase.title())\n',
           difficulty: 2,
           testCases: [
-            { input: 'hola mundo', expectedOutput: 'Hola Mundo', isHidden: false },
-            { input: 'python es genial', expectedOutput: 'Python Es Genial', isHidden: false },
+            {
+              input: 'hola mundo',
+              expectedOutput: 'Hola Mundo',
+              isHidden: false,
+            },
+            {
+              input: 'python es genial',
+              expectedOutput: 'Python Es Genial',
+              isHidden: false,
+            },
             { input: 'sol', expectedOutput: 'Sol', isHidden: true },
           ],
         },
@@ -412,17 +452,34 @@ Recuerda: cada método devuelve un string nuevo; el original no cambia.
             'correo = input()\nif "@" in correo and correo.endswith(".com"):\n    print("valido")\nelse:\n    print("invalido")\n',
           difficulty: 2,
           testCases: [
-            { input: 'ana@correo.com', expectedOutput: 'valido', isHidden: false },
-            { input: 'ana.correo.com', expectedOutput: 'invalido', isHidden: false },
-            { input: 'ana@correo.org', expectedOutput: 'invalido', isHidden: true },
+            {
+              input: 'ana@correo.com',
+              expectedOutput: 'valido',
+              isHidden: false,
+            },
+            {
+              input: 'ana.correo.com',
+              expectedOutput: 'invalido',
+              isHidden: false,
+            },
+            {
+              input: 'ana@correo.org',
+              expectedOutput: 'invalido',
+              isHidden: true,
+            },
           ],
         },
         {
           type: 'bug',
-          prompt: 'Se quiere imprimir la segunda parte ("b"), pero el programa falla. ¿Qué línea tiene el error?',
+          prompt:
+            'Se quiere imprimir la segunda parte ("b"), pero el programa falla. ¿Qué línea tiene el error?',
           difficulty: 3,
           payload: {
-            lines: ['texto = "a-b-c"', 'partes = texto.split()', 'print(partes[1])'],
+            lines: [
+              'texto = "a-b-c"',
+              'partes = texto.split()',
+              'print(partes[1])',
+            ],
             buggyLineIndex: 1,
             explanation:
               'Sin argumento, `split()` separa por espacios; como el texto no tiene, devuelve `["a-b-c"]` y `partes[1]` falla. Hay que indicar el separador: `texto.split("-")`.',
@@ -451,18 +508,18 @@ Sin la §f§ las llaves se imprimen tal cual: §"{nombre}"§ muestra literalment
 
 Después de dos puntos puedes indicar cómo mostrar el valor:
 
-| Formato | Ejemplo | Resultado |
-|---|---|---|
-| §:.2f§ | §f"{3.14159:.2f}"§ | §3.14§ |
-| §:.1%§ | §f"{0.256:.1%}"§ | §25.6%§ |
-| §:,§ | §f"{1234567:,}"§ | §1,234,567§ |
-| §:05d§ | §f"{42:05d}"§ | §00042§ |
+| Formato | Ejemplo            | Resultado   |
+| ------- | ------------------ | ----------- |
+| §:.2f§  | §f"{3.14159:.2f}"§ | §3.14§      |
+| §:.1%§  | §f"{0.256:.1%}"§   | §25.6%§     |
+| §:,§    | §f"{1234567:,}"§   | §1,234,567§ |
+| §:05d§  | §f"{42:05d}"§      | §00042§     |
 
 ## Alinear en columnas
 
 §§§python
-print(f"{'Ana':<10}{42:>5}")   # texto a la izquierda (10), número a la derecha (5)
-print(f"{'Luis':^10}")         # centrado en 10
+print(f"{'Ana':<10}{42:>5}") # texto a la izquierda (10), número a la derecha (5)
+print(f"{'Luis':^10}") # centrado en 10
 §§§
 
 - §<§ izquierda, §>§ derecha, §^§ centro.
@@ -470,7 +527,8 @@ print(f"{'Luis':^10}")         # centrado en 10
 
 ## Cuándo usarlos
 
-Casi siempre que mezcles texto con valores. Son más legibles que concatenar con §+§ y no exigen convertir los números con §str()§.`,
+Casi siempre que mezcles texto con valores. Son más legibles que concatenar con §+§ y no exigen convertir los números con §str()§.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -494,7 +552,8 @@ Casi siempre que mezcles texto con valores. Son más legibles que concatenar con
         },
         {
           type: 'fill',
-          prompt: 'Completa el f-string y el método para mostrar el nombre en mayúsculas.',
+          prompt:
+            'Completa el f-string y el método para mostrar el nombre en mayúsculas.',
           difficulty: 2,
           payload: {
             template:
@@ -512,7 +571,11 @@ Casi siempre que mezcles texto con valores. Son más legibles que concatenar con
           testCases: [
             { input: '9.5', expectedOutput: 'Total: $9.50', isHidden: false },
             { input: '10', expectedOutput: 'Total: $10.00', isHidden: false },
-            { input: '3.14159', expectedOutput: 'Total: $3.14', isHidden: true },
+            {
+              input: '3.14159',
+              expectedOutput: 'Total: $3.14',
+              isHidden: true,
+            },
           ],
         },
         {
@@ -524,9 +587,21 @@ Casi siempre que mezcles texto con valores. Son más legibles que concatenar con
             'nombre = input()\nvalor = int(input())\nprint(f"{nombre:<10}{valor:>5}")\n',
           difficulty: 3,
           testCases: [
-            { input: 'Ana\n42', expectedOutput: 'Ana' + ' '.repeat(10) + '42', isHidden: false },
-            { input: 'Luis\n7', expectedOutput: 'Luis' + ' '.repeat(10) + '7', isHidden: false },
-            { input: 'Eva\n12345', expectedOutput: 'Eva       12345', isHidden: true },
+            {
+              input: 'Ana\n42',
+              expectedOutput: 'Ana' + ' '.repeat(10) + '42',
+              isHidden: false,
+            },
+            {
+              input: 'Luis\n7',
+              expectedOutput: 'Luis' + ' '.repeat(10) + '7',
+              isHidden: false,
+            },
+            {
+              input: 'Eva\n12345',
+              expectedOutput: 'Eva       12345',
+              isHidden: true,
+            },
           ],
         },
         {
@@ -545,7 +620,8 @@ Casi siempre que mezcles texto con valores. Son más legibles que concatenar con
         },
         {
           type: 'bug',
-          prompt: 'El programa debería mostrar `Edad: 25`, pero muestra las llaves. ¿Qué línea tiene el error?',
+          prompt:
+            'El programa debería mostrar `Edad: 25`, pero muestra las llaves. ¿Qué línea tiene el error?',
           difficulty: 1,
           payload: {
             lines: ['edad = 25', 'print("Edad: {edad}")'],

@@ -15,8 +15,8 @@ Una **tupla** es como una lista, pero **inmutable**: una vez creada no se puede 
 §§§python
 punto = (3, 4)
 colores = ("rojo", "verde", "azul")
-print(punto[0])      # 3
-print(len(colores))  # 3
+print(punto[0]) # 3
+print(len(colores)) # 3
 §§§
 
 Una tupla de un solo elemento lleva coma: §(5,)§. Sin la coma, §(5)§ es solo el número 5.
@@ -31,8 +31,8 @@ Puedes repartir los valores de una tupla en variables de un solo paso:
 
 §§§python
 x, y = (3, 4)
-print(x)   # 3
-print(y)   # 4
+print(x) # 3
+print(y) # 4
 §§§
 
 Funciona con cualquier secuencia, y es la forma elegante de **intercambiar** dos variables:
@@ -40,14 +40,14 @@ Funciona con cualquier secuencia, y es la forma elegante de **intercambiar** dos
 §§§python
 a, b = 1, 2
 a, b = b, a
-print(a, b)   # 2 1
+print(a, b) # 2 1
 §§§
 
 ## Funciones que devuelven varios valores
 
 §§§python
 def min_y_max(a, b, c):
-    return min(a, b, c), max(a, b, c)    # devuelve una tupla
+return min(a, b, c), max(a, b, c) # devuelve una tupla
 
 menor, mayor = min_y_max(5, 2, 9)
 §§§
@@ -56,8 +56,9 @@ menor, mayor = min_y_max(5, 2, 9)
 
 §§§python
 punto = (3, 4)
-punto[0] = 10   # TypeError: 'tuple' object does not support item assignment
-§§§`,
+punto[0] = 10 # TypeError: 'tuple' object does not support item assignment
+§§§
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -93,7 +94,8 @@ punto[0] = 10   # TypeError: 'tuple' object does not support item assignment
           prompt:
             'Lee dos enteros (uno por línea) e imprímelos intercambiados, separados por un espacio. Usa desempaquetado.',
           starterCode: 'a = int(input())\nb = int(input())\n',
-          solution: 'a = int(input())\nb = int(input())\na, b = b, a\nprint(a, b)\n',
+          solution:
+            'a = int(input())\nb = int(input())\na, b = b, a\nprint(a, b)\n',
           difficulty: 1,
           testCases: [
             { input: '3\n7', expectedOutput: '7 3', isHidden: false },
@@ -121,7 +123,8 @@ punto[0] = 10   # TypeError: 'tuple' object does not support item assignment
           prompt:
             'Lee las coordenadas `x y` de un punto en una sola línea (dos enteros separados por espacio) e imprime `x^2 + y^2` (es decir, `x * x + y * y`).',
           starterCode: 'x, y = [int(v) for v in input().split()]\n',
-          solution: 'x, y = [int(v) for v in input().split()]\nprint(x * x + y * y)\n',
+          solution:
+            'x, y = [int(v) for v in input().split()]\nprint(x * x + y * y)\n',
           difficulty: 2,
           testCases: [
             { input: '3 4', expectedOutput: '25', isHidden: false },
@@ -131,7 +134,8 @@ punto[0] = 10   # TypeError: 'tuple' object does not support item assignment
         },
         {
           type: 'bug',
-          prompt: 'Se quiere cambiar la primera coordenada del punto, pero el programa falla. ¿Qué línea tiene el error?',
+          prompt:
+            'Se quiere cambiar la primera coordenada del punto, pero el programa falla. ¿Qué línea tiene el error?',
           difficulty: 2,
           payload: {
             lines: ['punto = (3, 4)', 'punto[0] = 10', 'print(punto)'],
@@ -153,7 +157,7 @@ Un **conjunto** guarda elementos **sin repetir y sin orden**. Se escribe con lla
 §§§python
 colores = {"rojo", "verde", "azul"}
 numeros = {1, 2, 2, 3, 3, 3}
-print(numeros)   # {1, 2, 3}  (los repetidos desaparecen)
+print(numeros) # {1, 2, 3} (los repetidos desaparecen)
 §§§
 
 Para un conjunto vacío usa §set()§ (porque §{}§ crea un diccionario).
@@ -162,16 +166,16 @@ Para un conjunto vacío usa §set()§ (porque §{}§ crea un diccionario).
 
 §§§python
 lista = [1, 2, 2, 3, 3, 3]
-unicos = set(lista)      # {1, 2, 3}
-len(unicos)              # 3
+unicos = set(lista) # {1, 2, 3}
+len(unicos) # 3
 §§§
 
 ## Operaciones
 
 §§§python
-colores.add("amarillo")      # agrega
-colores.discard("rojo")      # quita (sin error si no existe)
-"verde" in colores           # True — muy rápido
+colores.add("amarillo") # agrega
+colores.discard("rojo") # quita (sin error si no existe)
+"verde" in colores # True — muy rápido
 §§§
 
 ## Teoría de conjuntos
@@ -179,14 +183,15 @@ colores.discard("rojo")      # quita (sin error si no existe)
 §§§python
 a = {1, 2, 3}
 b = {2, 3, 4}
-a | b    # unión:        {1, 2, 3, 4}
-a & b    # intersección: {2, 3}
-a - b    # diferencia:   {1}
+a | b # unión: {1, 2, 3, 4}
+a & b # intersección: {2, 3}
+a - b # diferencia: {1}
 §§§
 
 ## Qué no puedes hacer
 
-No tienen orden, así que **no hay índices**: §colores[0]§ es un error. Si necesitas el orden, conviértelo: §sorted(colores)§ devuelve una lista ordenada.`,
+No tienen orden, así que **no hay índices**: §colores[0]§ es un error. Si necesitas el orden, conviértelo: §sorted(colores)§ devuelve una lista ordenada.
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -213,7 +218,8 @@ No tienen orden, así que **no hay índices**: §colores[0]§ es un error. Si ne
           prompt: 'Calcula la unión y la intersección de los conjuntos.',
           difficulty: 2,
           payload: {
-            template: 'a = {1, 2}\nb = {2, 3}\nprint(a {{0}} b)   # {1, 2, 3}\nprint(a {{1}} b)   # {2}',
+            template:
+              'a = {1, 2}\nb = {2, 3}\nprint(a {{0}} b)   # {1, 2, 3}\nprint(a {{1}} b)   # {2}',
             blanks: ['|', '&'],
           },
         },
@@ -240,7 +246,11 @@ No tienen orden, así que **no hay índices**: §colores[0]§ es un error. Si ne
             'a = {int(x) for x in input().split()}\nb = {int(x) for x in input().split()}\ncomunes = sorted(a & b)\nif comunes:\n    print(" ".join(str(n) for n in comunes))\nelse:\n    print("ninguno")\n',
           difficulty: 3,
           testCases: [
-            { input: '1 2 3 4\n3 4 5 6', expectedOutput: '3 4', isHidden: false },
+            {
+              input: '1 2 3 4\n3 4 5 6',
+              expectedOutput: '3 4',
+              isHidden: false,
+            },
             { input: '1 2\n3 4', expectedOutput: 'ninguno', isHidden: false },
             { input: '5 5 1\n1 5 9', expectedOutput: '1 5', isHidden: true },
           ],
@@ -255,14 +265,19 @@ No tienen orden, así que **no hay índices**: §colores[0]§ es un error. Si ne
           difficulty: 2,
           testCases: [
             { input: 'python', expectedOutput: 'unicas', isHidden: false },
-            { input: 'hola mundo', expectedOutput: 'repetidas', isHidden: false },
+            {
+              input: 'hola mundo',
+              expectedOutput: 'repetidas',
+              isHidden: false,
+            },
             { input: 'sol', expectedOutput: 'unicas', isHidden: true },
             { input: 'casa', expectedOutput: 'repetidas', isHidden: true },
           ],
         },
         {
           type: 'bug',
-          prompt: 'El programa intenta leer el primer elemento del conjunto y falla. ¿Qué línea tiene el error?',
+          prompt:
+            'El programa intenta leer el primer elemento del conjunto y falla. ¿Qué línea tiene el error?',
           difficulty: 2,
           payload: {
             lines: ['numeros = {10, 20, 30}', 'print(numeros[0])'],
@@ -285,18 +300,18 @@ Python trae funciones muy útiles para trabajar con listas, tuplas, conjuntos y 
 
 §§§python
 numeros = [4, 9, 1, 7]
-min(numeros)   # 1
-max(numeros)   # 9
-sum(numeros)   # 21
-len(numeros)   # 4
+min(numeros) # 1
+max(numeros) # 9
+sum(numeros) # 21
+len(numeros) # 4
 §§§
 
 ## Ordenar con §sorted()§
 
 §§§python
-sorted(numeros)                  # [1, 4, 7, 9]
-sorted(numeros, reverse=True)    # [9, 7, 4, 1]
-sorted(["pera", "uva", "kiwi"])  # ["kiwi", "pera", "uva"]
+sorted(numeros) # [1, 4, 7, 9]
+sorted(numeros, reverse=True) # [9, 7, 4, 1]
+sorted(["pera", "uva", "kiwi"]) # ["kiwi", "pera", "uva"]
 §§§
 
 §sorted()§ devuelve una lista **nueva**. El método §lista.sort()§ ordena la lista **en el sitio** y devuelve §None§.
@@ -306,10 +321,10 @@ sorted(["pera", "uva", "kiwi"])  # ["kiwi", "pera", "uva"]
 §§§python
 frutas = ["pera", "uva", "kiwi"]
 for i, fruta in enumerate(frutas):
-    print(i, fruta)        # 0 pera / 1 uva / 2 kiwi
+print(i, fruta) # 0 pera / 1 uva / 2 kiwi
 
 for i, fruta in enumerate(frutas, start=1):
-    print(f"{i}. {fruta}")   # empieza a contar en 1
+print(f"{i}. {fruta}") # empieza a contar en 1
 §§§
 
 ## Recorrer dos listas a la vez: §zip()§
@@ -318,15 +333,16 @@ for i, fruta in enumerate(frutas, start=1):
 nombres = ["Ana", "Luis"]
 notas = [90, 75]
 for nombre, nota in zip(nombres, notas):
-    print(nombre, nota)
+print(nombre, nota)
 §§§
 
 ## Preguntar por toda la colección
 
 §§§python
-any(n < 0 for n in numeros)   # ¿hay algún negativo?
-all(n > 0 for n in numeros)   # ¿todos son positivos?
-§§§`,
+any(n < 0 for n in numeros) # ¿hay algún negativo?
+all(n > 0 for n in numeros) # ¿todos son positivos?
+§§§
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -387,7 +403,11 @@ all(n > 0 for n in numeros)   # ¿todos son positivos?
           difficulty: 2,
           testCases: [
             { input: '3 1 2', expectedOutput: '3 2 1', isHidden: false },
-            { input: '10 -5 7 7', expectedOutput: '10 7 7 -5', isHidden: false },
+            {
+              input: '10 -5 7 7',
+              expectedOutput: '10 7 7 -5',
+              isHidden: false,
+            },
             { input: '4', expectedOutput: '4', isHidden: true },
           ],
         },
@@ -400,7 +420,11 @@ all(n > 0 for n in numeros)   # ¿todos son positivos?
             'nombres = input().split()\nfor i, nombre in enumerate(nombres, start=1):\n    print(f"{i}. {nombre}")\n',
           difficulty: 2,
           testCases: [
-            { input: 'Ana Luis Eva', expectedOutput: '1. Ana\n2. Luis\n3. Eva', isHidden: false },
+            {
+              input: 'Ana Luis Eva',
+              expectedOutput: '1. Ana\n2. Luis\n3. Eva',
+              isHidden: false,
+            },
             { input: 'Sofía', expectedOutput: '1. Sofía', isHidden: false },
             { input: 'a b', expectedOutput: '1. a\n2. b', isHidden: true },
           ],
@@ -421,10 +445,15 @@ all(n > 0 for n in numeros)   # ¿todos son positivos?
         },
         {
           type: 'bug',
-          prompt: 'Se quiere recorrer la lista con su posición, pero el bucle falla. ¿Qué línea tiene el error?',
+          prompt:
+            'Se quiere recorrer la lista con su posición, pero el bucle falla. ¿Qué línea tiene el error?',
           difficulty: 3,
           payload: {
-            lines: ['numeros = [10, 20, 30]', 'for i, n in numeros:', '    print(i, n)'],
+            lines: [
+              'numeros = [10, 20, 30]',
+              'for i, n in numeros:',
+              '    print(i, n)',
+            ],
             buggyLineIndex: 1,
             explanation:
               'Recorrer la lista directamente entrega un solo valor por vuelta, no dos. Para obtener índice y valor hay que usar `enumerate(numeros)`.',
@@ -444,20 +473,20 @@ Una lista puede contener otras listas. Es la forma habitual de representar una *
 
 §§§python
 matriz = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
+[1, 2, 3],
+[4, 5, 6],
+[7, 8, 9],
 ]
-print(matriz[1][2])   # 6  (fila 1, columna 2)
+print(matriz[1][2]) # 6 (fila 1, columna 2)
 §§§
 
 Para recorrerla se anidan dos bucles:
 
 §§§python
 for fila in matriz:
-    for valor in fila:
-        print(valor, end=" ")
-    print()   # salto de línea al terminar cada fila
+for valor in fila:
+print(valor, end=" ")
+print() # salto de línea al terminar cada fila
 §§§
 
 ## Comprensiones de lista
@@ -465,9 +494,9 @@ for fila in matriz:
 Una forma compacta de crear listas a partir de otra secuencia:
 
 §§§python
-[n * 2 for n in range(4)]          # [0, 2, 4, 6]
-[n for n in range(10) if n % 2 == 0]   # [0, 2, 4, 6, 8]
-[letra.upper() for letra in "hola"]    # ["H", "O", "L", "A"]
+[n * 2 for n in range(4)] # [0, 2, 4, 6]
+[n for n in range(10) if n % 2 == 0] # [0, 2, 4, 6, 8]
+[letra.upper() for letra in "hola"] # ["H", "O", "L", "A"]
 §§§
 
 Estructura: §[expresión for variable in secuencia if condición]§, y el §if§ es opcional.
@@ -476,7 +505,9 @@ Estructura: §[expresión for variable in secuencia if condición]§, y el §if�
 
 §§§python
 plana = [valor for fila in matriz for valor in fila]
+
 # [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
 §§§
 
 ## Cuidado al copiar
@@ -486,7 +517,8 @@ a = [[0] * 2] * 2      # ¡las dos filas son LA MISMA lista!
 a[0][0] = 1
 print(a)               # [[1, 0], [1, 0]]
 b = [[0] * 2 for _ in range(2)]   # forma correcta: filas independientes
-§§§`,
+§§§
+      `,
       exercises: [
         {
           type: 'quiz',
@@ -504,7 +536,12 @@ b = [[0] * 2 for _ in range(2)]   # forma correcta: filas independientes
           difficulty: 2,
           payload: {
             code: 'print([n * 2 for n in range(4)])',
-            options: ['[0, 1, 2, 3]', '[0, 2, 4, 6]', '[2, 4, 6, 8]', '[0, 2, 4]'],
+            options: [
+              '[0, 1, 2, 3]',
+              '[0, 2, 4, 6]',
+              '[2, 4, 6, 8]',
+              '[0, 2, 4]',
+            ],
             correctIndex: 1,
           },
         },
@@ -545,14 +582,27 @@ b = [[0] * 2 for _ in range(2)]   # forma correcta: filas independientes
           type: 'code',
           prompt:
             'Lee una matriz de 3 filas (cada fila son 3 enteros separados por espacios, una fila por línea) e imprime la suma de su diagonal principal (posiciones [0][0], [1][1] y [2][2]).',
-          starterCode: 'matriz = [[int(x) for x in input().split()] for _ in range(3)]\n',
+          starterCode:
+            'matriz = [[int(x) for x in input().split()] for _ in range(3)]\n',
           solution:
             'matriz = [[int(x) for x in input().split()] for _ in range(3)]\nprint(sum(matriz[i][i] for i in range(3)))\n',
           difficulty: 3,
           testCases: [
-            { input: '1 2 3\n4 5 6\n7 8 9', expectedOutput: '15', isHidden: false },
-            { input: '1 0 0\n0 1 0\n0 0 1', expectedOutput: '3', isHidden: false },
-            { input: '5 5 5\n5 -1 5\n5 5 2', expectedOutput: '6', isHidden: true },
+            {
+              input: '1 2 3\n4 5 6\n7 8 9',
+              expectedOutput: '15',
+              isHidden: false,
+            },
+            {
+              input: '1 0 0\n0 1 0\n0 0 1',
+              expectedOutput: '3',
+              isHidden: false,
+            },
+            {
+              input: '5 5 5\n5 -1 5\n5 5 2',
+              expectedOutput: '6',
+              isHidden: true,
+            },
           ],
         },
         {
@@ -574,17 +624,23 @@ b = [[0] * 2 for _ in range(2)]   # forma correcta: filas independientes
           prompt:
             'Lee un entero `n` e imprime un triángulo de `n` filas hecho de asteriscos: la fila 1 tiene 1 `*`, la fila 2 tiene 2, y así hasta `n`.',
           starterCode: 'n = int(input())\n',
-          solution: 'n = int(input())\nfor fila in range(1, n + 1):\n    print("*" * fila)\n',
+          solution:
+            'n = int(input())\nfor fila in range(1, n + 1):\n    print("*" * fila)\n',
           difficulty: 2,
           testCases: [
             { input: '3', expectedOutput: '*\n**\n***', isHidden: false },
             { input: '1', expectedOutput: '*', isHidden: false },
-            { input: '5', expectedOutput: '*\n**\n***\n****\n*****', isHidden: true },
+            {
+              input: '5',
+              expectedOutput: '*\n**\n***\n****\n*****',
+              isHidden: true,
+            },
           ],
         },
         {
           type: 'bug',
-          prompt: 'La matriz tiene 2 filas, pero el programa falla al leer la última. ¿Qué línea tiene el error?',
+          prompt:
+            'La matriz tiene 2 filas, pero el programa falla al leer la última. ¿Qué línea tiene el error?',
           difficulty: 2,
           payload: {
             lines: [
