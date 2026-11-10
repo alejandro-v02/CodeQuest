@@ -114,6 +114,27 @@ h2 {
   text-align: left;
 }
 
+.language-switch {
+  display: flex;
+  gap: 6px;
+}
+
+.language-option {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--ion-color-step-150);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ion-color-step-700);
+
+  &.selected {
+    border-color: var(--ion-color-secondary);
+    background: var(--ion-color-secondary);
+    color: var(--ion-color-secondary-contrast);
+  }
+}
+
 .error-message {
   width: 100%;
   margin: -8px 0 16px;

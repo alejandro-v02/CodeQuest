@@ -2,7 +2,7 @@
   <ion-toolbar class="glass-toolbar">
     <ion-buttons slot="start">
       @if (showBack()) {
-        <ion-button class="back-button" aria-label="Volver" (click)="back.emit()">
+        <ion-button class="back-button" [attr.aria-label]="'common.back' | translate" (click)="back.emit()">
           <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
         </ion-button>
       }

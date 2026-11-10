@@ -1,4 +1,4 @@
-<app-page-header title="Perfil"></app-page-header>
+<app-page-header [title]="'profile.pageTitle' | translate"></app-page-header>
 
 <ion-modal
   class="edit-profile-modal"
@@ -10,22 +10,22 @@
   <ng-template>
     <ion-content class="edit-profile-modal-content">
       <div class="modal-handle"></div>
-      <p class="eyebrow">Editar perfil</p>
-      <h1>Personaliza tu cuenta</h1>
+      <p class="eyebrow">{{ 'profile.editEyebrow' | translate }}</p>
+      <h1>{{ 'profile.editHeading' | translate }}</h1>
 
-      <h2 class="section-title">Nombre de usuario</h2>
+      <h2 class="section-title">{{ 'profile.usernameLabel' | translate }}</h2>
       <div class="username-field">
         <span class="username-at">&#64;</span>
         <ion-input
           [value]="editUsername()"
           (ionInput)="onUsernameInput($event.detail.value ?? '')"
-          placeholder="tu_usuario"
+          [placeholder]="'profile.usernamePlaceholder' | translate"
           [maxlength]="20"
         ></ion-input>
       </div>
-      <p class="field-hint">Mínimo 6 caracteres. Para que otros puedan encontrarte y seguirte.</p>
+      <p class="field-hint">{{ 'profile.usernameHint' | translate }}</p>
 
-      <h2 class="section-title">Ícono</h2>
+      <h2 class="section-title">{{ 'profile.iconLabel' | translate }}</h2>
       <div class="icon-grid">
         @for (icon of avatarIcons; track icon) {
           <button
@@ -40,7 +40,7 @@
         }
       </div>
 
-      <h2 class="section-title">Color</h2>
+      <h2 class="section-title">{{ 'profile.colorLabel' | translate }}</h2>
       <div class="color-grid">
         @for (color of avatarColors; track color) {
           <button
@@ -53,16 +53,16 @@
         }
       </div>
 
-      <h2 class="section-title">Bio</h2>
+      <h2 class="section-title">{{ 'profile.bioLabel' | translate }}</h2>
       <ion-textarea
         [(ngModel)]="editBio"
-        placeholder="Cuéntales algo sobre ti..."
+        [placeholder]="'profile.bioPlaceholder' | translate"
         [autoGrow]="true"
         [maxlength]="160"
         [rows]="3"
       ></ion-textarea>
 
-      <h2 class="section-title">Logro fijado</h2>
+      <h2 class="section-title">{{ 'profile.pinnedAchievementLabel' | translate }}</h2>
       @if (unlockedAchievements().length > 0) {
         <div class="achievement-pick-list">
           @for (achievement of unlockedAchievements(); track achievement.slug) {
@@ -78,7 +78,7 @@
           }
         </div>
       } @else {
-        <p class="no-achievements">Desbloquea un logro para poder fijarlo.</p>
+        <p class="no-achievements">{{ 'profile.noAchievementsHint' | translate }}</p>
       }
 
       @if (profileError(); as message) {
@@ -89,7 +89,7 @@
         @if (isSavingProfile()) {
           <ion-spinner name="dots"></ion-spinner>
         } @else {
-          Guardar cambios
+          {{ 'profile.saveChanges' | translate }}
         }
       </ion-button>
     </ion-content>
@@ -110,38 +110,61 @@
 
       <ion-button fill="outline" size="small" class="edit-profile-button" (click)="openEditProfile()">
         <ion-icon slot="start" name="create-outline"></ion-icon>
-        Editar perfil
+        {{ 'profile.editProfile' | translate }}
       </ion-button>
 
       <dl class="details">
         <div class="row">
-          <dt>Lenguaje</dt>
+          <dt>{{ 'profile.programmingLanguageLabel' | translate }}</dt>
           <dd>{{ u.preferredLanguage ?? '—' }}</dd>
         </div>
         <div class="row">
-          <dt>Meta diaria</dt>
+          <dt>{{ 'profile.dailyGoalLabel' | translate }}</dt>
           <dd>{{ u.dailyGoalMinutes ? u.dailyGoalMinutes + ' min' : '—' }}</dd>
         </div>
       </dl>
 
       <div class="toggle-row">
         <ion-icon name="notifications-outline"></ion-icon>
-        <span class="toggle-label">Recordatorio diario</span>
+        <span class="toggle-label">{{ 'profile.dailyReminderLabel' | translate }}</span>
         <ion-toggle
           [checked]="reminderEnabled()"
           (ionChange)="toggleReminder($event.detail.checked)"
         ></ion-toggle>
       </div>
 
+      <div class="toggle-row language-row">
+        <ion-icon name="globe-outline"></ion-icon>
+        <span class="toggle-label">{{ 'profile.appLanguageLabel' | translate }}</span>
+        <div class="language-switch">
+          <button
+            type="button"
+            class="language-option"
+            [class.selected]="i18n.language() === 'es'"
+            (click)="setAppLanguage('es')"
+          >
+            {{ 'profile.languageSpanish' | translate }}
+          </button>
+          <button
+            type="button"
+            class="language-option"
+            [class.selected]="i18n.language() === 'en'"
+            (click)="setAppLanguage('en')"
+          >
+            {{ 'profile.languageEnglish' | translate }}
+          </button>
+        </div>
+      </div>
+
       @if (errorMessage(); as message) {
         <p class="error-message">{{ message }}</p>
       }
 
-      <button type="button" class="admin-link" (click)="openAdmin()">Panel de administración</button>
+      <button type="button" class="admin-link" (click)="openAdmin()">{{ 'profile.adminPanelButton' | translate }}</button>
 
       <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
         <ion-icon slot="start" name="log-out-outline"></ion-icon>
-        Cerrar sesión
+        {{ 'profile.logoutButton' | translate }}
       </ion-button>
     </div>
   }

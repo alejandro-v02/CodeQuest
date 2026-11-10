@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { IonHeader, IonToolbar, IonButtons, IonButton, IonIcon } from '@ionic/angular';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 // Shared replacement for the plain <ion-header><ion-toolbar><ion-title>
 // markup every page used to duplicate. Keeps ion-header/ion-toolbar (so
@@ -10,7 +11,7 @@ import { IonHeader, IonToolbar, IonButtons, IonButton, IonIcon } from '@ionic/an
   selector: 'app-page-header',
   templateUrl: './page-header.component.html',
   styleUrls: ['./page-header.component.scss'],
-  imports: [IonHeader, IonToolbar, IonButtons, IonButton, IonIcon],
+  imports: [IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, TranslatePipe],
 })
 export class PageHeaderComponent {
   readonly title = input.required<string>();

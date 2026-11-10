@@ -6,6 +6,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { DeepLinkService } from './core/services/deep-link.service';
+import { I18nService } from './core/services/i18n.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,5 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(AuthService).restoreSession()),
     // Registers the codequest:// listener for the GitHub OAuth callback.
     provideAppInitializer(() => inject(DeepLinkService).init()),
+    // Loads both dictionaries and the saved language before first render,
+    // so no page ever flashes untranslated text.
+    provideAppInitializer(() => inject(I18nService).init()),
   ],
 };

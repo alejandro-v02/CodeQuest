@@ -18,6 +18,8 @@ import { NotificationsService } from '../../core/services/notifications.service'
 import { AVATAR_COLORS, AVATAR_ICONS } from '../../core/config/avatar-options';
 import type { AchievementStatus } from '../../core/models/gamification.model';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
+import { I18nService, type AppLanguage } from '../../core/services/i18n.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 const MIN_USERNAME_LENGTH = 6;
 
@@ -36,6 +38,7 @@ const MIN_USERNAME_LENGTH = 6;
     IonTextarea,
     IonToggle,
     PageHeaderComponent,
+    TranslatePipe,
   ],
 })
 export class ProfilePage implements OnInit {
@@ -43,6 +46,7 @@ export class ProfilePage implements OnInit {
   private readonly gamificationService = inject(GamificationService);
   private readonly notificationsService = inject(NotificationsService);
   private readonly router = inject(Router);
+  readonly i18n = inject(I18nService);
 
   readonly user = this.authService.currentUser;
   readonly reminderEnabled = signal(false);
@@ -65,8 +69,12 @@ export class ProfilePage implements OnInit {
     try {
       this.reminderEnabled.set(await this.notificationsService.isReminderEnabled());
     } catch {
-      this.errorMessage.set('No se pudo cargar el estado del recordatorio.');
+      this.errorMessage.set(this.i18n.t('profile.errors.reminderLoadFailed'));
     }
+  }
+
+  async setAppLanguage(lang: AppLanguage): Promise<void> {
+    await this.i18n.setLanguage(lang);
   }
 
   async toggleReminder(enabled: boolean): Promise<void> {
@@ -82,7 +90,7 @@ export class ProfilePage implements OnInit {
         this.reminderEnabled.set(false);
       }
     } catch {
-      this.errorMessage.set('No se pudo actualizar el recordatorio.');
+      this.errorMessage.set(this.i18n.t('profile.errors.reminderUpdateFailed'));
     }
   }
 
@@ -142,7 +150,9 @@ export class ProfilePage implements OnInit {
     const username = this.editUsername().trim();
     if (username.length > 0 && username.length < MIN_USERNAME_LENGTH) {
       this.profileError.set(
-        `El nombre de usuario debe tener al menos ${MIN_USERNAME_LENGTH} caracteres.`,
+        this.i18n
+          .t('profile.errors.usernameTooShort')
+          .replace('{min}', String(MIN_USERNAME_LENGTH)),
       );
       return;
     }
@@ -161,9 +171,11 @@ export class ProfilePage implements OnInit {
       this.isEditOpen.set(false);
     } catch (error) {
       this.profileError.set(
-        error instanceof HttpErrorResponse && error.status === 409
-          ? 'Ese nombre de usuario ya está en uso.'
-          : 'No se pudo guardar tu perfil.',
+        this.i18n.t(
+          error instanceof HttpErrorResponse && error.status === 409
+            ? 'profile.errors.usernameTaken'
+            : 'profile.errors.saveFailed',
+        ),
       );
     } finally {
       this.isSavingProfile.set(false);
