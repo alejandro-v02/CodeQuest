@@ -1,0 +1,136 @@
+<app-page-header [title]="'groups.pageTitle' | translate" [showBack]="true" (back)="goBack()"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
+    </div>
+  } @else {
+    <section class="section">
+      <h2 class="section-title">
+        <ion-icon name="key-outline"></ion-icon>
+        {{ 'groups.joinHeading' | translate }}
+      </h2>
+      <div class="form-card">
+        <p class="hint">{{ 'groups.joinHint' | translate }}</p>
+        <div class="form-row">
+          <input
+            class="field code-field"
+            type="text"
+            maxlength="8"
+            autocapitalize="characters"
+            autocomplete="off"
+            [value]="joinCode()"
+            [placeholder]="'groups.codePlaceholder' | translate"
+            (input)="onCodeInput($event)"
+            (keyup.enter)="join()"
+          />
+          <ion-button [disabled]="isJoining() || joinCode().length < 4" (click)="join()">
+            @if (isJoining()) {
+              <ion-spinner name="dots"></ion-spinner>
+            } @else {
+              {{ 'groups.joinButton' | translate }}
+            }
+          </ion-button>
+        </div>
+        @if (joinError(); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <ion-icon name="people-outline"></ion-icon>
+        {{ 'groups.myGroupsHeading' | translate }}
+      </h2>
+      @if (groups().length > 0) {
+        <div class="list">
+          @for (group of groups(); track group.id) {
+            <button type="button" class="group-card" (click)="openGroup(group.id)">
+              <span class="group-icon"><ion-icon name="people-outline"></ion-icon></span>
+              <span class="group-info">
+                <span class="group-name">
+                  {{ group.name }}
+                  @if (group.role === 'owner') {
+                    <span class="owner-badge">{{ 'groups.ownerBadge' | translate }}</span>
+                  }
+                </span>
+                <span class="group-meta">
+                  {{ membersLabel(group.memberCount) }} · {{ weeklyXpLabel(group.weeklyXp) }}
+                </span>
+              </span>
+              <ion-icon name="chevron-forward"></ion-icon>
+            </button>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          icon="people-outline"
+          [title]="'groups.emptyTitle' | translate"
+          [subtitle]="'groups.emptySubtitle' | translate"
+        ></app-empty-state>
+      }
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        {{ 'groups.createHeading' | translate }}
+      </h2>
+      <div class="form-card">
+        <p class="hint">{{ 'groups.createHint' | translate }}</p>
+        <div class="form-row">
+          <input
+            class="field"
+            type="text"
+            maxlength="60"
+            autocomplete="off"
+            [value]="newName()"
+            [placeholder]="'groups.namePlaceholder' | translate"
+            (input)="onNameInput($event)"
+            (keyup.enter)="create()"
+          />
+          <ion-button [disabled]="isCreating() || newName().trim().length < 3" (click)="create()">
+            @if (isCreating()) {
+              <ion-spinner name="dots"></ion-spinner>
+            } @else {
+              {{ 'groups.createButton' | translate }}
+            }
+          </ion-button>
+        </div>
+        @if (createError(); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <ion-icon name="trophy-outline"></ion-icon>
+        {{ 'groups.rankingHeading' | translate }}
+      </h2>
+      <p class="hint ranking-hint">{{ 'groups.rankingHint' | translate }}</p>
+      @if (ranking(); as r) {
+        @if (r.top.length > 0) {
+          <div class="list">
+            @for (entry of r.top; track entry.groupId) {
+              <div class="ranking-row" [class.mine]="entry.isMine">
+                <span class="ranking-rank">#{{ entry.rank }}</span>
+                <span class="ranking-name">{{ entry.name }}</span>
+                <span class="ranking-xp">{{ averageXpLabel(entry.averageWeeklyXp) }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-line">{{ 'groups.rankingEmpty' | translate }}</p>
+        }
+      }
+    </section>
+  }
+</ion-content>
