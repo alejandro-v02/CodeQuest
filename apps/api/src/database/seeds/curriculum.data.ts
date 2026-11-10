@@ -64,7 +64,7 @@ const baseCurriculum: SeedLanguage[] = [
     name: 'Python',
     pathTitle: 'Python para principiantes',
     pathDescription:
-      'Los fundamentos de Python: variables, tipos, control de flujo y estructuras de datos.',
+      'Aprende Python desde cero: variables, control de flujo, funciones, estructuras de datos, depuración y mini proyectos.',
     modules: [
       {
         title: 'Fundamentos',
@@ -475,7 +475,7 @@ del persona["activo"]
     name: 'JavaScript',
     pathTitle: 'JavaScript para principiantes',
     pathDescription:
-      'Los fundamentos de JavaScript: variables, tipos, control de flujo y estructuras de datos.',
+      'Aprende JavaScript desde cero: variables, control de flujo, funciones, estructuras de datos, depuración y mini proyectos.',
     modules: [
       {
         title: 'Fundamentos',

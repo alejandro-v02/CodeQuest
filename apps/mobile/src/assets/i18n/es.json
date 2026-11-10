@@ -266,9 +266,9 @@
   "reminder.bodyNoGoal": "¿Ya completaste tu práctica de hoy en CodeQuest?",
 
   "course.python.title": "Python para principiantes",
-  "course.python.description": "Los fundamentos de Python: variables, tipos, control de flujo y estructuras de datos.",
+  "course.python.description": "Aprende Python desde cero: variables, control de flujo, funciones, estructuras de datos, depuración y mini proyectos.",
   "course.javascript.title": "JavaScript para principiantes",
-  "course.javascript.description": "Los fundamentos de JavaScript: variables, tipos, control de flujo y estructuras de datos.",
+  "course.javascript.description": "Aprende JavaScript desde cero: variables, control de flujo, funciones, estructuras de datos, depuración y mini proyectos.",
   "course.typescript.title": "TypeScript para principiantes",
   "course.typescript.description": "El mapa de temas está listo; las lecciones completas llegan en una fase posterior.",
   "course.cpp.title": "C++ para principiantes",

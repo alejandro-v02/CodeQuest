@@ -266,9 +266,9 @@
   "reminder.bodyNoGoal": "Did you do today's practice on CodeQuest?",
 
   "course.python.title": "Python for beginners",
-  "course.python.description": "Python fundamentals: variables, types, control flow, and data structures.",
+  "course.python.description": "Learn Python from scratch: variables, control flow, functions, data structures, debugging, and mini projects.",
   "course.javascript.title": "JavaScript for beginners",
-  "course.javascript.description": "JavaScript fundamentals: variables, types, control flow, and data structures.",
+  "course.javascript.description": "Learn JavaScript from scratch: variables, control flow, functions, data structures, debugging, and mini projects.",
   "course.typescript.title": "TypeScript for beginners",
   "course.typescript.description": "The topic map is ready; full lessons arrive in a later phase.",
   "course.cpp.title": "C++ for beginners",

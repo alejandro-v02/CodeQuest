@@ -69,6 +69,13 @@ export const conceptsByLanguage: Record<
     { slug: 'alcance-closures', name: 'Alcance, let/const y closures' },
     { slug: 'recursion', name: 'Recursión' },
     { slug: 'flechas-callbacks', name: 'Funciones flecha y callbacks' },
+    { slug: 'leer-errores', name: 'Leer mensajes de error' },
+    { slug: 'excepciones', name: 'Manejo de excepciones' },
+    { slug: 'depuracion', name: 'Depurar tu código' },
+    { slug: 'proyecto-calculadora', name: 'Proyecto: calculadora' },
+    { slug: 'proyecto-adivina', name: 'Proyecto: adivina el número' },
+    { slug: 'proyecto-notas', name: 'Proyecto: notas de estudiantes' },
+    { slug: 'proyecto-palabras', name: 'Proyecto: contador de palabras' },
   ],
   typescript: [
     { slug: 'variables-tipos', name: 'Variables y tipos explícitos' },
