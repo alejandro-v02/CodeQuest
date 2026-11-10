@@ -72,6 +72,10 @@ async function run(): Promise<void> {
       }),
     );
 
+    // Lesson title -> concept id. Concepts are named after the lessons that
+    // teach them, so each hand-written exercise is also served by Práctica
+    // libre for its own topic without per-exercise bookkeeping.
+    const conceptIdByName = new Map<string, string>();
     for (const [conceptIndex, conceptSeed] of (
       conceptsByLanguage[languageSeed.slug] ?? []
     ).entries()) {
@@ -84,7 +88,8 @@ async function run(): Promise<void> {
       });
       concept.name = conceptSeed.name;
       concept.order = conceptIndex;
-      await conceptRepo.save(concept);
+      concept = await conceptRepo.save(concept);
+      conceptIdByName.set(concept.name, concept.id);
     }
 
     let path = await pathRepo.findOne({
@@ -142,6 +147,7 @@ async function run(): Promise<void> {
           exercise.starterCode = exerciseSeed.starterCode ?? null;
           exercise.payload = exerciseSeed.payload ?? null;
           exercise.difficulty = exerciseSeed.difficulty;
+          exercise.conceptId = conceptIdByName.get(lessonSeed.title) ?? null;
           exercise = await exerciseRepo.save(exercise);
 
           for (const [testCaseIndex, testCaseSeed] of (

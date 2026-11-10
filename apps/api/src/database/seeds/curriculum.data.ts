@@ -1,4 +1,5 @@
 import type { ProgrammingLanguageSlug } from '../../modules/users/entities/user.entity';
+import { pythonExtraExercises } from './python/extra-exercises';
 import type {
   BugPayload,
   ExerciseType,
@@ -20,6 +21,9 @@ export interface SeedExercise {
   // 'code' only:
   starterCode?: string;
   testCases?: SeedTestCase[];
+  // Reference answer for 'code' exercises. Never persisted by seed.ts — only
+  // scripts/verify-seeds.js runs it to prove the test cases are consistent.
+  solution?: string;
   // Fase 4B types only — shape depends on `type` (see exercise.entity.ts):
   payload?: QuizPayload | FillPayload | SortPayload | BugPayload;
 }
@@ -51,7 +55,7 @@ export interface SeedLanguage {
 // lecciones completas (contentMarkdown) solo están escritas para Python y
 // JavaScript nivel principiante. TypeScript y C++ quedan con la estructura
 // de temas cargada y contentMarkdown en null hasta una fase posterior.
-export const curriculum: SeedLanguage[] = [
+const baseCurriculum: SeedLanguage[] = [
   {
     slug: 'python',
     name: 'Python',
@@ -99,6 +103,7 @@ puntos += 5   # equivalente a: puntos = puntos + 5
                 prompt:
                   'Lee un número entero de la entrada estándar (con `input()`) y súmale 10. Imprime el resultado.',
                 starterCode: 'numero = int(input())\n',
+                solution: 'numero = int(input())\nprint(numero + 10)\n',
                 difficulty: 1,
                 testCases: [
                   { input: '5', expectedOutput: '15', isHidden: false },
@@ -203,6 +208,8 @@ Cualquier valor puede evaluarse como verdadero o falso: \`0\`, \`""\`, \`None\` 
                 prompt:
                   'Lee un número entero. Si es par, imprime "par"; si es impar, imprime "impar".',
                 starterCode: 'numero = int(input())\n',
+                solution:
+                  'numero = int(input())\nif numero % 2 == 0:\n    print("par")\nelse:\n    print("impar")\n',
                 difficulty: 2,
                 testCases: [
                   { input: '4', expectedOutput: 'par', isHidden: false },
@@ -329,6 +336,8 @@ Las variables definidas dentro de una función solo existen dentro de ella (**al
                   'Define una función `es_mayor_de_edad(edad)` que devuelva `True` si `edad` es mayor o igual a 18. Lee un número de la entrada estándar, pásalo a la función e imprime el resultado.',
                 starterCode:
                   'def es_mayor_de_edad(edad):\n    # Escribe tu código aquí\n    pass\n\nedad = int(input())\nprint(es_mayor_de_edad(edad))\n',
+                solution:
+                  'def es_mayor_de_edad(edad):\n    return edad >= 18\n\nedad = int(input())\nprint(es_mayor_de_edad(edad))\n',
                 difficulty: 2,
                 testCases: [
                   { input: '20', expectedOutput: 'True', isHidden: false },
@@ -860,3 +869,29 @@ delete persona.activo;
     ],
   },
 ];
+
+// Python's extra content lives in ./python/* to keep this file readable. It
+// is only ever appended (extra exercises at the end of a lesson, new modules
+// after "Fundamentos") because seed.ts matches rows by their order index, so
+// reordering would overwrite rows users already have progress on.
+export const curriculum: SeedLanguage[] = baseCurriculum.map((language) => {
+  if (language.slug !== 'python') {
+    return language;
+  }
+  return {
+    ...language,
+    modules: [
+      {
+        ...language.modules[0],
+        lessons: language.modules[0].lessons.map((lesson) => ({
+          ...lesson,
+          exercises: [
+            ...(lesson.exercises ?? []),
+            ...(pythonExtraExercises[lesson.title] ?? []),
+          ],
+        })),
+      },
+      ...language.modules.slice(1),
+    ],
+  };
+});
