@@ -99,6 +99,10 @@ export class ProfilePage implements OnInit {
     await this.router.navigateByUrl('/auth/login');
   }
 
+  openGroups(): void {
+    void this.router.navigateByUrl('/groups');
+  }
+
   openAdmin(): void {
     void this.router.navigateByUrl('/admin');
   }

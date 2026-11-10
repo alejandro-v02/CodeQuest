@@ -156,6 +156,12 @@
         </div>
       </div>
 
+      <div class="toggle-row" role="button" tabindex="0" (click)="openGroups()" (keyup.enter)="openGroups()">
+        <ion-icon name="people-outline"></ion-icon>
+        <span class="toggle-label">{{ 'groups.pageTitle' | translate }}</span>
+        <ion-icon name="chevron-forward"></ion-icon>
+      </div>
+
       @if (errorMessage(); as message) {
         <p class="error-message">{{ message }}</p>
       }
