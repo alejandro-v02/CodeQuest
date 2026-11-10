@@ -1,5 +1,5 @@
 import type { SeedModule } from '../curriculum.data';
-import { md } from './md';
+import { md } from '../md';
 
 export const moduloErrores: SeedModule = {
   title: 'Errores y depuración',

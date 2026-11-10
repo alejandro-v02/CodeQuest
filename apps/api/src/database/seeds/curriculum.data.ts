@@ -1,6 +1,8 @@
 import type { ProgrammingLanguageSlug } from '../../modules/users/entities/user.entity';
 import { pythonExtraExercises } from './python/extra-exercises';
 import { pythonExtraModules } from './python';
+import { javascriptExtraExercises } from './javascript/extra-exercises';
+import { javascriptExtraModules } from './javascript';
 import type {
   BugPayload,
   ExerciseType,
@@ -516,6 +518,8 @@ puntos += 5;   // equivalente a: puntos = puntos + 5
                   'Lee un número entero de la entrada estándar y súmale 10. Imprime el resultado con `console.log`.',
                 starterCode:
                   "const numero = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\n",
+                solution:
+                  "const numero = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\nconsole.log(numero + 10);\n",
                 difficulty: 1,
                 testCases: [
                   { input: '5', expectedOutput: '15', isHidden: false },
@@ -605,6 +609,8 @@ Valores "falsy" (se comportan como \`false\` en un \`if\`): \`0\`, \`""\`, \`nul
                   'Lee un número entero. Si es par, imprime "par"; si es impar, imprime "impar".',
                 starterCode:
                   "const numero = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\n",
+                solution:
+                  "const numero = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\nconsole.log(numero % 2 === 0 ? 'par' : 'impar');\n",
                 difficulty: 2,
                 testCases: [
                   { input: '4', expectedOutput: 'par', isHidden: false },
@@ -705,6 +711,8 @@ Las variables declaradas dentro de una función (con \`let\` o \`const\`) solo e
                   'Define una función `esMayorDeEdad(edad)` que devuelva `true` si `edad` es mayor o igual a 18. Lee un número de la entrada estándar, pásalo a la función e imprime el resultado con `console.log`.',
                 starterCode:
                   "function esMayorDeEdad(edad) {\n  // Escribe tu código aquí\n}\n\nconst edad = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\nconsole.log(esMayorDeEdad(edad));\n",
+                solution:
+                  "function esMayorDeEdad(edad) {\n  return edad >= 18;\n}\n\nconst edad = parseInt(require('fs').readFileSync(0, 'utf8').trim(), 10);\nconsole.log(esMayorDeEdad(edad));\n",
                 difficulty: 2,
                 testCases: [
                   { input: '20', expectedOutput: 'true', isHidden: false },
@@ -871,12 +879,27 @@ delete persona.activo;
   },
 ];
 
-// Python's extra content lives in ./python/* to keep this file readable. It
-// is only ever appended (extra exercises at the end of a lesson, new modules
-// after "Fundamentos") because seed.ts matches rows by their order index, so
-// reordering would overwrite rows users already have progress on.
+// Extra content lives in ./python and ./javascript to keep this file
+// readable. It is only ever appended (extra exercises at the end of a lesson,
+// new modules after "Fundamentos") because seed.ts matches rows by their
+// order index, so reordering would overwrite rows users already have progress
+// on.
+const extras: Partial<
+  Record<
+    ProgrammingLanguageSlug,
+    { exercises: Record<string, SeedExercise[]>; modules: SeedModule[] }
+  >
+> = {
+  python: { exercises: pythonExtraExercises, modules: pythonExtraModules },
+  javascript: {
+    exercises: javascriptExtraExercises,
+    modules: javascriptExtraModules,
+  },
+};
+
 export const curriculum: SeedLanguage[] = baseCurriculum.map((language) => {
-  if (language.slug !== 'python') {
+  const extra = extras[language.slug];
+  if (!extra) {
     return language;
   }
   return {
@@ -888,12 +911,12 @@ export const curriculum: SeedLanguage[] = baseCurriculum.map((language) => {
           ...lesson,
           exercises: [
             ...(lesson.exercises ?? []),
-            ...(pythonExtraExercises[lesson.title] ?? []),
+            ...(extra.exercises[lesson.title] ?? []),
           ],
         })),
       },
       ...language.modules.slice(1),
-      ...pythonExtraModules,
+      ...extra.modules,
     ],
   };
 });

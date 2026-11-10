@@ -1,12 +1,17 @@
 // Sanity-checks the curriculum seed without touching the database:
 // payload shapes for quiz/fill/sort/bug, and — for Python 'code' exercises
-// that carry a `solution` — runs it against every test case.
-// Run after `npm run build`: node scripts/verify-seeds.js
+// that carry a `solution` (Python and JavaScript) — runs it against every test case.
+// Run with: npm run verify:seeds
 'use strict';
 
 const { spawnSync } = require('child_process');
-const { curriculum } = require('../dist/database/seeds/curriculum.data');
-const { conceptsByLanguage } = require('../dist/database/seeds/concepts.data');
+const { resolve } = require('path');
+
+// Compiled output to read (npm run verify:seeds builds it into .verify-dist so
+// the running dev server's dist/ is never touched).
+const dist = resolve(__dirname, '..', process.argv[2] ?? 'dist');
+const { curriculum } = require(resolve(dist, 'database/seeds/curriculum.data'));
+const { conceptsByLanguage } = require(resolve(dist, 'database/seeds/concepts.data'));
 
 const normalize = (text) => text.replace(/\r\n/g, '\n').trim();
 let errors = 0;
@@ -45,10 +50,11 @@ for (const language of curriculum) {
           if (!payload.explanation) fail(where, 'bug needs an explanation');
         } else if (exercise.type === 'code') {
           if (!exercise.testCases || exercise.testCases.length < 2) fail(where, 'code needs 2+ test cases');
-          if (language.slug === 'python' && exercise.solution) {
+          const runner = { python: ['python', '-c'], javascript: ['node', '-e'] }[language.slug];
+          if (runner && exercise.solution) {
             for (const testCase of exercise.testCases ?? []) {
               solutionsRun += 1;
-              const run = spawnSync('python', ['-c', exercise.solution], {
+              const run = spawnSync(runner[0], [runner[1], exercise.solution], {
                 input: testCase.input + '\n',
                 encoding: 'utf8',
                 timeout: 5000,
@@ -57,8 +63,8 @@ for (const language of curriculum) {
               if (run.status !== 0) fail(where, `solution crashed on "${testCase.input}": ${run.stderr.trim().split('\n').pop()}`);
               else if (normalize(run.stdout) !== normalize(testCase.expectedOutput)) fail(where, `input "${testCase.input}" gave "${normalize(run.stdout)}", expected "${testCase.expectedOutput}"`);
             }
-          } else if (language.slug === 'python') {
-            console.warn(`WARN ${where}: python code exercise has no solution to verify`);
+          } else if (runner) {
+            console.warn(`WARN ${where}: ${language.slug} code exercise has no solution to verify`);
           }
         }
       });
