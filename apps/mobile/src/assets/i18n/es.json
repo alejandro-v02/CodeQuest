@@ -328,5 +328,27 @@
   "groups.detail.deleteConfirm": "Se eliminará la ficha para todos sus miembros. ¿Continuar?",
   "groups.detail.confirm": "Confirmar",
   "groups.errors.detailFailed": "No se pudo cargar la ficha.",
-  "groups.errors.actionFailed": "No se pudo completar la acción."
+  "groups.errors.actionFailed": "No se pudo completar la acción.",
+
+  "league.pageTitle": "Liga semanal",
+  "league.entryTitle": "Liga semanal",
+  "league.entrySubtitle": "Compite con tu grupo y sube de liga",
+  "league.tier.0": "Bronce",
+  "league.tier.1": "Plata",
+  "league.tier.2": "Oro",
+  "league.tier.3": "Zafiro",
+  "league.tier.4": "Diamante",
+  "league.tierLabel": "Liga {tier}",
+  "league.timeLeft": "Termina en {d} d {h} h",
+  "league.lastWeek.promoted": "¡Subiste a {tier}! Terminaste #{rank} de {size}.",
+  "league.lastWeek.demoted": "Bajaste a {tier}. Terminaste #{rank} de {size}.",
+  "league.lastWeek.stayed": "Te quedaste en {tier}. Terminaste #{rank} de {size}.",
+  "league.promoteHint": "Los {n} primeros suben de liga (si ganaron XP).",
+  "league.demoteHint": "Los {n} últimos bajan de liga.",
+  "league.smallGroupHint": "Tu grupo todavía es pequeño. Con 3 o más personas se activan los ascensos y descensos.",
+  "league.standingsHeading": "Clasificación de tu grupo",
+  "league.you": "Tú",
+  "league.zonePromote": "Sube",
+  "league.zoneDemote": "Baja",
+  "league.errors.loadFailed": "No se pudo cargar tu liga."
 }

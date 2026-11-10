@@ -328,5 +328,27 @@
   "groups.detail.deleteConfirm": "The class will be deleted for all its members. Continue?",
   "groups.detail.confirm": "Confirm",
   "groups.errors.detailFailed": "Couldn't load the class.",
-  "groups.errors.actionFailed": "Couldn't complete the action."
+  "groups.errors.actionFailed": "Couldn't complete the action.",
+
+  "league.pageTitle": "Weekly league",
+  "league.entryTitle": "Weekly league",
+  "league.entrySubtitle": "Compete with your group and move up",
+  "league.tier.0": "Bronze",
+  "league.tier.1": "Silver",
+  "league.tier.2": "Gold",
+  "league.tier.3": "Sapphire",
+  "league.tier.4": "Diamond",
+  "league.tierLabel": "{tier} league",
+  "league.timeLeft": "Ends in {d} d {h} h",
+  "league.lastWeek.promoted": "You moved up to {tier}! You finished #{rank} of {size}.",
+  "league.lastWeek.demoted": "You dropped to {tier}. You finished #{rank} of {size}.",
+  "league.lastWeek.stayed": "You stayed in {tier}. You finished #{rank} of {size}.",
+  "league.promoteHint": "The top {n} move up a league (if they earned XP).",
+  "league.demoteHint": "The bottom {n} drop a league.",
+  "league.smallGroupHint": "Your group is still small. Promotions and demotions start at 3 or more people.",
+  "league.standingsHeading": "Your group standings",
+  "league.you": "You",
+  "league.zonePromote": "Up",
+  "league.zoneDemote": "Down",
+  "league.errors.loadFailed": "Couldn't load your league."
 }
