@@ -9,6 +9,7 @@ import { In, Repository } from 'typeorm';
 import { Streak } from '../gamification/entities/streak.entity';
 import { XpEvent } from '../gamification/entities/xp-event.entity';
 import { startOfIsoWeekUtc } from '../gamification/week.util';
+import { sumXpByUser } from '../gamification/xp-sum.util';
 import { User } from '../users/entities/user.entity';
 import { GroupMember } from './entities/group-member.entity';
 import { Group } from './entities/group.entity';
@@ -318,24 +319,8 @@ export class GroupsService {
     return rows.map((row, index) => ({ ...row, rank: index + 1 }));
   }
 
-  // XpEvent.userId is varchar, so the ids are passed as plain strings.
-  private async weeklyXpByUser(
-    userIds: string[],
-  ): Promise<Map<string, number>> {
-    if (userIds.length === 0) {
-      return new Map();
-    }
-    const rows = await this.xpEventRepo
-      .createQueryBuilder('event')
-      .select('event.userId', 'userId')
-      .addSelect('SUM(event.amount)', 'weeklyXp')
-      .where('event.createdAt >= :weekStart', {
-        weekStart: startOfIsoWeekUtc(),
-      })
-      .andWhere('event.userId IN (:...userIds)', { userIds })
-      .groupBy('event.userId')
-      .getRawMany<{ userId: string; weeklyXp: string }>();
-    return new Map(rows.map((row) => [row.userId, Number(row.weeklyXp)]));
+  private weeklyXpByUser(userIds: string[]): Promise<Map<string, number>> {
+    return sumXpByUser(this.xpEventRepo, userIds, startOfIsoWeekUtc());
   }
 
   private async generateUniqueCode(): Promise<string> {
