@@ -1,0 +1,47 @@
+.compose-modal-content {
+  padding: 8px 20px 20px;
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ion-color-step-200);
+  margin: 0 auto 16px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ion-color-secondary);
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+ion-textarea {
+  --background: var(--ion-color-step-50);
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  border-radius: 14px;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.error-message {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--ion-color-danger);
+}
+
+.publish-button {
+  margin-top: 4px;
+}

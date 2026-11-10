@@ -21,6 +21,10 @@ export interface User {
   preferredLanguage: ProgrammingLanguageSlug | null;
   dailyGoalMinutes: number | null;
   timezone: string;
+  bio: string | null;
+  avatarIcon: string;
+  avatarColor: string;
+  pinnedAchievementSlug: string | null;
   createdAt: string;
   updatedAt: string;
 }

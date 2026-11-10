@@ -1,0 +1,9 @@
+<div class="heatmap" role="img" aria-label="Mapa de actividad del último año">
+  @for (week of weeks(); track $index) {
+    <div class="heatmap-column">
+      @for (day of week; track day.date) {
+        <div class="day-cell" [class]="'level-' + day.level" [title]="day.date + ': ' + day.count"></div>
+      }
+    </div>
+  }
+</div>

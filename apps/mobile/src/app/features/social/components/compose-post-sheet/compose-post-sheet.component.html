@@ -1,0 +1,40 @@
+<ion-modal
+  class="compose-modal"
+  [isOpen]="isOpen()"
+  [breakpoints]="[0, 0.5, 0.8]"
+  [initialBreakpoint]="0.5"
+  (willDismiss)="dismiss()"
+>
+  <ng-template>
+    <div class="compose-modal-content">
+      <div class="modal-handle"></div>
+      <p class="eyebrow">Nueva publicación</p>
+      <h1>¿Qué quieres compartir?</h1>
+
+      <ion-textarea
+        [(ngModel)]="body"
+        placeholder="Escribe algo para tus seguidores..."
+        [autoGrow]="true"
+        [maxlength]="500"
+        [rows]="4"
+      ></ion-textarea>
+
+      @if (errorMessage(); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
+
+      <ion-button
+        expand="block"
+        class="publish-button"
+        [disabled]="!body().trim() || isSending()"
+        (click)="publish()"
+      >
+        @if (isSending()) {
+          <ion-spinner name="dots"></ion-spinner>
+        } @else {
+          Publicar
+        }
+      </ion-button>
+    </div>
+  </ng-template>
+</ion-modal>

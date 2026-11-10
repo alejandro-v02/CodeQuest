@@ -1,0 +1,69 @@
+<ion-modal
+  class="comments-modal"
+  [isOpen]="isOpen()"
+  [breakpoints]="[0, 0.65, 0.92]"
+  [initialBreakpoint]="0.65"
+  (willPresent)="onWillPresent()"
+  (willDismiss)="dismiss()"
+>
+  <ng-template>
+    <ion-content class="comments-modal-content">
+      <div class="modal-handle"></div>
+      <h1>Comentarios</h1>
+
+      @if (isLoading()) {
+        <div class="state-pane">
+          <app-loading-bounce></app-loading-bounce>
+        </div>
+      } @else if (errorMessage(); as message) {
+        <p class="error-message">{{ message }}</p>
+      } @else if (comments().length === 0) {
+        <app-empty-state
+          icon="chatbubble-outline"
+          title="Sin comentarios"
+          subtitle="Sé el primero en comentar."
+        ></app-empty-state>
+      } @else {
+        <div class="comment-list">
+          @for (comment of comments(); track comment.id) {
+            <div class="comment-row">
+              <div class="comment-avatar" [style.background]="comment.authorAvatarColor">
+                <ion-icon [name]="comment.authorAvatarIcon"></ion-icon>
+              </div>
+              <div class="comment-body">
+                <span class="comment-author">{{ comment.authorDisplayName }}</span>
+                <p class="comment-text">{{ comment.body }}</p>
+              </div>
+              @if (comment.authorId === myUserId()) {
+                <button
+                  type="button"
+                  class="comment-delete"
+                  aria-label="Borrar comentario"
+                  (click)="remove(comment)"
+                >
+                  <ion-icon name="close-circle"></ion-icon>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <div class="composer">
+        <ion-textarea
+          [(ngModel)]="draft"
+          placeholder="Escribe un comentario..."
+          [autoGrow]="true"
+          [maxlength]="300"
+        ></ion-textarea>
+        <ion-button fill="clear" [disabled]="!draft().trim() || isSending()" (click)="send()">
+          @if (isSending()) {
+            <ion-spinner name="dots"></ion-spinner>
+          } @else {
+            <ion-icon slot="icon-only" name="send"></ion-icon>
+          }
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

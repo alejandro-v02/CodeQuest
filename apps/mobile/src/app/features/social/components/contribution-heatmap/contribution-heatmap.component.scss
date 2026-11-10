@@ -1,0 +1,36 @@
+.heatmap {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+}
+
+.heatmap-column {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.day-cell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--ion-color-step-150);
+  flex-shrink: 0;
+}
+
+.day-cell.level-1 {
+  background: rgba(var(--ion-color-secondary-rgb), 0.3);
+}
+
+.day-cell.level-2 {
+  background: rgba(var(--ion-color-secondary-rgb), 0.55);
+}
+
+.day-cell.level-3 {
+  background: rgba(var(--ion-color-secondary-rgb), 0.78);
+}
+
+.day-cell.level-4 {
+  background: var(--ion-color-secondary);
+}

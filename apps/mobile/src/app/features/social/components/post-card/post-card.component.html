@@ -1,0 +1,76 @@
+<article class="post-card" [class.milestone]="displayPost().type !== 'text' && displayPost().type !== 'solved_exercise'">
+  <header class="post-header">
+    <button type="button" class="author" (click)="openAuthorProfile()">
+      <div class="avatar" [style.background]="displayPost().authorAvatarColor">
+        <ion-icon [name]="displayPost().authorAvatarIcon"></ion-icon>
+      </div>
+      <div class="author-info">
+        <span class="author-name">{{ displayPost().authorDisplayName }}</span>
+        <span class="post-time">{{ timeAgo(displayPost().createdAt) }}</span>
+      </div>
+    </button>
+
+    <button type="button" class="menu-button" aria-label="Más opciones" (click)="openMenu()">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+    </button>
+  </header>
+
+  @switch (displayPost().type) {
+    @case ('achievement') {
+      <div class="milestone-body">
+        <ion-icon [name]="achievementIcon(displayPost().achievementSlug)" class="milestone-icon"></ion-icon>
+        <div>
+          <p class="milestone-title">Desbloqueó: {{ achievementTitle(displayPost().achievementSlug) }}</p>
+          <p class="milestone-subtitle">{{ achievementDescription(displayPost().achievementSlug) }}</p>
+        </div>
+      </div>
+    }
+    @case ('level_up') {
+      <div class="milestone-body">
+        <ion-icon name="star-outline" class="milestone-icon"></ion-icon>
+        <div>
+          <p class="milestone-title">¡Subió a nivel {{ displayPost().level }}!</p>
+        </div>
+      </div>
+    }
+    @case ('solved_exercise') {
+      <div class="solved-body">
+        @if (displayPost().body) {
+          <p class="post-text">{{ displayPost().body }}</p>
+        }
+        <div class="exercise-chip">
+          <ion-icon name="code-slash"></ion-icon>
+          {{ displayPost().exerciseTitle }}
+        </div>
+        @if (displayPost().codeSnippet) {
+          <pre class="code-snippet">{{ displayPost().codeSnippet }}</pre>
+        }
+      </div>
+    }
+    @default {
+      <p class="post-text">{{ displayPost().body }}</p>
+    }
+  }
+
+  <footer class="post-footer">
+    <app-reaction-bar
+      [postId]="displayPost().id"
+      [reactions]="displayPost().reactions"
+      (changed)="onReactionsChanged($event)"
+    ></app-reaction-bar>
+
+    <button type="button" class="comment-button" (click)="openComments()">
+      <ion-icon name="chatbubble-outline"></ion-icon>
+      @if (displayPost().commentCount > 0) {
+        <span>{{ displayPost().commentCount }}</span>
+      }
+    </button>
+  </footer>
+
+  <app-comments-sheet
+    [isOpen]="isCommentsOpen()"
+    [postId]="displayPost().id"
+    (closed)="closeComments()"
+    (countChanged)="onCommentCountChanged($event)"
+  ></app-comments-sheet>
+</article>

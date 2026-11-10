@@ -88,6 +88,18 @@ export class AuthService {
     this._currentUser.set(user);
   }
 
+  async updateProfile(input: {
+    bio?: string;
+    avatarIcon?: string;
+    avatarColor?: string;
+    pinnedAchievementSlug?: string | null;
+  }): Promise<void> {
+    const user = await firstValueFrom(
+      this.http.patch<User>(`${environment.apiUrl}/users/me/profile`, input),
+    );
+    this._currentUser.set(user);
+  }
+
   async logout(): Promise<void> {
     await this.clearSession();
   }

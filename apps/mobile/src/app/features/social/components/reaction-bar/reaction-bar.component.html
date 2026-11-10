@@ -1,0 +1,21 @@
+<div class="reaction-bar">
+  @for (option of options; track option.icon) {
+    <button
+      type="button"
+      class="reaction-button"
+      [class.active]="reactions().myReaction === option.icon"
+      [attr.aria-label]="option.label"
+      (click)="toggle(option.icon)"
+    >
+      <ion-icon
+        [name]="iconName(option.icon)"
+        class="reaction-icon"
+        [class.is-popping]="poppingIcon() === option.icon"
+        (animationend)="clearPop()"
+      ></ion-icon>
+      @if (count(option.icon) > 0) {
+        <span class="reaction-count">{{ count(option.icon) }}</span>
+      }
+    </button>
+  }
+</div>
