@@ -6,6 +6,7 @@ import type {
   CommentDto,
   FeedPage,
   HeatmapDay,
+  NotificationItem,
   PostDto,
   ProfileResponse,
   ReactionIcon,
@@ -123,5 +124,21 @@ export class SocialService {
     return firstValueFrom(
       this.http.post<void>(`${this.base}/reports`, { targetType, targetId, reason, details }),
     );
+  }
+
+  getNotifications(): Promise<NotificationItem[]> {
+    return firstValueFrom(
+      this.http.get<NotificationItem[]>(`${this.base}/notifications`),
+    );
+  }
+
+  getUnreadNotificationsCount(): Promise<number> {
+    return firstValueFrom(
+      this.http.get<{ count: number }>(`${this.base}/notifications/unread-count`),
+    ).then((res) => res.count);
+  }
+
+  markNotificationsRead(): Promise<void> {
+    return firstValueFrom(this.http.post<void>(`${this.base}/notifications/read`, {}));
   }
 }

@@ -22,6 +22,7 @@ import type {
   CommentDto,
   FeedPage,
   HeatmapDay,
+  NotificationDto,
   PostDto,
   ProfileResponse,
   UserResultDto,
@@ -157,6 +158,30 @@ export class SocialController {
     @Param('commentId') commentId: string,
   ): Promise<void> {
     return this.socialService.deleteComment(user.id, commentId);
+  }
+
+  @Get('notifications')
+  getNotifications(
+    @CurrentUser() user: PublicUser,
+    @Query('limit') limit?: string,
+  ): Promise<NotificationDto[]> {
+    return this.socialService.getNotifications(user.id, Number(limit));
+  }
+
+  @Get('notifications/unread-count')
+  async getUnreadNotificationsCount(
+    @CurrentUser() user: PublicUser,
+  ): Promise<{ count: number }> {
+    const count = await this.socialService.getUnreadNotificationsCount(
+      user.id,
+    );
+    return { count };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @HttpPost('notifications/read')
+  markNotificationsRead(@CurrentUser() user: PublicUser): Promise<void> {
+    return this.socialService.markAllNotificationsRead(user.id);
   }
 
   @HttpCode(HttpStatus.OK)

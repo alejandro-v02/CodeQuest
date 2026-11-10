@@ -81,3 +81,17 @@ export interface UserResult {
   avatarColor: string;
   isFollowedByMe: boolean;
 }
+
+export type NotificationType = 'follow' | 'reaction' | 'comment';
+
+export interface NotificationItem {
+  id: string;
+  type: NotificationType;
+  actorId: string;
+  actorDisplayName: string;
+  actorAvatarIcon: string;
+  actorAvatarColor: string;
+  postId: string | null;
+  createdAt: string;
+  read: boolean;
+}

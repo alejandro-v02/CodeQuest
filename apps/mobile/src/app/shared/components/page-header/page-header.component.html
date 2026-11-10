@@ -1,18 +1,21 @@
 <ion-header class="glass-header ion-no-border">
   <ion-toolbar class="glass-toolbar">
-    @if (showBack()) {
-      <ion-buttons slot="start">
+    <ion-buttons slot="start">
+      @if (showBack()) {
         <ion-button class="back-button" aria-label="Volver" (click)="back.emit()">
           <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
         </ion-button>
-      </ion-buttons>
-    }
+      }
+      <ng-content select="[start]"></ng-content>
+    </ion-buttons>
 
     <div class="titles">
       @if (eyebrow(); as label) {
         <p class="eyebrow">{{ label }}</p>
       }
-      <h1 class="title">{{ title() }}</h1>
+      @if (title()) {
+        <h1 class="title">{{ title() }}</h1>
+      }
     </div>
 
     <ion-buttons slot="end" class="actions">

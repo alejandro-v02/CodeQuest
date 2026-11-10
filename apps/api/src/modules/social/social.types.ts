@@ -1,4 +1,5 @@
 import type { AchievementDefinition } from '../gamification/achievements.catalog';
+import type { NotificationType } from './entities/notification.entity';
 import type { PostType } from './entities/post.entity';
 import type { ReactionIcon } from './entities/post-reaction.entity';
 
@@ -68,4 +69,16 @@ export interface UserResultDto {
   avatarIcon: string;
   avatarColor: string;
   isFollowedByMe: boolean;
+}
+
+export interface NotificationDto {
+  id: string;
+  type: NotificationType;
+  actorId: string;
+  actorDisplayName: string;
+  actorAvatarIcon: string;
+  actorAvatarColor: string;
+  postId: string | null;
+  createdAt: string;
+  read: boolean;
 }

@@ -150,7 +150,7 @@ h2 {
   --padding-start: 24px;
   --padding-end: 24px;
   --padding-top: 8px;
-  --padding-bottom: 20px;
+  --padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
 
   .modal-handle {
     width: 36px;
@@ -206,21 +206,23 @@ h2 {
 
   .icon-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
   .icon-option {
     width: 100%;
+    max-width: 48px;
     aspect-ratio: 1;
-    border: 3px solid transparent;
+    margin: 0 auto;
+    border: 2px solid transparent;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 22px;
+    font-size: 18px;
     transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
     &.selected {
@@ -234,15 +236,15 @@ h2 {
 
   .color-grid {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 
   .color-option {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    border: 3px solid transparent;
+    border: 2px solid transparent;
     transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
     &.selected {
@@ -262,14 +264,14 @@ h2 {
     --padding-bottom: 10px;
     border-radius: 14px;
     font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .achievement-pick-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   .achievement-pick-row {

@@ -1,0 +1,54 @@
+<ion-modal
+  class="notifications-modal"
+  [isOpen]="isOpen()"
+  [breakpoints]="[0, 0.8, 0.95]"
+  [initialBreakpoint]="0.8"
+  (willPresent)="onWillPresent()"
+  (willDismiss)="dismiss()"
+>
+  <ng-template>
+    <ion-content class="notifications-modal-content">
+      <div class="modal-handle"></div>
+      <h1>Notificaciones</h1>
+
+      @if (isLoading()) {
+        <div class="state-pane">
+          <app-loading-bounce></app-loading-bounce>
+        </div>
+      } @else if (errorMessage(); as message) {
+        <p class="error-message">{{ message }}</p>
+      } @else if (notifications().length === 0) {
+        <app-empty-state
+          icon="notifications-outline"
+          title="Sin notificaciones"
+          subtitle="Cuando alguien te siga, reaccione o comente, lo verás aquí."
+        ></app-empty-state>
+      } @else {
+        <div class="notification-list">
+          @for (notification of notifications(); track notification.id) {
+            <button
+              type="button"
+              class="notification-row"
+              [class.unread]="!notification.read"
+              (click)="open(notification)"
+            >
+              <div class="notification-avatar" [style.background]="notification.actorAvatarColor">
+                <ion-icon [name]="notification.actorAvatarIcon"></ion-icon>
+                <span class="notification-badge">
+                  <ion-icon [name]="iconFor(notification)"></ion-icon>
+                </span>
+              </div>
+              <div class="notification-body">
+                <p>
+                  <strong>{{ notification.actorDisplayName }}</strong>
+                  {{ messageFor(notification) }}
+                </p>
+                <span class="notification-time">{{ timeAgo(notification.createdAt) }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      }
+    </ion-content>
+  </ng-template>
+</ion-modal>

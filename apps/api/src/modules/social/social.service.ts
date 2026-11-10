@@ -5,13 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, In, LessThan, Not, Repository } from 'typeorm';
+import { ILike, In, IsNull, LessThan, Not, Repository } from 'typeorm';
 import { Attempt } from '../exercises/entities/attempt.entity';
 import { ACHIEVEMENTS_CATALOG } from '../gamification/achievements.catalog';
 import { User } from '../users/entities/user.entity';
 import type { CreatePostDto } from './dto/create-post.dto';
 import type { CreateSocialReportDto } from './dto/create-social-report.dto';
 import { Follow } from './entities/follow.entity';
+import { Notification, type NotificationType } from './entities/notification.entity';
 import { Post } from './entities/post.entity';
 import { PostComment } from './entities/post-comment.entity';
 import {
@@ -23,6 +24,7 @@ import type {
   CommentDto,
   FeedPage,
   HeatmapDay,
+  NotificationDto,
   PostDto,
   ProfileResponse,
   ReactionSummary,
@@ -36,6 +38,8 @@ const COMMENT_LIMIT = 100;
 const HEATMAP_DAYS = 365;
 const SEARCH_RESULT_LIMIT = 20;
 const SUGGESTIONS_LIMIT = 6;
+const DEFAULT_NOTIFICATIONS_LIMIT = 30;
+const MAX_NOTIFICATIONS_LIMIT = 50;
 
 @Injectable()
 export class SocialService {
@@ -54,6 +58,8 @@ export class SocialService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(Attempt)
     private readonly attemptRepo: Repository<Attempt>,
+    @InjectRepository(Notification)
+    private readonly notificationRepo: Repository<Notification>,
   ) {}
 
   async follow(followerId: string, followeeId: string): Promise<void> {
@@ -69,6 +75,7 @@ export class SocialService {
     await this.followRepo.save(
       this.followRepo.create({ followerId, followeeId }),
     );
+    await this.createNotification(followeeId, followerId, 'follow');
   }
 
   async unfollow(followerId: string, followeeId: string): Promise<void> {
@@ -366,11 +373,13 @@ export class SocialService {
     if (existing) {
       existing.icon = icon;
       await this.reactionRepo.save(existing);
+      await this.createNotification(post.authorId, userId, 'reaction', postId);
       return;
     }
     await this.reactionRepo.save(
       this.reactionRepo.create({ postId, userId, icon }),
     );
+    await this.createNotification(post.authorId, userId, 'reaction', postId);
   }
 
   async removeReaction(userId: string, postId: string): Promise<void> {
@@ -389,6 +398,7 @@ export class SocialService {
     const comment = await this.commentRepo.save(
       this.commentRepo.create({ postId, authorId, body }),
     );
+    await this.createNotification(post.authorId, authorId, 'comment', postId);
     const author = await this.userRepo.findOne({ where: { id: authorId } });
     return this.toCommentDto(comment, author);
   }
@@ -432,6 +442,69 @@ export class SocialService {
         reason: dto.reason,
         details: dto.details ?? null,
       }),
+    );
+  }
+
+  async getNotifications(
+    userId: string,
+    limit?: number,
+  ): Promise<NotificationDto[]> {
+    const pageSize = Math.min(
+      Math.max(limit || DEFAULT_NOTIFICATIONS_LIMIT, 1),
+      MAX_NOTIFICATIONS_LIMIT,
+    );
+    const notifications = await this.notificationRepo.find({
+      where: { recipientId: userId },
+      order: { createdAt: 'DESC' },
+      take: pageSize,
+    });
+    if (notifications.length === 0) {
+      return [];
+    }
+    const actorIds = [...new Set(notifications.map((n) => n.actorId))];
+    const actors = await this.userRepo.findBy({ id: In(actorIds) });
+    const actorMap = new Map(actors.map((a) => [a.id, a]));
+
+    return notifications.map((notification) => {
+      const actor = actorMap.get(notification.actorId);
+      return {
+        id: notification.id,
+        type: notification.type,
+        actorId: notification.actorId,
+        actorDisplayName: actor?.displayName ?? '',
+        actorAvatarIcon: actor?.avatarIcon ?? 'person-circle',
+        actorAvatarColor: actor?.avatarColor ?? '#22d3ee',
+        postId: notification.postId,
+        createdAt: notification.createdAt.toISOString(),
+        read: notification.readAt !== null,
+      };
+    });
+  }
+
+  getUnreadNotificationsCount(userId: string): Promise<number> {
+    return this.notificationRepo.count({
+      where: { recipientId: userId, readAt: IsNull() },
+    });
+  }
+
+  async markAllNotificationsRead(userId: string): Promise<void> {
+    await this.notificationRepo.update(
+      { recipientId: userId, readAt: IsNull() },
+      { readAt: new Date() },
+    );
+  }
+
+  private async createNotification(
+    recipientId: string,
+    actorId: string,
+    type: NotificationType,
+    postId: string | null = null,
+  ): Promise<void> {
+    if (recipientId === actorId) {
+      return;
+    }
+    await this.notificationRepo.save(
+      this.notificationRepo.create({ recipientId, actorId, type, postId }),
     );
   }
 

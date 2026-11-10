@@ -1,8 +1,24 @@
-<app-page-header title="Comunidad" eyebrow="Muro">
+<app-page-header title="">
+  <button start type="button" class="header-avatar" [style.background]="myAvatarColor()" (click)="openOwnProfile()">
+    <ion-icon [name]="myAvatarIcon()"></ion-icon>
+  </button>
+
+  <ion-button actions fill="clear" class="bell-button" aria-label="Notificaciones" (click)="openNotifications()">
+    <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+    @if (unreadCount() > 0) {
+      <span class="unread-dot"></span>
+    }
+  </ion-button>
   <ion-button actions fill="clear" class="search-button" aria-label="Buscar personas" (click)="toggleSearch()">
     <ion-icon slot="icon-only" [name]="isSearchOpen() ? 'close-circle' : 'search-outline'"></ion-icon>
   </ion-button>
 </app-page-header>
+
+<app-notifications-sheet
+  [isOpen]="isNotificationsOpen()"
+  (closed)="closeNotifications()"
+  (unreadCleared)="onUnreadCleared()"
+></app-notifications-sheet>
 
 <app-compose-post-sheet
   [isOpen]="isComposeOpen()"

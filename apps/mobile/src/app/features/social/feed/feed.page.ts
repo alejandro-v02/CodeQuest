@@ -1,5 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonButton, IonContent, IonIcon, IonInput, IonSpinner, ViewWillEnter } from '@ionic/angular';
+import { AuthService } from '../../../core/services/auth.service';
 import { SocialService } from '../../../core/services/social.service';
 import type { PostDto, UserResult } from '../../../core/models/social.model';
 import { LoadingBounceComponent } from '../../../shared/components/loading-bounce/loading-bounce.component';
@@ -9,6 +11,7 @@ import { PostCardComponent } from '../components/post-card/post-card.component';
 import { ComposePostSheetComponent } from '../components/compose-post-sheet/compose-post-sheet.component';
 import { UserResultRowComponent } from '../components/user-result-row/user-result-row.component';
 import { SuggestedUsersComponent } from '../components/suggested-users/suggested-users.component';
+import { NotificationsSheetComponent } from '../components/notifications-sheet/notifications-sheet.component';
 
 const SEARCH_DEBOUNCE_MS = 300;
 
@@ -29,9 +32,12 @@ const SEARCH_DEBOUNCE_MS = 300;
     ComposePostSheetComponent,
     UserResultRowComponent,
     SuggestedUsersComponent,
+    NotificationsSheetComponent,
   ],
 })
 export class FeedPage implements ViewWillEnter {
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
   private readonly socialService = inject(SocialService);
   private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
 
@@ -47,8 +53,42 @@ export class FeedPage implements ViewWillEnter {
   readonly searchResults = signal<UserResult[]>([]);
   readonly isSearching = signal(false);
 
+  readonly isNotificationsOpen = signal(false);
+  readonly unreadCount = signal(0);
+
+  readonly myAvatarIcon = () => this.authService.currentUser()?.avatarIcon ?? 'person-circle';
+  readonly myAvatarColor = () => this.authService.currentUser()?.avatarColor ?? '#22d3ee';
+
   ionViewWillEnter(): void {
     void this.load();
+    void this.loadUnreadCount();
+  }
+
+  openOwnProfile(): void {
+    const userId = this.authService.currentUser()?.id;
+    if (userId) {
+      void this.router.navigateByUrl(`/profile/${userId}`);
+    }
+  }
+
+  async loadUnreadCount(): Promise<void> {
+    try {
+      this.unreadCount.set(await this.socialService.getUnreadNotificationsCount());
+    } catch {
+      this.unreadCount.set(0);
+    }
+  }
+
+  openNotifications(): void {
+    this.isNotificationsOpen.set(true);
+  }
+
+  closeNotifications(): void {
+    this.isNotificationsOpen.set(false);
+  }
+
+  onUnreadCleared(): void {
+    this.unreadCount.set(0);
   }
 
   async load(): Promise<void> {
