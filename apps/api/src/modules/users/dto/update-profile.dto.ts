@@ -7,14 +7,14 @@ import {
 } from 'class-validator';
 import { AVATAR_COLORS, AVATAR_ICONS } from '../avatar-options';
 
-const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
+const USERNAME_PATTERN = /^[a-z0-9_]{6,20}$/;
 
 export class UpdateProfileDto {
   // Lowercased and uniqueness-checked in UsersService, not here.
   @IsOptional()
   @Matches(USERNAME_PATTERN, {
     message:
-      'El nombre de usuario debe tener 3-20 caracteres (letras, números o _).',
+      'El nombre de usuario debe tener 6-20 caracteres (letras, números o _).',
   })
   username?: string;
 

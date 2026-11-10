@@ -23,7 +23,7 @@
           [maxlength]="20"
         ></ion-input>
       </div>
-      <p class="field-hint">Para que otros puedan encontrarte y seguirte.</p>
+      <p class="field-hint">Mínimo 6 caracteres. Para que otros puedan encontrarte y seguirte.</p>
 
       <h2 class="section-title">Ícono</h2>
       <div class="icon-grid">
@@ -103,6 +103,9 @@
         <ion-icon [name]="u.avatarIcon"></ion-icon>
       </button>
       <h2>{{ u.displayName }}</h2>
+      @if (u.username) {
+        <p class="username-tag">&#64;{{ u.username }}</p>
+      }
       <p class="email">{{ u.email }}</p>
 
       <ion-button fill="outline" size="small" class="edit-profile-button" (click)="openEditProfile()">

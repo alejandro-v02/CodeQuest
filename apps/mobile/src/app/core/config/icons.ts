@@ -50,6 +50,7 @@ import {
   leafOutline,
   skullOutline,
   diamondOutline,
+  searchOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -106,5 +107,6 @@ export function registerIcons(): void {
     'leaf-outline': leafOutline,
     'skull-outline': skullOutline,
     'diamond-outline': diamondOutline,
+    'search-outline': searchOutline,
   });
 }

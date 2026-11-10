@@ -19,6 +19,8 @@ import { AVATAR_COLORS, AVATAR_ICONS } from '../../core/config/avatar-options';
 import type { AchievementStatus } from '../../core/models/gamification.model';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
+const MIN_USERNAME_LENGTH = 6;
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
@@ -138,8 +140,10 @@ export class ProfilePage implements OnInit {
       return;
     }
     const username = this.editUsername().trim();
-    if (username.length > 0 && username.length < 3) {
-      this.profileError.set('El nombre de usuario debe tener al menos 3 caracteres.');
+    if (username.length > 0 && username.length < MIN_USERNAME_LENGTH) {
+      this.profileError.set(
+        `El nombre de usuario debe tener al menos ${MIN_USERNAME_LENGTH} caracteres.`,
+      );
       return;
     }
 
@@ -153,6 +157,7 @@ export class ProfilePage implements OnInit {
         avatarColor: this.editAvatarColor(),
         pinnedAchievementSlug: this.editPinnedSlug(),
       });
+      this.editUsername.set(this.user()?.username ?? '');
       this.isEditOpen.set(false);
     } catch (error) {
       this.profileError.set(

@@ -52,8 +52,15 @@ h2 {
   font-weight: 700;
 }
 
+.username-tag {
+  margin: 2px 0 0;
+  color: var(--ion-color-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .email {
-  margin: 0 0 24px;
+  margin: 4px 0 24px;
   color: var(--ion-color-step-700);
   font-size: 14px;
 }
