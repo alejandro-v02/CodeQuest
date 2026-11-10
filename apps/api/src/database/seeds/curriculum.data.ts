@@ -1,5 +1,6 @@
 import type { ProgrammingLanguageSlug } from '../../modules/users/entities/user.entity';
 import { pythonExtraExercises } from './python/extra-exercises';
+import { pythonExtraModules } from './python';
 import type {
   BugPayload,
   ExerciseType,
@@ -892,6 +893,7 @@ export const curriculum: SeedLanguage[] = baseCurriculum.map((language) => {
         })),
       },
       ...language.modules.slice(1),
+      ...pythonExtraModules,
     ],
   };
 });
