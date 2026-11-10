@@ -16,6 +16,7 @@ export function toPublicUser(user: User): PublicUser {
     preferredLanguage: user.preferredLanguage,
     dailyGoalMinutes: user.dailyGoalMinutes,
     timezone: user.timezone,
+    username: user.username,
     bio: user.bio,
     avatarIcon: user.avatarIcon,
     avatarColor: user.avatarColor,

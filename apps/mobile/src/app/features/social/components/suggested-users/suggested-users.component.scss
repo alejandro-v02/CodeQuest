@@ -1,0 +1,35 @@
+.suggestions {
+  margin: 4px 0 16px;
+  animation: hero-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suggestions {
+    animation: none !important;
+  }
+}
+
+.suggestions-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ion-color-step-700);
+}
+
+.suggestions-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}

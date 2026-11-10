@@ -1,0 +1,31 @@
+<div
+  class="user-result"
+  [class.card]="variant() === 'card'"
+  role="button"
+  tabindex="0"
+  (click)="openProfile()"
+  (keyup.enter)="openProfile()"
+>
+  <div class="avatar" [style.background]="user().avatarColor">
+    <ion-icon [name]="user().avatarIcon"></ion-icon>
+  </div>
+  <div class="info">
+    <span class="display-name">{{ user().displayName }}</span>
+    @if (user().username) {
+      <span class="username">&#64;{{ user().username }}</span>
+    }
+  </div>
+  <button
+    type="button"
+    class="follow-button"
+    [class.following]="user().isFollowedByMe"
+    [disabled]="isBusy()"
+    (click)="toggleFollow($event)"
+  >
+    @if (isBusy()) {
+      <ion-spinner name="dots"></ion-spinner>
+    } @else {
+      <ion-icon [name]="user().isFollowedByMe ? 'person-remove-outline' : 'person-add-outline'"></ion-icon>
+    }
+  </button>
+</div>

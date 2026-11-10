@@ -89,6 +89,7 @@ export class AuthService {
   }
 
   async updateProfile(input: {
+    username?: string;
     bio?: string;
     avatarIcon?: string;
     avatarColor?: string;

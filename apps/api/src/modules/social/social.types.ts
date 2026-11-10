@@ -60,3 +60,12 @@ export interface ProfileResponse {
   bio?: string | null;
   pinnedAchievement?: AchievementDefinition | null;
 }
+
+export interface UserResultDto {
+  userId: string;
+  displayName: string;
+  username: string | null;
+  avatarIcon: string;
+  avatarColor: string;
+  isFollowedByMe: boolean;
+}

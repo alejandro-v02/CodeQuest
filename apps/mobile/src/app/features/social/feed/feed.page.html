@@ -1,4 +1,8 @@
-<app-page-header title="Comunidad" eyebrow="Muro"></app-page-header>
+<app-page-header title="Comunidad" eyebrow="Muro">
+  <ion-button actions fill="clear" class="search-button" aria-label="Buscar personas" (click)="toggleSearch()">
+    <ion-icon slot="icon-only" [name]="isSearchOpen() ? 'close-circle' : 'search-outline'"></ion-icon>
+  </ion-button>
+</app-page-header>
 
 <app-compose-post-sheet
   [isOpen]="isComposeOpen()"
@@ -6,8 +10,36 @@
   (posted)="onPosted($event)"
 ></app-compose-post-sheet>
 
-<ion-content [fullscreen]="true">
-  @if (isLoading()) {
+<ion-content [fullscreen]="true" [scrollY]="!isSearchOpen()">
+  @if (isSearchOpen()) {
+    <div class="search-panel">
+      <div class="search-input-row">
+        <ion-icon name="search-outline"></ion-icon>
+        <ion-input
+          [value]="searchQuery()"
+          (ionInput)="onSearchInput($event.detail.value ?? '')"
+          placeholder="Buscar por nombre o @usuario"
+          autofocus
+        ></ion-input>
+      </div>
+
+      @if (isSearching()) {
+        <div class="search-state">
+          <ion-spinner name="dots"></ion-spinner>
+        </div>
+      } @else if (searchQuery().trim().length === 0) {
+        <p class="search-hint">Escribe un nombre o nombre de usuario para buscar.</p>
+      } @else if (searchResults().length === 0) {
+        <p class="search-hint">Nadie coincide con "{{ searchQuery() }}".</p>
+      } @else {
+        <div class="search-results">
+          @for (user of searchResults(); track user.userId) {
+            <app-user-result-row [user]="user" (changed)="onSearchResultChanged($event)"></app-user-result-row>
+          }
+        </div>
+      }
+    </div>
+  } @else if (isLoading()) {
     <div class="state-pane">
       <app-loading-bounce></app-loading-bounce>
     </div>
@@ -17,6 +49,7 @@
       <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
     </div>
   } @else if (posts().length === 0) {
+    <app-suggested-users></app-suggested-users>
     <app-empty-state
       icon="people-outline"
       title="Tu muro está vacío"
@@ -30,6 +63,9 @@
           [delayMs]="(idx < 8 ? idx : 8) * 60"
           (deleted)="onDeleted($event)"
         ></app-post-card>
+        @if (idx === 2) {
+          <app-suggested-users></app-suggested-users>
+        }
       }
     </div>
 
@@ -46,7 +82,9 @@
     }
   }
 
-  <button type="button" class="compose-fab" aria-label="Publicar" (click)="openCompose()">
-    <ion-icon name="create-outline"></ion-icon>
-  </button>
+  @if (!isSearchOpen()) {
+    <button type="button" class="compose-fab" aria-label="Publicar" (click)="openCompose()">
+      <ion-icon name="create-outline"></ion-icon>
+    </button>
+  }
 </ion-content>

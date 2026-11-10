@@ -1,7 +1,17 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonButton, IonIcon, IonModal, IonSpinner, IonTextarea, IonToggle } from '@ionic/angular';
+import {
+  IonContent,
+  IonButton,
+  IonIcon,
+  IonInput,
+  IonModal,
+  IonSpinner,
+  IonTextarea,
+  IonToggle,
+} from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { GamificationService } from '../../core/services/gamification.service';
 import { NotificationsService } from '../../core/services/notifications.service';
@@ -18,6 +28,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
     IonContent,
     IonButton,
     IonIcon,
+    IonInput,
     IonModal,
     IonSpinner,
     IonTextarea,
@@ -40,6 +51,7 @@ export class ProfilePage implements OnInit {
   readonly unlockedAchievements = signal<AchievementStatus[]>([]);
 
   readonly isEditOpen = signal(false);
+  readonly editUsername = signal('');
   readonly editBio = signal('');
   readonly editAvatarIcon = signal<string>(AVATAR_ICONS[0]);
   readonly editAvatarColor = signal<string>(AVATAR_COLORS[0]);
@@ -93,6 +105,7 @@ export class ProfilePage implements OnInit {
     if (!current) {
       return;
     }
+    this.editUsername.set(current.username ?? '');
     this.editBio.set(current.bio ?? '');
     this.editAvatarIcon.set(current.avatarIcon);
     this.editAvatarColor.set(current.avatarColor);
@@ -116,22 +129,37 @@ export class ProfilePage implements OnInit {
     this.editPinnedSlug.set(this.editPinnedSlug() === slug ? null : slug);
   }
 
+  onUsernameInput(value: string): void {
+    this.editUsername.set(value.toLowerCase().replace(/[^a-z0-9_]/g, ''));
+  }
+
   async saveProfile(): Promise<void> {
     if (this.isSavingProfile()) {
       return;
     }
+    const username = this.editUsername().trim();
+    if (username.length > 0 && username.length < 3) {
+      this.profileError.set('El nombre de usuario debe tener al menos 3 caracteres.');
+      return;
+    }
+
     this.isSavingProfile.set(true);
     this.profileError.set(null);
     try {
       await this.authService.updateProfile({
+        ...(username.length > 0 ? { username } : {}),
         bio: this.editBio().trim(),
         avatarIcon: this.editAvatarIcon(),
         avatarColor: this.editAvatarColor(),
         pinnedAchievementSlug: this.editPinnedSlug(),
       });
       this.isEditOpen.set(false);
-    } catch {
-      this.profileError.set('No se pudo guardar tu perfil.');
+    } catch (error) {
+      this.profileError.set(
+        error instanceof HttpErrorResponse && error.status === 409
+          ? 'Ese nombre de usuario ya está en uso.'
+          : 'No se pudo guardar tu perfil.',
+      );
     } finally {
       this.isSavingProfile.set(false);
     }

@@ -72,3 +72,12 @@ export interface ProfileResponse {
 
 export type SocialReportTargetType = 'post' | 'comment';
 export type SocialReportReason = 'spam' | 'offensive' | 'harassment' | 'other';
+
+export interface UserResult {
+  userId: string;
+  displayName: string;
+  username: string | null;
+  avatarIcon: string;
+  avatarColor: string;
+  isFollowedByMe: boolean;
+}

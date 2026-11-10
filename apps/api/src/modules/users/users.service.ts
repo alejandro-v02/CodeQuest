@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserAchievement } from '../gamification/entities/user-achievement.entity';
@@ -65,6 +69,16 @@ export class UsersService {
   }
 
   async updateProfile(id: string, dto: UpdateProfileDto): Promise<User> {
+    if (dto.username) {
+      const username = dto.username.toLowerCase();
+      const existing = await this.usersRepository.findOne({
+        where: { username },
+      });
+      if (existing && existing.id !== id) {
+        throw new ConflictException('Ese nombre de usuario ya está en uso.');
+      }
+    }
+
     if (dto.pinnedAchievementSlug) {
       const unlocked = await this.achievementRepository.findOne({
         where: { userId: id, achievementSlug: dto.pinnedAchievementSlug },
@@ -77,6 +91,8 @@ export class UsersService {
     }
 
     const update: Partial<User> = {};
+    if (dto.username !== undefined)
+      update.username = dto.username.toLowerCase();
     if (dto.bio !== undefined) update.bio = dto.bio;
     if (dto.avatarIcon !== undefined) update.avatarIcon = dto.avatarIcon;
     if (dto.avatarColor !== undefined) update.avatarColor = dto.avatarColor;

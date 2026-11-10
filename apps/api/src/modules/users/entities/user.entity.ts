@@ -49,6 +49,13 @@ export class User {
   @Column({ type: 'int', default: 0 })
   xp: number;
 
+  // Null until the user sets one from the profile editor — not required at
+  // registration to avoid touching that flow. Lowercase, unique when set;
+  // uniqueness/format is enforced in UsersService, not at the column level,
+  // since nullable unique columns allow multiple NULLs in Postgres already.
+  @Column({ type: 'varchar', length: 20, nullable: true, unique: true })
+  username: string | null;
+
   // Social module profile fields — no file-upload infra exists in this
   // project, so the "avatar" is an icon+color pair instead of a photo.
   @Column({ type: 'varchar', length: 160, nullable: true })

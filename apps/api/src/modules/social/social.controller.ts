@@ -24,6 +24,7 @@ import type {
   HeatmapDay,
   PostDto,
   ProfileResponse,
+  UserResultDto,
 } from './social.types';
 
 @UseGuards(JwtAccessGuard)
@@ -47,6 +48,19 @@ export class SocialController {
     @Param('userId') userId: string,
   ): Promise<void> {
     return this.socialService.unfollow(user.id, userId);
+  }
+
+  @Get('users/search')
+  searchUsers(
+    @CurrentUser() user: PublicUser,
+    @Query('q') q: string | undefined,
+  ): Promise<UserResultDto[]> {
+    return this.socialService.searchUsers(user.id, q ?? '');
+  }
+
+  @Get('users/suggestions')
+  getSuggestions(@CurrentUser() user: PublicUser): Promise<UserResultDto[]> {
+    return this.socialService.getSuggestions(user.id);
   }
 
   @Get('users/:userId/profile')

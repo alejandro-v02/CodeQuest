@@ -22,6 +22,47 @@
   padding: 0 0 16px;
 }
 
+.search-panel {
+  padding: 12px 16px;
+  height: 100%;
+}
+
+.search-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--ion-color-step-50);
+  color: var(--ion-color-step-600);
+
+  ion-input {
+    flex: 1;
+    --padding-start: 0;
+    font-size: 15px;
+  }
+}
+
+.search-state {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.search-hint {
+  margin: 20px 4px 0;
+  font-size: 13px;
+  color: var(--ion-color-step-600);
+  text-align: center;
+}
+
+.search-results {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .compose-fab {
   position: fixed;
   right: 20px;

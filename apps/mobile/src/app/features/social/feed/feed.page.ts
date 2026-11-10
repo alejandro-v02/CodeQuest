@@ -1,12 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
-import { IonButton, IonContent, IonIcon, IonSpinner, ViewWillEnter } from '@ionic/angular';
+import { IonButton, IonContent, IonIcon, IonInput, IonSpinner, ViewWillEnter } from '@ionic/angular';
 import { SocialService } from '../../../core/services/social.service';
-import type { PostDto } from '../../../core/models/social.model';
+import type { PostDto, UserResult } from '../../../core/models/social.model';
 import { LoadingBounceComponent } from '../../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { ComposePostSheetComponent } from '../components/compose-post-sheet/compose-post-sheet.component';
+import { UserResultRowComponent } from '../components/user-result-row/user-result-row.component';
+import { SuggestedUsersComponent } from '../components/suggested-users/suggested-users.component';
+
+const SEARCH_DEBOUNCE_MS = 300;
 
 @Component({
   selector: 'app-feed',
@@ -16,16 +20,20 @@ import { ComposePostSheetComponent } from '../components/compose-post-sheet/comp
     IonButton,
     IonContent,
     IonIcon,
+    IonInput,
     IonSpinner,
     LoadingBounceComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     PostCardComponent,
     ComposePostSheetComponent,
+    UserResultRowComponent,
+    SuggestedUsersComponent,
   ],
 })
 export class FeedPage implements ViewWillEnter {
   private readonly socialService = inject(SocialService);
+  private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
 
   readonly posts = signal<PostDto[]>([]);
   readonly isLoading = signal(true);
@@ -33,6 +41,11 @@ export class FeedPage implements ViewWillEnter {
   readonly errorMessage = signal<string | null>(null);
   readonly nextCursor = signal<string | null>(null);
   readonly isComposeOpen = signal(false);
+
+  readonly isSearchOpen = signal(false);
+  readonly searchQuery = signal('');
+  readonly searchResults = signal<UserResult[]>([]);
+  readonly isSearching = signal(false);
 
   ionViewWillEnter(): void {
     void this.load();
@@ -82,5 +95,47 @@ export class FeedPage implements ViewWillEnter {
 
   closeCompose(): void {
     this.isComposeOpen.set(false);
+  }
+
+  toggleSearch(): void {
+    this.isSearchOpen.update((open) => !open);
+    if (!this.isSearchOpen()) {
+      this.searchQuery.set('');
+      this.searchResults.set([]);
+    }
+  }
+
+  onSearchInput(value: string): void {
+    this.searchQuery.set(value);
+    if (this.searchDebounceHandle) {
+      clearTimeout(this.searchDebounceHandle);
+    }
+    const trimmed = value.trim();
+    if (trimmed.length === 0) {
+      this.searchResults.set([]);
+      this.isSearching.set(false);
+      return;
+    }
+    this.isSearching.set(true);
+    this.searchDebounceHandle = setTimeout(() => {
+      void this.runSearch(trimmed);
+    }, SEARCH_DEBOUNCE_MS);
+  }
+
+  private async runSearch(query: string): Promise<void> {
+    try {
+      const results = await this.socialService.searchUsers(query);
+      if (this.searchQuery().trim() === query) {
+        this.searchResults.set(results);
+      }
+    } catch {
+      this.searchResults.set([]);
+    } finally {
+      this.isSearching.set(false);
+    }
+  }
+
+  onSearchResultChanged(updated: UserResult): void {
+    this.searchResults.update((list) => list.map((u) => (u.userId === updated.userId ? updated : u)));
   }
 }

@@ -11,6 +11,7 @@ import type {
   ReactionIcon,
   SocialReportReason,
   SocialReportTargetType,
+  UserResult,
 } from '../models/social.model';
 
 export interface CreateTextPostInput {
@@ -39,6 +40,16 @@ export class SocialService {
 
   unfollow(userId: string): Promise<void> {
     return firstValueFrom(this.http.delete<void>(`${this.base}/follow/${userId}`));
+  }
+
+  searchUsers(query: string): Promise<UserResult[]> {
+    return firstValueFrom(
+      this.http.get<UserResult[]>(`${this.base}/users/search`, { params: { q: query } }),
+    );
+  }
+
+  getSuggestions(): Promise<UserResult[]> {
+    return firstValueFrom(this.http.get<UserResult[]>(`${this.base}/users/suggestions`));
   }
 
   getProfile(userId: string): Promise<ProfileResponse> {

@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, LessThan, Repository } from 'typeorm';
+import { ILike, In, LessThan, Not, Repository } from 'typeorm';
 import { Attempt } from '../exercises/entities/attempt.entity';
 import { ACHIEVEMENTS_CATALOG } from '../gamification/achievements.catalog';
 import { User } from '../users/entities/user.entity';
@@ -26,6 +26,7 @@ import type {
   PostDto,
   ProfileResponse,
   ReactionSummary,
+  UserResultDto,
 } from './social.types';
 
 const XP_PER_LEVEL = 100;
@@ -33,6 +34,8 @@ const DEFAULT_FEED_LIMIT = 20;
 const MAX_FEED_LIMIT = 50;
 const COMMENT_LIMIT = 100;
 const HEATMAP_DAYS = 365;
+const SEARCH_RESULT_LIMIT = 20;
+const SUGGESTIONS_LIMIT = 6;
 
 @Injectable()
 export class SocialService {
@@ -70,6 +73,77 @@ export class SocialService {
 
   async unfollow(followerId: string, followeeId: string): Promise<void> {
     await this.followRepo.delete({ followerId, followeeId });
+  }
+
+  async searchUsers(viewerId: string, query: string): Promise<UserResultDto[]> {
+    const trimmed = query.trim();
+    if (trimmed.length === 0) {
+      return [];
+    }
+
+    const matches = await this.userRepo.find({
+      where: [
+        { id: Not(viewerId), username: ILike(`%${trimmed}%`) },
+        { id: Not(viewerId), displayName: ILike(`%${trimmed}%`) },
+      ],
+      take: SEARCH_RESULT_LIMIT,
+    });
+
+    // Exact/prefix username matches first — more useful than displayName
+    // hits when someone is searching for a specific person to follow.
+    const lower = trimmed.toLowerCase();
+    matches.sort(
+      (a, b) =>
+        this.usernameMatchRank(a, lower) - this.usernameMatchRank(b, lower),
+    );
+
+    return this.toUserResults(matches, viewerId);
+  }
+
+  async getSuggestions(viewerId: string): Promise<UserResultDto[]> {
+    const follows = await this.followRepo.find({
+      where: { followerId: viewerId },
+    });
+    const excludeIds = [viewerId, ...follows.map((f) => f.followeeId)];
+
+    const candidates = await this.userRepo
+      .createQueryBuilder('user')
+      .where('user.id NOT IN (:...excludeIds)', { excludeIds })
+      .orderBy('RANDOM()')
+      .limit(SUGGESTIONS_LIMIT)
+      .getMany();
+
+    return this.toUserResults(candidates, viewerId);
+  }
+
+  private usernameMatchRank(user: User, lowerQuery: string): number {
+    const username = user.username?.toLowerCase() ?? '';
+    if (username === lowerQuery) return 0;
+    if (username.startsWith(lowerQuery)) return 1;
+    if (username.includes(lowerQuery)) return 2;
+    return 3;
+  }
+
+  private async toUserResults(
+    users: User[],
+    viewerId: string,
+  ): Promise<UserResultDto[]> {
+    if (users.length === 0) {
+      return [];
+    }
+    const follows = await this.followRepo.find({
+      where: { followerId: viewerId, followeeId: In(users.map((u) => u.id)) },
+    });
+    const followedIds = new Set(follows.map((f) => f.followeeId));
+
+    return users.map((user) => ({
+      userId: user.id,
+      displayName: user.displayName,
+      username: user.username,
+      avatarIcon: user.avatarIcon,
+      avatarColor: user.avatarColor,
+      isFollowedByMe: followedIds.has(user.id),
+    }));
   }
 
   async getProfile(

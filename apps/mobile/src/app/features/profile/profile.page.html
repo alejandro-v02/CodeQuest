@@ -13,6 +13,18 @@
       <p class="eyebrow">Editar perfil</p>
       <h1>Personaliza tu cuenta</h1>
 
+      <h2 class="section-title">Nombre de usuario</h2>
+      <div class="username-field">
+        <span class="username-at">&#64;</span>
+        <ion-input
+          [value]="editUsername()"
+          (ionInput)="onUsernameInput($event.detail.value ?? '')"
+          placeholder="tu_usuario"
+          [maxlength]="20"
+        ></ion-input>
+      </div>
+      <p class="field-hint">Para que otros puedan encontrarte y seguirte.</p>
+
       <h2 class="section-title">Ícono</h2>
       <div class="icon-grid">
         @for (icon of avatarIcons; track icon) {
