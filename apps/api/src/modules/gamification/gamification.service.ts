@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AiInteraction } from '../ai/entities/ai-interaction.entity';
+import { LeaguesService } from '../leagues/leagues.service';
 import { SocialService } from '../social/social.service';
 import { User } from '../users/entities/user.entity';
 import { ACHIEVEMENTS_CATALOG } from './achievements.catalog';
@@ -40,7 +41,10 @@ export class GamificationService {
     @InjectRepository(AiInteraction)
     private readonly aiInteractionRepo: Repository<AiInteraction>,
     private readonly socialService: SocialService,
+    private readonly leaguesService: LeaguesService,
   ) {}
+
+  private readonly logger = new Logger(GamificationService.name);
 
   // Only pays XP the first time this exerciseId is passed by this user —
   // resubmitting an already-passed solution doesn't farm XP.
@@ -66,6 +70,7 @@ export class GamificationService {
       }),
     );
     await this.applyXpGain(userId, EXERCISE_XP);
+    await this.joinLeague(userId);
     await this.recordActivity(userId);
 
     if (isFirstEverExercise) {
@@ -106,7 +111,20 @@ export class GamificationService {
       }),
     );
     await this.applyXpGain(userId, xpReward);
+    await this.joinLeague(userId);
     await this.recordActivity(userId);
+  }
+
+  // Puts the user in this week's league bracket so others see them even if
+  // they never open the league screen. It must never undo an XP award.
+  private async joinLeague(userId: string): Promise<void> {
+    try {
+      await this.leaguesService.ensureMembership(userId);
+    } catch (error) {
+      this.logger.warn(
+        `Could not place ${userId} in this week's league: ${String(error)}`,
+      );
+    }
   }
 
   // Centralizes XP application so a level-up can be detected (increment()

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AiInteraction } from '../ai/entities/ai-interaction.entity';
+import { LeaguesModule } from '../leagues/leagues.module';
 import { SocialModule } from '../social/social.module';
 import { User } from '../users/entities/user.entity';
 import { GamificationController } from './gamification.controller';
@@ -19,6 +20,7 @@ import { XpEvent } from './entities/xp-event.entity';
       AiInteraction,
     ]),
     SocialModule,
+    LeaguesModule,
   ],
   controllers: [GamificationController],
   providers: [GamificationService],
