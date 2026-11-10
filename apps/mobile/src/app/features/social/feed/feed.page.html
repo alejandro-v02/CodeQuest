@@ -1,0 +1,52 @@
+<app-page-header title="Comunidad" eyebrow="Muro"></app-page-header>
+
+<app-compose-post-sheet
+  [isOpen]="isComposeOpen()"
+  (closed)="closeCompose()"
+  (posted)="onPosted($event)"
+></app-compose-post-sheet>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+    </div>
+  } @else if (posts().length === 0) {
+    <app-empty-state
+      icon="people-outline"
+      title="Tu muro está vacío"
+      subtitle="Sigue a otras personas o publica algo para empezar."
+    ></app-empty-state>
+  } @else {
+    <div class="post-list">
+      @for (post of posts(); track post.id; let idx = $index) {
+        <app-post-card
+          [post]="post"
+          [delayMs]="(idx < 8 ? idx : 8) * 60"
+          (deleted)="onDeleted($event)"
+        ></app-post-card>
+      }
+    </div>
+
+    @if (nextCursor()) {
+      <div class="load-more">
+        <ion-button fill="clear" [disabled]="isLoadingMore()" (click)="loadMore()">
+          @if (isLoadingMore()) {
+            <ion-spinner name="dots"></ion-spinner>
+          } @else {
+            Cargar más
+          }
+        </ion-button>
+      </div>
+    }
+  }
+
+  <button type="button" class="compose-fab" aria-label="Publicar" (click)="openCompose()">
+    <ion-icon name="create-outline"></ion-icon>
+  </button>
+</ion-content>

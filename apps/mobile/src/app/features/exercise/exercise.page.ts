@@ -10,6 +10,7 @@ import {
 } from '@ionic/angular';
 import { AiService } from '../../core/services/ai.service';
 import { ExercisesService } from '../../core/services/exercises.service';
+import { SocialService } from '../../core/services/social.service';
 import { CodeEditorComponent } from '../../shared/components/code-editor/code-editor.component';
 import { QuizExerciseComponent } from '../../shared/components/quiz-exercise/quiz-exercise.component';
 import { FillExerciseComponent } from '../../shared/components/fill-exercise/fill-exercise.component';
@@ -62,6 +63,7 @@ export class ExercisePage implements ViewWillEnter {
   private readonly router = inject(Router);
   private readonly exercisesService = inject(ExercisesService);
   private readonly aiService = inject(AiService);
+  private readonly socialService = inject(SocialService);
   private readonly actionSheetController = inject(ActionSheetController);
 
   @ViewChild(CodeEditorComponent) private codeEditor?: CodeEditorComponent;
@@ -83,6 +85,9 @@ export class ExercisePage implements ViewWillEnter {
 
   readonly isReporting = signal(false);
   readonly reportSent = signal(false);
+
+  readonly isSharing = signal(false);
+  readonly shared = signal(false);
 
   // Pistas graduales (Fase 5B): revealed one at a time, in order — the
   // button always requests hints().length + 1, so there's no way to skip
@@ -119,6 +124,7 @@ export class ExercisePage implements ViewWillEnter {
       this.answer.set(null);
       this.result.set(null);
       this.reportSent.set(false);
+      this.shared.set(false);
       this.hints.set([]);
       this.hintError.set(null);
       this.errorExplanation.set(null);
@@ -286,6 +292,28 @@ export class ExercisePage implements ViewWillEnter {
       this.errorMessage.set('No se pudo enviar el reporte.');
     } finally {
       this.isReporting.set(false);
+    }
+  }
+
+  async shareToFeed(): Promise<void> {
+    const exercise = this.exercise();
+    if (!exercise || exercise.type !== 'code' || this.isSharing() || this.shared()) {
+      return;
+    }
+
+    this.isSharing.set(true);
+    try {
+      await this.socialService.createPost({
+        type: 'solved_exercise',
+        exerciseId: exercise.id,
+        exerciseTitle: exercise.prompt,
+        codeSnippet: this.code(),
+      });
+      this.shared.set(true);
+    } catch {
+      this.errorMessage.set('No se pudo compartir en el muro.');
+    } finally {
+      this.isSharing.set(false);
     }
   }
 

@@ -1,0 +1,87 @@
+<app-page-header title="Perfil" [showBack]="true" (back)="goBack()"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">Reintentar</ion-button>
+    </div>
+  } @else if (profile(); as p) {
+    <div class="profile-card">
+      <div class="avatar" [style.background]="p.avatarColor">
+        <ion-icon [name]="p.avatarIcon"></ion-icon>
+      </div>
+      <h2>{{ p.displayName }}</h2>
+      <span class="level-badge">
+        <ion-icon name="star-outline"></ion-icon>
+        Nivel {{ p.level }}
+      </span>
+
+      <div class="follow-counts">
+        <span>{{ p.followersCount }} seguidores</span>
+        <span>{{ p.followingCount }} siguiendo</span>
+      </div>
+
+      @if (!p.isSelf) {
+        <ion-button
+          [fill]="p.isFollowedByMe ? 'outline' : 'solid'"
+          [disabled]="isFollowBusy()"
+          (click)="toggleFollow()"
+        >
+          <ion-icon slot="start" [name]="p.isFollowedByMe ? 'person-remove-outline' : 'person-add-outline'"></ion-icon>
+          {{ p.isFollowedByMe ? 'Dejar de seguir' : 'Seguir' }}
+        </ion-button>
+      }
+
+      @if (!p.unlocked) {
+        <app-empty-state
+          icon="lock-closed-outline"
+          title="Perfil privado"
+          subtitle="Sigue a esta persona para ver su muro, logros y actividad."
+        ></app-empty-state>
+      } @else {
+        @if (p.bio) {
+          <p class="bio">{{ p.bio }}</p>
+        }
+
+        @if (p.pinnedAchievement; as achievement) {
+          <div class="pinned-achievement">
+            <ion-icon [name]="achievement.icon"></ion-icon>
+            <div>
+              <span class="pinned-title">{{ achievement.title }}</span>
+              <span class="pinned-description">{{ achievement.description }}</span>
+            </div>
+          </div>
+        }
+
+        <section class="section">
+          <h3 class="section-title">Actividad</h3>
+          <app-contribution-heatmap [heatmapDays]="heatmap()"></app-contribution-heatmap>
+        </section>
+
+        <section class="section wall-section">
+          <h3 class="section-title">Muro</h3>
+          @if (wall().length > 0) {
+            @for (post of wall(); track post.id; let idx = $index) {
+              <app-post-card
+                [post]="post"
+                [delayMs]="(idx < 8 ? idx : 8) * 60"
+                (deleted)="onDeleted($event)"
+              ></app-post-card>
+            }
+          } @else {
+            <app-empty-state
+              icon="chatbubble-outline"
+              title="Sin publicaciones"
+              subtitle="Todavía no ha compartido nada."
+            ></app-empty-state>
+          }
+        </section>
+      }
+    </div>
+  }
+</ion-content>

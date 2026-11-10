@@ -106,11 +106,16 @@
         @if (r.top.length > 0) {
           <div class="ranking-list">
             @for (entry of r.top; track entry.userId) {
-              <div class="ranking-row" [class.me]="entry.userId === r.me.userId">
+              <button
+                type="button"
+                class="ranking-row"
+                [class.me]="entry.userId === r.me.userId"
+                (click)="openProfile(entry.userId)"
+              >
                 <span class="ranking-rank">#{{ entry.rank }}</span>
                 <span class="ranking-name">{{ entry.displayName }}</span>
                 <span class="ranking-xp">{{ entry.weeklyXp }} XP</span>
-              </div>
+              </button>
             }
             @if (!meInTop()) {
               <div class="ranking-row me">

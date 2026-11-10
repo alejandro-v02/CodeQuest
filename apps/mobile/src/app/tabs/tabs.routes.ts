@@ -21,6 +21,11 @@ export const tabsRoutes: Routes = [
           import('../features/profile/profile.page').then((m) => m.ProfilePage),
       },
       {
+        path: 'community',
+        loadComponent: () =>
+          import('../features/social/feed/feed.page').then((m) => m.FeedPage),
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full',

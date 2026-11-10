@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonButton, IonContent, IonIcon, ViewWillEnter } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { ExercisesService } from '../../core/services/exercises.service';
@@ -31,6 +32,7 @@ export class ProgressPage implements ViewWillEnter {
   private readonly authService = inject(AuthService);
   private readonly exercisesService = inject(ExercisesService);
   private readonly gamificationService = inject(GamificationService);
+  private readonly router = inject(Router);
 
   readonly summary = signal<GamificationSummary | null>(null);
   readonly ranking = signal<RankingResponse | null>(null);
@@ -80,5 +82,9 @@ export class ProgressPage implements ViewWillEnter {
 
   accuracyPercent(accuracy: number | null): string {
     return accuracy === null ? '—' : `${Math.round(accuracy * 100)}%`;
+  }
+
+  openProfile(userId: string): void {
+    void this.router.navigateByUrl(`/profile/${userId}`);
   }
 }

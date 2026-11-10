@@ -28,6 +28,7 @@ export class PostCardComponent {
   private readonly router = inject(Router);
 
   readonly post = input.required<PostDto>();
+  readonly delayMs = input(0);
   readonly deleted = output<string>();
 
   private readonly override = signal<{ reactions?: ReactionSummary; commentCount?: number } | null>(

@@ -1,11 +1,102 @@
 <app-page-header title="Perfil"></app-page-header>
 
-<ion-content [fullscreen]="true">
+<ion-modal
+  class="edit-profile-modal"
+  [isOpen]="isEditOpen()"
+  [breakpoints]="[0, 0.75, 0.95]"
+  [initialBreakpoint]="0.75"
+  (willDismiss)="closeEditProfile()"
+>
+  <ng-template>
+    <ion-content class="edit-profile-modal-content">
+      <div class="modal-handle"></div>
+      <p class="eyebrow">Editar perfil</p>
+      <h1>Personaliza tu cuenta</h1>
+
+      <h2 class="section-title">Ícono</h2>
+      <div class="icon-grid">
+        @for (icon of avatarIcons; track icon) {
+          <button
+            type="button"
+            class="icon-option"
+            [class.selected]="editAvatarIcon() === icon"
+            [style.background]="editAvatarColor()"
+            (click)="editAvatarIcon.set(icon)"
+          >
+            <ion-icon [name]="icon"></ion-icon>
+          </button>
+        }
+      </div>
+
+      <h2 class="section-title">Color</h2>
+      <div class="color-grid">
+        @for (color of avatarColors; track color) {
+          <button
+            type="button"
+            class="color-option"
+            [class.selected]="editAvatarColor() === color"
+            [style.background]="color"
+            (click)="editAvatarColor.set(color)"
+          ></button>
+        }
+      </div>
+
+      <h2 class="section-title">Bio</h2>
+      <ion-textarea
+        [(ngModel)]="editBio"
+        placeholder="Cuéntales algo sobre ti..."
+        [autoGrow]="true"
+        [maxlength]="160"
+        [rows]="3"
+      ></ion-textarea>
+
+      <h2 class="section-title">Logro fijado</h2>
+      @if (unlockedAchievements().length > 0) {
+        <div class="achievement-pick-list">
+          @for (achievement of unlockedAchievements(); track achievement.slug) {
+            <button
+              type="button"
+              class="achievement-pick-row"
+              [class.selected]="editPinnedSlug() === achievement.slug"
+              (click)="togglePinned(achievement.slug)"
+            >
+              <ion-icon [name]="achievement.icon"></ion-icon>
+              <span>{{ achievement.title }}</span>
+            </button>
+          }
+        </div>
+      } @else {
+        <p class="no-achievements">Desbloquea un logro para poder fijarlo.</p>
+      }
+
+      @if (profileError(); as message) {
+        <p class="error-message">{{ message }}</p>
+      }
+
+      <ion-button expand="block" class="save-button" [disabled]="isSavingProfile()" (click)="saveProfile()">
+        @if (isSavingProfile()) {
+          <ion-spinner name="dots"></ion-spinner>
+        } @else {
+          Guardar cambios
+        }
+      </ion-button>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-content [fullscreen]="true" [scrollY]="!isEditOpen()">
   @if (user(); as u) {
     <div class="profile-card">
-      <div class="avatar">{{ u.displayName.charAt(0).toUpperCase() }}</div>
+      <button type="button" class="avatar" [style.background]="u.avatarColor" (click)="openOwnPublicProfile()">
+        <ion-icon [name]="u.avatarIcon"></ion-icon>
+      </button>
       <h2>{{ u.displayName }}</h2>
       <p class="email">{{ u.email }}</p>
+
+      <ion-button fill="outline" size="small" class="edit-profile-button" (click)="openEditProfile()">
+        <ion-icon slot="start" name="create-outline"></ion-icon>
+        Editar perfil
+      </ion-button>
 
       <dl class="details">
         <div class="row">

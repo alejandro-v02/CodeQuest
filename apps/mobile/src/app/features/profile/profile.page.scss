@@ -27,15 +27,23 @@
 .avatar {
   width: 72px;
   height: 72px;
+  border: none;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: 700;
-  background: rgba(var(--ion-color-primary-rgb), 0.16);
-  color: var(--ion-color-primary-tint);
+  font-size: 32px;
+  color: #fff;
   margin-bottom: 16px;
+  transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+.edit-profile-button {
+  margin-bottom: 20px;
 }
 
 h2 {
@@ -114,4 +122,157 @@ h2 {
   font-size: 13px;
   color: var(--ion-color-step-600);
   text-decoration: underline;
+}
+
+.edit-profile-modal {
+  --border-radius: 24px 24px 0 0;
+  --background: transparent;
+  --backdrop-opacity: 0.55;
+
+  &::part(content) {
+    background: rgba(14, 14, 14, 0.6);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.edit-profile-modal-content {
+  --background: transparent;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  --padding-top: 8px;
+  --padding-bottom: 20px;
+
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    margin: 0 auto 18px;
+    border-radius: 999px;
+    background: var(--ion-color-step-150);
+  }
+
+  .eyebrow {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ion-color-secondary);
+  }
+
+  h1 {
+    margin: 0 0 20px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .section-title {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ion-color-step-700);
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .icon-option {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 22px;
+    transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &.selected {
+      border-color: var(--ion-color-secondary);
+    }
+
+    &:active {
+      transform: scale(0.92);
+    }
+  }
+
+  .color-grid {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .color-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &.selected {
+      border-color: var(--ion-text-color);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  ion-textarea {
+    --background: var(--ion-color-step-50);
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    border-radius: 14px;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .achievement-pick-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .achievement-pick-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--ion-color-step-150);
+    background: var(--ion-color-step-50);
+    color: var(--ion-text-color);
+    font-size: 14px;
+    font-family: inherit;
+
+    ion-icon {
+      font-size: 18px;
+    }
+
+    &.selected {
+      border-color: var(--ion-color-secondary);
+      background: rgba(var(--ion-color-secondary-rgb), 0.14);
+      color: var(--ion-color-secondary);
+    }
+  }
+
+  .no-achievements {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: var(--ion-color-step-600);
+  }
+
+  .save-button {
+    margin-bottom: 4px;
+  }
 }

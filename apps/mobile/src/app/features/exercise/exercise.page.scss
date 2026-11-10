@@ -54,6 +54,19 @@
   color: var(--ion-color-step-600);
 }
 
+.share-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.share-sent {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ion-color-secondary);
+  font-weight: 600;
+}
+
 .editor-hint {
   margin: 0 0 8px;
   font-size: 12px;

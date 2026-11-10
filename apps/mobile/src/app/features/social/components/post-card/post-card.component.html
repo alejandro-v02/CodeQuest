@@ -1,4 +1,8 @@
-<article class="post-card" [class.milestone]="displayPost().type !== 'text' && displayPost().type !== 'solved_exercise'">
+<article
+  class="post-card"
+  [class.milestone]="displayPost().type !== 'text' && displayPost().type !== 'solved_exercise'"
+  [style.animation-delay.ms]="delayMs()"
+>
   <header class="post-header">
     <button type="button" class="author" (click)="openAuthorProfile()">
       <div class="avatar" [style.background]="displayPost().authorAvatarColor">

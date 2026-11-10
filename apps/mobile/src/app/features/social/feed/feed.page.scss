@@ -1,0 +1,46 @@
+.state-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 14px;
+}
+
+.post-list {
+  padding: 12px 16px 0;
+}
+
+.load-more {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 16px;
+}
+
+.compose-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 96px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ion-color-secondary);
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(var(--ion-color-secondary-rgb), 0.4);
+  z-index: 10;
+  transition: transform 120ms ease;
+
+  &:active {
+    transform: scale(0.94);
+  }
+}

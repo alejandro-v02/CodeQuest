@@ -146,6 +146,16 @@
 
           @if (currentResult.allPassed) {
             <p class="all-passed">¡Todos los casos pasaron!</p>
+            <div class="share-row">
+              @if (shared()) {
+                <p class="share-sent">¡Compartido en tu muro!</p>
+              } @else {
+                <ion-button fill="clear" size="small" [disabled]="isSharing()" (click)="shareToFeed()">
+                  <ion-icon slot="start" name="people-outline"></ion-icon>
+                  Compartir en el muro
+                </ion-button>
+              }
+            </div>
           } @else if (firstFailingTestCase(currentResult)?.stderr) {
             <div class="explain-row">
               @if (errorExplanation(); as explanation) {
