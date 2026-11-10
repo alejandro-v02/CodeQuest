@@ -7,6 +7,7 @@ import { User } from '../users/entities/user.entity';
 import { ACHIEVEMENTS_CATALOG } from './achievements.catalog';
 import { Streak } from './entities/streak.entity';
 import { UserAchievement } from './entities/user-achievement.entity';
+import { startOfIsoWeekUtc } from './week.util';
 import { XpEvent } from './entities/xp-event.entity';
 import type {
   GamificationSummary,
@@ -23,21 +24,6 @@ function previousDateString(dateStr: string): string {
   const date = new Date(`${dateStr}T00:00:00Z`);
   date.setUTCDate(date.getUTCDate() - 1);
   return date.toISOString().slice(0, 10);
-}
-
-// Monday 00:00 UTC of the current week — a global ranking doesn't need
-// per-user timezone precision, a single server-wide boundary is enough.
-function startOfIsoWeekUtc(): Date {
-  const now = new Date();
-  const day = now.getUTCDay();
-  const diffToMonday = day === 0 ? 6 : day - 1;
-  return new Date(
-    Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate() - diffToMonday,
-    ),
-  );
 }
 
 @Injectable()
