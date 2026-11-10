@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton, IonIcon, IonContent, ViewWillEnter } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
@@ -29,7 +29,7 @@ interface ConceptRow extends ConceptSummary {
     EmptyStateComponent,
   ],
 })
-export class PracticePage implements ViewWillEnter {
+export class PracticePage implements OnInit, ViewWillEnter {
   private readonly authService = inject(AuthService);
   private readonly conceptsService = inject(ConceptsService);
   private readonly exercisesService = inject(ExercisesService);
@@ -41,6 +41,15 @@ export class PracticePage implements ViewWillEnter {
   // Which concept's "next exercise" fetch is in flight, so only that row
   // shows a spinner and taps on other rows are ignored meanwhile.
   readonly startingConceptId = signal<string | null>(null);
+
+  // Coming back from /exercise/:id crosses from the tabs' nested router
+  // outlet into the root outlet and back, which can recreate this page
+  // without Ionic's ionViewWillEnter firing on the fresh instance. ngOnInit
+  // always runs once per instance, so it's kept as a fallback alongside
+  // ionViewWillEnter (which still reloads on every ordinary tab revisit).
+  ngOnInit(): void {
+    void this.loadConcepts();
+  }
 
   ionViewWillEnter(): void {
     void this.loadConcepts();

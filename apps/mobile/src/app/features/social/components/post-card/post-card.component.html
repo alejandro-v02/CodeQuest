@@ -77,4 +77,12 @@
     (closed)="closeComments()"
     (countChanged)="onCommentCountChanged($event)"
   ></app-comments-sheet>
+
+  <app-post-menu-sheet
+    [isOpen]="isMenuOpen()"
+    [isMine]="isMine()"
+    (closed)="closeMenu()"
+    (deleteRequested)="onDeleteRequested()"
+    (reportRequested)="onReportRequested($event)"
+  ></app-post-menu-sheet>
 </article>

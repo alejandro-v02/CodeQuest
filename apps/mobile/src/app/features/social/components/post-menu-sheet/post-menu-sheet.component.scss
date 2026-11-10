@@ -1,0 +1,99 @@
+// Auto-height modal recipe: a plain (non-sheet) ion-modal defaults to
+// filling most/all of the screen, so --height: auto + aligning the
+// wrapper to the bottom gives a small floating panel instead, with
+// only the actions visible over a blurred backdrop.
+:host {
+  display: contents;
+}
+
+.post-menu-modal {
+  --height: auto;
+  --border-radius: 22px;
+  --box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.35);
+  align-items: flex-end;
+  padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px));
+
+  &::part(backdrop) {
+    background: rgba(5, 5, 10, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 1;
+  }
+
+  .ion-page {
+    position: relative;
+    display: block;
+    contain: content;
+  }
+}
+
+.menu-panel {
+  padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  background: var(--ion-background-color, #0a0a0a);
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ion-color-step-200);
+  margin: 0 auto 14px;
+}
+
+.menu-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ion-color-step-600);
+}
+
+.menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--ion-color-step-50);
+  margin-bottom: 10px;
+}
+
+.menu-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ion-text-color);
+  text-align: left;
+
+  &:active {
+    background: var(--ion-color-step-100);
+  }
+
+  &.destructive {
+    color: var(--ion-color-danger);
+  }
+
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
+.menu-cancel {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 16px;
+  background: var(--ion-color-step-50);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+
+  &:active {
+    background: var(--ion-color-step-100);
+  }
+}

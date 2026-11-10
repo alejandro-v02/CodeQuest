@@ -1,0 +1,28 @@
+<ion-modal class="post-menu-modal" [isOpen]="isOpen()" (willDismiss)="dismiss()">
+  <ng-template>
+    <div class="menu-panel">
+      <div class="modal-handle"></div>
+      <p class="menu-title">
+        {{ isMine() ? 'Opciones de tu publicación' : '¿Qué está mal con esta publicación?' }}
+      </p>
+
+      <div class="menu-actions">
+        @if (isMine()) {
+          <button type="button" class="menu-action destructive" (click)="requestDelete()">
+            <ion-icon name="close-circle"></ion-icon>
+            Borrar publicación
+          </button>
+        } @else {
+          @for (item of reportReasons; track item.reason) {
+            <button type="button" class="menu-action" (click)="requestReport(item.reason)">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              {{ item.label }}
+            </button>
+          }
+        }
+      </div>
+
+      <button type="button" class="menu-cancel" (click)="dismiss()">Cancelar</button>
+    </div>
+  </ng-template>
+</ion-modal>

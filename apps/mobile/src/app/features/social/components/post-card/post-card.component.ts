@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
-import { ActionSheetController, IonIcon } from '@ionic/angular';
+import { IonIcon, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { SocialService } from '../../../../core/services/social.service';
@@ -7,24 +7,18 @@ import { findAchievement } from '../../../../core/config/achievements.catalog';
 import type { PostDto, ReactionSummary, SocialReportReason } from '../../../../core/models/social.model';
 import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
 import { CommentsSheetComponent } from '../comments-sheet/comments-sheet.component';
-
-const REPORT_REASONS: { reason: SocialReportReason; label: string }[] = [
-  { reason: 'spam', label: 'Es spam' },
-  { reason: 'offensive', label: 'Contenido ofensivo' },
-  { reason: 'harassment', label: 'Acoso' },
-  { reason: 'other', label: 'Otro motivo' },
-];
+import { PostMenuSheetComponent } from '../post-menu-sheet/post-menu-sheet.component';
 
 @Component({
   selector: 'app-post-card',
   templateUrl: './post-card.component.html',
   styleUrls: ['./post-card.component.scss'],
-  imports: [IonIcon, ReactionBarComponent, CommentsSheetComponent],
+  imports: [IonIcon, ReactionBarComponent, CommentsSheetComponent, PostMenuSheetComponent],
 })
 export class PostCardComponent {
   private readonly authService = inject(AuthService);
   private readonly socialService = inject(SocialService);
-  private readonly actionSheetController = inject(ActionSheetController);
+  private readonly toastController = inject(ToastController);
   private readonly router = inject(Router);
 
   readonly post = input.required<PostDto>();
@@ -35,6 +29,7 @@ export class PostCardComponent {
     null,
   );
   readonly isCommentsOpen = signal(false);
+  readonly isMenuOpen = signal(false);
 
   readonly displayPost = computed<PostDto>(() => {
     const base = this.post();
@@ -112,46 +107,44 @@ export class PostCardComponent {
     void this.router.navigateByUrl(`/profile/${this.post().authorId}`);
   }
 
-  async openMenu(): Promise<void> {
-    const post = this.post();
-    const buttons = this.isMine()
-      ? [
-          {
-            text: 'Borrar publicación',
-            role: 'destructive' as const,
-            handler: () => void this.remove(post.id),
-          },
-          { text: 'Cancelar', role: 'cancel' as const },
-        ]
-      : [
-          ...REPORT_REASONS.map(({ reason, label }) => ({
-            text: label,
-            handler: () => void this.report(post.id, reason),
-          })),
-          { text: 'Cancelar', role: 'cancel' as const },
-        ];
-
-    const sheet = await this.actionSheetController.create({
-      header: this.isMine() ? 'Esta publicación' : '¿Qué está mal con esta publicación?',
-      buttons,
-    });
-    await sheet.present();
+  openMenu(): void {
+    this.isMenuOpen.set(true);
   }
 
-  private async remove(postId: string): Promise<void> {
+  closeMenu(): void {
+    this.isMenuOpen.set(false);
+  }
+
+  async onDeleteRequested(): Promise<void> {
+    this.isMenuOpen.set(false);
+    const postId = this.post().id;
     try {
       await this.socialService.deletePost(postId);
       this.deleted.emit(postId);
+      await this.showToast('Publicación borrada.');
     } catch {
-      // Silently ignored — the post stays visible, user can retry from the menu.
+      await this.showToast('No se pudo borrar la publicación. Intenta de nuevo.', true);
     }
   }
 
-  private async report(postId: string, reason: SocialReportReason): Promise<void> {
+  async onReportRequested(reason: SocialReportReason): Promise<void> {
+    this.isMenuOpen.set(false);
+    const postId = this.post().id;
     try {
       await this.socialService.report('post', postId, reason);
+      await this.showToast('Gracias, revisaremos esta publicación.');
     } catch {
-      // Silently ignored — reporting has no visible confirmation state in v1.
+      await this.showToast('No se pudo enviar el reporte. Intenta de nuevo.', true);
     }
+  }
+
+  private async showToast(message: string, isError = false): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2200,
+      position: 'top',
+      color: isError ? 'danger' : 'secondary',
+    });
+    await toast.present();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, ViewChild, inject, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, IonIcon, IonModal } from '@ionic/angular';
 import { SocialService } from '../../../../core/services/social.service';
@@ -27,6 +27,8 @@ const TYPE_MESSAGE: Record<NotificationItem['type'], string> = {
 export class NotificationsSheetComponent {
   private readonly router = inject(Router);
   private readonly socialService = inject(SocialService);
+
+  @ViewChild(IonModal) private readonly modal?: IonModal;
 
   readonly isOpen = input.required<boolean>();
   readonly closed = output<void>();
@@ -65,9 +67,13 @@ export class NotificationsSheetComponent {
     return TYPE_MESSAGE[notification.type];
   }
 
-  open(notification: NotificationItem): void {
+  async open(notification: NotificationItem): Promise<void> {
     this.closed.emit();
-    void this.router.navigateByUrl(`/profile/${notification.actorId}`);
+    // Await the dismiss animation before navigating — otherwise the modal,
+    // which lives outside the router outlet, can still be mid-close or
+    // fully open on top of the page we just routed to.
+    await this.modal?.dismiss();
+    await this.router.navigateByUrl(`/profile/${notification.actorId}`);
   }
 
   timeAgo(iso: string): string {
