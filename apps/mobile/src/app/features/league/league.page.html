@@ -1,0 +1,75 @@
+<app-page-header [title]="'league.pageTitle' | translate" [showBack]="true" (back)="goBack()"></app-page-header>
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <div class="state-pane">
+      <app-loading-bounce></app-loading-bounce>
+    </div>
+  } @else if (errorMessage(); as message) {
+    <div class="state-pane">
+      <p class="error-message">{{ message }}</p>
+      <ion-button fill="outline" (click)="load()">{{ 'common.retry' | translate }}</ion-button>
+    </div>
+  } @else if (league(); as lg) {
+    <div class="tier-card" [class]="'tier-' + lg.tier">
+      <ion-icon name="medal-outline"></ion-icon>
+      <div class="tier-info">
+        <span class="tier-name">{{ tierLabel(lg.tier) }}</span>
+        <span class="tier-time">{{ timeLeftLabel(lg.weekEnd) }}</span>
+      </div>
+    </div>
+
+    @if (lg.lastWeek) {
+      <p class="last-week" [class]="lg.lastWeek.result">{{ lastWeekMessage(lg) }}</p>
+    }
+
+    <section class="section">
+      <h2 class="section-title">
+        <ion-icon name="trophy-outline"></ion-icon>
+        {{ 'league.standingsHeading' | translate }}
+      </h2>
+
+      <div class="hints">
+        @if (lg.zoneSize === 0) {
+          <p class="hint">{{ 'league.smallGroupHint' | translate }}</p>
+        }
+        @if (showPromoteHint()) {
+          <p class="hint promote">{{ hint('league.promoteHint', lg.zoneSize) }}</p>
+        }
+        @if (showDemoteHint()) {
+          <p class="hint demote">{{ hint('league.demoteHint', lg.zoneSize) }}</p>
+        }
+      </div>
+
+      <div class="member-list">
+        @for (member of lg.members; track member.userId) {
+          <button
+            type="button"
+            class="member-row"
+            [class.me]="member.isMe"
+            [class.promote]="member.zone === 'promote'"
+            [class.demote]="member.zone === 'demote'"
+            (click)="openProfile(member.userId)"
+          >
+            <span class="member-rank">#{{ member.rank }}</span>
+            <span class="avatar" [style.background]="member.avatarColor">
+              <ion-icon [name]="member.avatarIcon"></ion-icon>
+            </span>
+            <span class="member-name">
+              {{ member.displayName }}
+              @if (member.isMe) {
+                <span class="tag you">{{ 'league.you' | translate }}</span>
+              }
+              @if (member.zone === 'promote') {
+                <span class="tag promote">{{ 'league.zonePromote' | translate }}</span>
+              } @else if (member.zone === 'demote') {
+                <span class="tag demote">{{ 'league.zoneDemote' | translate }}</span>
+              }
+            </span>
+            <span class="member-xp">{{ member.weeklyXp }} XP</span>
+          </button>
+        }
+      </div>
+    </section>
+  }
+</ion-content>

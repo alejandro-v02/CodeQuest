@@ -88,6 +88,10 @@ export class ProgressPage implements ViewWillEnter {
     return accuracy === null ? '—' : `${Math.round(accuracy * 100)}%`;
   }
 
+  openLeague(): void {
+    void this.router.navigateByUrl('/league');
+  }
+
   openProfile(userId: string): void {
     void this.router.navigateByUrl(`/profile/${userId}`);
   }

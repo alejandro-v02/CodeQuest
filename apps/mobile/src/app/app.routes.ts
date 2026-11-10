@@ -58,6 +58,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/admin.page').then((m) => m.AdminPage),
   },
   {
+    path: 'league',
+    canActivate: [authGuard, onboardingGuard],
+    loadComponent: () => import('./features/league/league.page').then((m) => m.LeaguePage),
+  },
+  {
     path: 'groups',
     canActivate: [authGuard, onboardingGuard],
     loadComponent: () => import('./features/groups/groups.page').then((m) => m.GroupsPage),

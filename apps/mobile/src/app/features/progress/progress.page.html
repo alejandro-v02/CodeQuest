@@ -33,6 +33,15 @@
       </div>
     </div>
 
+    <button type="button" class="league-card" (click)="openLeague()">
+      <ion-icon name="medal-outline"></ion-icon>
+      <span class="league-info">
+        <span class="league-title">{{ 'league.entryTitle' | translate }}</span>
+        <span class="league-subtitle">{{ 'league.entrySubtitle' | translate }}</span>
+      </span>
+      <ion-icon name="chevron-forward"></ion-icon>
+    </button>
+
     @if (stats(); as st) {
       <section class="section">
         <h2 class="section-title">{{ 'progress.statsHeading' | translate }}</h2>
