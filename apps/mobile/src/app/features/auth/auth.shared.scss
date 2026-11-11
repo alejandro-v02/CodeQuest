@@ -37,13 +37,13 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 
   .brand-row {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 22px;
+    margin-bottom: 16px;
   }
 
   .brand-mark {
@@ -150,6 +150,15 @@
     }
   }
 
+  // Secondary entry point: one compact line so the form stays short enough
+  // not to scroll under the top fade and cover the logo.
+  ion-button.instructor-entry {
+    height: 36px;
+    margin-top: -6px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
   ion-button[fill='outline'] {
     --border-color: rgba(255, 255, 255, 0.16);
     --color: var(--ion-text-color);
@@ -194,7 +203,7 @@
 }
 
 .switch-link {
-  margin: 20px 0 0;
+  margin: 12px 0 0;
   text-align: center;
   font-size: 14px;
   color: var(--ion-color-step-650);
