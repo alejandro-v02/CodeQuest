@@ -58,6 +58,13 @@ export class GroupsService {
   ) {}
 
   async create(userId: string, name: string): Promise<GroupSummaryDto> {
+    const creator = await this.userRepo.findOne({ where: { id: userId } });
+    if (!creator?.isInstructor) {
+      throw new ForbiddenException(
+        'Solo los instructores verificados pueden crear fichas.',
+      );
+    }
+
     const owned = await this.groupRepo.count({ where: { ownerId: userId } });
     if (owned >= MAX_OWNED_GROUPS) {
       throw new BadRequestException(
