@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import type { AppConfig } from '../../config/configuration';
+import type { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { toPublicUser } from '../users/users.mapper';
 import type { PublicUser } from '../users/users.mapper';
@@ -107,6 +108,11 @@ export class AuthService {
       created.email,
       toPublicUser(created),
     );
+  }
+
+  // For sign-in flows that verify the user themselves (instructor email code).
+  issueSession(user: User): AuthResult {
+    return this.buildAuthResult(user.id, user.email, toPublicUser(user));
   }
 
   // The refresh guard already validated the incoming refresh token and

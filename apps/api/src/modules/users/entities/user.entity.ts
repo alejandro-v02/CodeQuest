@@ -72,6 +72,11 @@ export class User {
   @Column({ type: 'varchar', nullable: true })
   pinnedAchievementSlug: string | null;
 
+  // Set once the user proves they own an institutional email (see
+  // InstructorAuthService); only instructors can create groups.
+  @Column({ type: 'boolean', default: false })
+  isInstructor: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

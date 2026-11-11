@@ -21,6 +21,7 @@ export function toPublicUser(user: User): PublicUser {
     avatarIcon: user.avatarIcon,
     avatarColor: user.avatarColor,
     pinnedAchievementSlug: user.pinnedAchievementSlug,
+    isInstructor: user.isInstructor,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

@@ -57,6 +57,15 @@ export class UsersService {
     return user;
   }
 
+  async markInstructor(id: string): Promise<User> {
+    await this.usersRepository.update(id, { isInstructor: true });
+    const user = await this.findById(id);
+    if (!user) {
+      throw new Error(`User ${id} was deleted while becoming an instructor`);
+    }
+    return user;
+  }
+
   async updateOnboarding(id: string, dto: UpdateOnboardingDto): Promise<User> {
     await this.usersRepository.update(id, dto);
     // Re-fetch instead of trusting the partial update result, so callers
