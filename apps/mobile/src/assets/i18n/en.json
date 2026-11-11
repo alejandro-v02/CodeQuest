@@ -350,5 +350,7 @@
   "league.you": "You",
   "league.zonePromote": "Up",
   "league.zoneDemote": "Down",
-  "league.errors.loadFailed": "Couldn't load your league."
+  "league.errors.loadFailed": "Couldn't load your league.",
+
+  "progress.streakFreezes": "Streak freezes: {n}"
 }

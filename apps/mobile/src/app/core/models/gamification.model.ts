@@ -12,6 +12,7 @@ export interface GamificationSummary {
   streak: {
     current: number;
     longest: number;
+    freezes: number;
   };
   achievements: AchievementStatus[];
 }

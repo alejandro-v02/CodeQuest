@@ -1,0 +1,82 @@
+// Cards of the Progress page that were moved out of its stylesheet to keep it
+// under Angular's per-component style budget; class names are unique to it.
+
+.league-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: calc(100% - 40px);
+  margin: 0 20px 14px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 16px;
+  background: var(--ion-card-background);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  transition: transform 120ms ease;
+  // Same entrance as the other Progress cards (hero-in, staggered after the
+  // streak card). The keyframes live here because Progress' own hero-in is
+  // scoped to that component. "backwards" instead of "both" so the finished
+  // animation doesn't keep overriding the :active press below.
+  animation: progress-card-in 480ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: 90ms;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  > ion-icon:first-child {
+    font-size: 28px;
+    color: var(--ion-color-secondary);
+    flex-shrink: 0;
+  }
+}
+
+.league-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.league-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.league-subtitle {
+  font-size: 12px;
+  color: var(--ion-color-step-700);
+}
+
+.streak-freezes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ion-color-secondary);
+
+  ion-icon {
+    font-size: 14px;
+    color: var(--ion-color-secondary);
+  }
+}
+
+@keyframes progress-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .league-card {
+    animation: none !important;
+  }
+}

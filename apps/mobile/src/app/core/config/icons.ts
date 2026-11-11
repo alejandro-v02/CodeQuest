@@ -58,6 +58,9 @@ import {
   exitOutline,
   trashOutline,
   medalOutline,
+  shieldCheckmarkOutline,
+  timeOutline,
+  closeOutline,
 } from 'ionicons/icons';
 
 // Standalone Ionic requires icons to be registered by name before use in
@@ -122,5 +125,8 @@ export function registerIcons(): void {
     'exit-outline': exitOutline,
     'trash-outline': trashOutline,
     'medal-outline': medalOutline,
+    'shield-checkmark-outline': shieldCheckmarkOutline,
+    'time-outline': timeOutline,
+    'close-outline': closeOutline,
   });
 }

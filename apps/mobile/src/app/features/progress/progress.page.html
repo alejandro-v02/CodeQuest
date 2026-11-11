@@ -30,6 +30,10 @@
       <div class="streak-info">
         <span class="streak-current">{{ s.streak.current }} {{ 'progress.streakDays' | translate }}</span>
         <span class="streak-best">{{ 'progress.bestStreak' | translate }}: {{ s.streak.longest }} {{ 'progress.days' | translate }}</span>
+        <span class="streak-freezes">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          {{ freezesLabel(s.streak.freezes) }}
+        </span>
       </div>
     </div>
 

@@ -88,6 +88,10 @@ export class ProgressPage implements ViewWillEnter {
     return accuracy === null ? '—' : `${Math.round(accuracy * 100)}%`;
   }
 
+  freezesLabel(count: number): string {
+    return this.i18n.t('progress.streakFreezes').replace('{n}', String(count));
+  }
+
   openLeague(): void {
     void this.router.navigateByUrl('/league');
   }

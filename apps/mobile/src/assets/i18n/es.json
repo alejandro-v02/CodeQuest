@@ -350,5 +350,7 @@
   "league.you": "Tú",
   "league.zonePromote": "Sube",
   "league.zoneDemote": "Baja",
-  "league.errors.loadFailed": "No se pudo cargar tu liga."
+  "league.errors.loadFailed": "No se pudo cargar tu liga.",
+
+  "progress.streakFreezes": "Protectores de racha: {n}"
 }
