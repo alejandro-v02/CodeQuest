@@ -27,6 +27,7 @@
     #060708;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .code-info {
@@ -53,6 +54,8 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin: 0 20px 20px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 60ms;
 }
 
 .stat-tile {
@@ -80,6 +83,8 @@
 .section {
   padding: 0 20px;
   margin-bottom: 20px;
+  animation: hero-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 120ms;
 }
 
 .section-title {
@@ -222,4 +227,23 @@
 
 .footer-actions {
   padding: 0 20px 32px;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-card,
+  .stats-grid,
+  .section {
+    animation: none !important;
+  }
 }
