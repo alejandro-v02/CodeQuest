@@ -10,6 +10,7 @@ import { LoadingBounceComponent } from '../../shared/components/loading-bounce/l
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { I18nService } from '../../core/services/i18n.service';
+import { AnalyticsService } from '../../core/services/analytics.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 // Fase 5B "conceptos débiles": the concept list annotated with whether this
@@ -38,6 +39,8 @@ export class PracticePage implements OnInit, ViewWillEnter {
   private readonly exercisesService = inject(ExercisesService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
+
+  private readonly analytics = inject(AnalyticsService);
 
   readonly concepts = signal<ConceptRow[]>([]);
   readonly isLoading = signal(true);
@@ -112,6 +115,7 @@ export class PracticePage implements OnInit, ViewWillEnter {
 
     try {
       const exercise = await this.exercisesService.getNext(concept.id);
+      this.analytics.track('practice_started', { concept: concept.name });
       await this.router.navigateByUrl(`/exercise/${exercise.id}`);
     } catch {
       this.errorMessage.set(this.i18n.t('practice.errors.generateFailed'));

@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton, IonContent, IonIcon, ViewWillEnter } from '@ionic/angular';
 import { I18nService } from '../../core/services/i18n.service';
+import { AnalyticsService } from '../../core/services/analytics.service';
 import { LeaguesService } from '../../core/services/leagues.service';
 import type { League } from '../../core/models/league.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
@@ -20,6 +21,7 @@ export class LeaguePage implements OnInit, ViewWillEnter {
   private readonly leaguesService = inject(LeaguesService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
+  private readonly analytics = inject(AnalyticsService);
 
   readonly league = signal<League | null>(null);
   readonly isLoading = signal(true);
@@ -58,6 +60,7 @@ export class LeaguePage implements OnInit, ViewWillEnter {
     this.errorMessage.set(null);
     try {
       this.league.set(await this.leaguesService.getMine());
+      this.analytics.track('league_opened');
     } catch {
       this.errorMessage.set(this.i18n.t('league.errors.loadFailed'));
     } finally {
