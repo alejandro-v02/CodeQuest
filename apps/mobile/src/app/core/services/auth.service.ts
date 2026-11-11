@@ -75,6 +75,21 @@ export class AuthService {
     await this.applyAuthResult(result);
   }
 
+  // Instructors sign in without a password: an emailed code proves they own
+  // an institutional mailbox, which is what marks the account as instructor.
+  async requestInstructorCode(email: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post<void>(`${environment.apiUrl}/auth/instructor/request-code`, { email }),
+    );
+  }
+
+  async verifyInstructorCode(email: string, code: string): Promise<void> {
+    const result = await firstValueFrom(
+      this.http.post<AuthResult>(`${environment.apiUrl}/auth/instructor/verify`, { email, code }),
+    );
+    await this.applyAuthResult(result);
+  }
+
   // Backs both onboarding (first-time setup) and the settings modal (editing
   // preferences afterward) — same endpoint, same shape, just called from
   // two different screens.

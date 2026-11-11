@@ -18,6 +18,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register.page').then((m) => m.RegisterPage),
   },
   {
+    path: 'auth/instructor',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./features/auth/instructor-login.page').then((m) => m.InstructorLoginPage),
+  },
+  {
     path: 'onboarding',
     canActivate: [authGuard, onboardingNotDoneGuard],
     loadComponent: () =>

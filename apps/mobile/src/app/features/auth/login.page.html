@@ -58,6 +58,11 @@
         {{ 'auth.continueWithGithub' | translate }}
       </ion-button>
 
+      <ion-button expand="block" fill="clear" type="button" routerLink="/auth/instructor">
+        <ion-icon name="school-outline" slot="start"></ion-icon>
+        {{ 'auth.instructor.entry' | translate }}
+      </ion-button>
+
       <p class="switch-link">
         {{ 'auth.login.switchPrompt' | translate }} <a routerLink="/auth/register">{{ 'auth.login.switchLink' | translate }}</a>
       </p>

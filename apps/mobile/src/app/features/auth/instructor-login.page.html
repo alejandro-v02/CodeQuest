@@ -1,0 +1,94 @@
+<ion-content [fullscreen]="true" class="auth-content">
+  <div class="top-fade" slot="fixed" aria-hidden="true"></div>
+
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div class="brand-row">
+        <img src="assets/branding/logo-mark.png" alt="" class="brand-mark" />
+        <p class="brand">CodeQuest</p>
+      </div>
+      <h1>{{ 'auth.instructor.heading' | translate }}</h1>
+      @if (step() === 'email') {
+        <p class="subtitle">{{ 'auth.instructor.subtitle' | translate }}</p>
+      } @else {
+        <p class="subtitle">{{ codeSubtitle() }}</p>
+      }
+    </div>
+
+    <div class="auth-card">
+      @if (step() === 'email') {
+        <ion-input
+          [label]="'auth.instructor.emailLabel' | translate"
+          labelPlacement="stacked"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          [value]="email()"
+          [placeholder]="'auth.instructor.emailPlaceholder' | translate"
+          fill="outline"
+          [disabled]="isSubmitting()"
+          (ionInput)="onEmailInput($event)"
+          (keyup.enter)="sendCode()"
+        ></ion-input>
+
+        @if (errorMessage(); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+
+        <ion-button expand="block" [disabled]="!canSendCode() || isSubmitting()" (click)="sendCode()">
+          @if (isSubmitting()) {
+            <ion-spinner name="dots"></ion-spinner>
+          } @else {
+            {{ 'auth.instructor.sendCode' | translate }}
+          }
+        </ion-button>
+      } @else {
+        <ion-input
+          [label]="'auth.instructor.codeLabel' | translate"
+          labelPlacement="stacked"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          [maxlength]="6"
+          [value]="code()"
+          placeholder="••••••"
+          fill="outline"
+          [disabled]="isSubmitting()"
+          (ionInput)="onCodeInput($event)"
+          (keyup.enter)="verify()"
+        ></ion-input>
+
+        @if (errorMessage(); as message) {
+          <p class="error-message">{{ message }}</p>
+        }
+
+        <ion-button expand="block" [disabled]="!canVerify() || isSubmitting()" (click)="verify()">
+          @if (isSubmitting()) {
+            <ion-spinner name="dots"></ion-spinner>
+          } @else {
+            {{ 'auth.instructor.verify' | translate }}
+          }
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          [disabled]="resendIn() > 0 || isSubmitting()"
+          (click)="sendCode()"
+        >
+          {{ resendLabel() }}
+        </ion-button>
+
+        <ion-button expand="block" fill="clear" [disabled]="isSubmitting()" (click)="changeEmail()">
+          {{ 'auth.instructor.changeEmail' | translate }}
+        </ion-button>
+      }
+
+      <p class="switch-link">
+        <a routerLink="/auth/login">{{ 'auth.instructor.backToLogin' | translate }}</a>
+      </p>
+    </div>
+
+    <app-developer-credit />
+  </div>
+</ion-content>

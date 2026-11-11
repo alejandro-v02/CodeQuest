@@ -29,6 +29,7 @@ export interface User {
   avatarIcon: string;
   avatarColor: string;
   pinnedAchievementSlug: string | null;
+  isInstructor: boolean;
   createdAt: string;
   updatedAt: string;
 }

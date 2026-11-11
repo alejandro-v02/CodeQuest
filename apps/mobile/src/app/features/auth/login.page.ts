@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { IonContent, IonInput, IonButton, IonIcon, IonSpinner } from '@ionic/angular';
@@ -48,8 +49,13 @@ export class LoginPage {
     try {
       await this.authService.login(this.form.getRawValue());
       await this.router.navigateByUrl('/tabs/home');
-    } catch {
-      this.errorMessage.set(this.i18n.t('auth.login.errors.invalidCredentials'));
+    } catch (error) {
+      // The server allows 5 attempts a minute: past that it answers 429, which
+      // is not a wrong password and shouldn't look like one.
+      const tooMany = error instanceof HttpErrorResponse && error.status === 429;
+      this.errorMessage.set(
+        this.i18n.t(tooMany ? 'auth.login.errors.tooManyAttempts' : 'auth.login.errors.invalidCredentials'),
+      );
     } finally {
       this.isSubmitting.set(false);
     }

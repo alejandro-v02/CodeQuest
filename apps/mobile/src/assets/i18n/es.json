@@ -354,32 +354,6 @@
 
   "progress.streakFreezes": "Protectores de racha: {n}",
 
-  "progress.streakFreezes": "Protectores de racha: {n}",
-
-  "admin.analytics.heading": "Métricas del producto",
-  "admin.analytics.users": "Usuarios",
-  "admin.analytics.usersTotal": "Registrados",
-  "admin.analytics.usersNew": "Nuevos (7 días)",
-  "admin.analytics.funnel": "Embudo",
-  "admin.analytics.registered": "Registrados",
-  "admin.analytics.onboarded": "Terminaron el onboarding",
-  "admin.analytics.firstExercise": "Resolvieron un ejercicio",
-  "admin.analytics.active": "Usuarios aprendiendo",
-  "admin.analytics.opens": "Usuarios que abrieron la app",
-  "admin.analytics.last24h": "24 horas",
-  "admin.analytics.last7d": "7 días",
-  "admin.analytics.last30d": "30 días",
-  "admin.analytics.retention": "Retención",
-  "admin.analytics.retentionDay": "Día {n}",
-  "admin.analytics.retentionDetail": "{returned} de {eligible}",
-  "admin.analytics.lessons": "Lecciones completadas por semana",
-  "admin.analytics.ai": "Uso de IA (7 días)",
-  "admin.analytics.aiUsers": "La usaron",
-  "admin.analytics.aiHits": "Veces al tope",
-  "admin.analytics.aiHitUsers": "Llegaron al tope",
-
-  "progress.streakFreezes": "Protectores de racha: {n}",
-
   "admin.analytics.heading": "Métricas del producto",
   "admin.analytics.users": "Usuarios",
   "admin.analytics.usersTotal": "Registrados",
@@ -410,5 +384,29 @@
   "profile.publicProfile": "Mi perfil público",
   "profile.goalValue": "{n} min al día",
 
-  "common.close": "Cerrar"
+  "common.close": "Cerrar",
+
+  "auth.instructor.entry": "Ingresar como instructor",
+  "auth.instructor.heading": "Ingresa como instructor",
+  "auth.instructor.subtitle": "Verifica tu correo institucional para crear y administrar fichas.",
+  "auth.instructor.emailLabel": "Correo institucional",
+  "auth.instructor.emailPlaceholder": "nombre@sena.edu.co",
+  "auth.instructor.sendCode": "Enviar código",
+  "auth.instructor.codeSubtitle": "Escribe el código de 6 dígitos que enviamos a {email}.",
+  "auth.instructor.codeLabel": "Código de verificación",
+  "auth.instructor.verify": "Verificar e ingresar",
+  "auth.instructor.resend": "Reenviar código",
+  "auth.instructor.resendIn": "Reenviar en {s} s",
+  "auth.instructor.changeEmail": "Cambiar correo",
+  "auth.instructor.backToLogin": "Volver al inicio de sesión",
+  "auth.instructor.errors.notInstitutional": "Usa tu correo institucional para ingresar como instructor.",
+  "auth.instructor.errors.tooManyRequests": "Espera un momento antes de pedir otro código.",
+  "auth.instructor.errors.mailUnavailable": "No pudimos enviar el correo ahora. Inténtalo en unos minutos.",
+  "auth.instructor.errors.sendFailed": "No se pudo enviar el código. Revisa tu conexión.",
+  "auth.instructor.errors.invalidCode": "Código inválido o vencido.",
+  "auth.instructor.errors.verifyFailed": "No se pudo verificar el código. Inténtalo de nuevo.",
+  "groups.instructorOnlyNote": "¿Eres instructor? Ingresa con tu correo institucional para poder crear fichas.",
+  "groups.errors.instructorOnly": "Solo los instructores verificados pueden crear fichas.",
+
+  "auth.login.errors.tooManyAttempts": "Demasiados intentos. Espera un minuto y vuelve a intentarlo."
 }

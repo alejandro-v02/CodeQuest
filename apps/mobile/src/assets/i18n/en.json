@@ -354,32 +354,6 @@
 
   "progress.streakFreezes": "Streak freezes: {n}",
 
-  "progress.streakFreezes": "Streak freezes: {n}",
-
-  "admin.analytics.heading": "Product metrics",
-  "admin.analytics.users": "Users",
-  "admin.analytics.usersTotal": "Registered",
-  "admin.analytics.usersNew": "New (7 days)",
-  "admin.analytics.funnel": "Funnel",
-  "admin.analytics.registered": "Registered",
-  "admin.analytics.onboarded": "Finished onboarding",
-  "admin.analytics.firstExercise": "Solved an exercise",
-  "admin.analytics.active": "Users learning",
-  "admin.analytics.opens": "Users who opened the app",
-  "admin.analytics.last24h": "24 hours",
-  "admin.analytics.last7d": "7 days",
-  "admin.analytics.last30d": "30 days",
-  "admin.analytics.retention": "Retention",
-  "admin.analytics.retentionDay": "Day {n}",
-  "admin.analytics.retentionDetail": "{returned} of {eligible}",
-  "admin.analytics.lessons": "Lessons completed per week",
-  "admin.analytics.ai": "AI usage (7 days)",
-  "admin.analytics.aiUsers": "Used it",
-  "admin.analytics.aiHits": "Times at the cap",
-  "admin.analytics.aiHitUsers": "Reached the cap",
-
-  "progress.streakFreezes": "Streak freezes: {n}",
-
   "admin.analytics.heading": "Product metrics",
   "admin.analytics.users": "Users",
   "admin.analytics.usersTotal": "Registered",
@@ -410,5 +384,29 @@
   "profile.publicProfile": "My public profile",
   "profile.goalValue": "{n} min a day",
 
-  "common.close": "Close"
+  "common.close": "Close",
+
+  "auth.instructor.entry": "Sign in as an instructor",
+  "auth.instructor.heading": "Sign in as an instructor",
+  "auth.instructor.subtitle": "Verify your institutional email to create and manage classes.",
+  "auth.instructor.emailLabel": "Institutional email",
+  "auth.instructor.emailPlaceholder": "name@sena.edu.co",
+  "auth.instructor.sendCode": "Send code",
+  "auth.instructor.codeSubtitle": "Enter the 6-digit code we sent to {email}.",
+  "auth.instructor.codeLabel": "Verification code",
+  "auth.instructor.verify": "Verify and sign in",
+  "auth.instructor.resend": "Resend code",
+  "auth.instructor.resendIn": "Resend in {s} s",
+  "auth.instructor.changeEmail": "Change email",
+  "auth.instructor.backToLogin": "Back to sign in",
+  "auth.instructor.errors.notInstitutional": "Use your institutional email to sign in as an instructor.",
+  "auth.instructor.errors.tooManyRequests": "Wait a moment before asking for another code.",
+  "auth.instructor.errors.mailUnavailable": "We couldn't send the email right now. Try again in a few minutes.",
+  "auth.instructor.errors.sendFailed": "Couldn't send the code. Check your connection.",
+  "auth.instructor.errors.invalidCode": "Invalid or expired code.",
+  "auth.instructor.errors.verifyFailed": "Couldn't verify the code. Try again.",
+  "groups.instructorOnlyNote": "Are you an instructor? Sign in with your institutional email to create classes.",
+  "groups.errors.instructorOnly": "Only verified instructors can create classes.",
+
+  "auth.login.errors.tooManyAttempts": "Too many attempts. Wait a minute and try again."
 }
