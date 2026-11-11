@@ -63,6 +63,11 @@ export class GenerationService {
   // difficulty, deduped by jobId so a burst of "next exercise" requests
   // hitting a low watermark at the same time only enqueues one job.
   async enqueueBackfill(conceptId: string, difficulty: number): Promise<void> {
+    // Out of AI quota: a job now would only fail, so skip it. The next
+    // practice request after the cooldown will queue it again.
+    if (this.aiService.isQuotaBlocked) {
+      return;
+    }
     await this.generationQueue.add(
       'backfill',
       { conceptId, difficulty, count: BACKFILL_BATCH_SIZE },

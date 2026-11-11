@@ -27,7 +27,14 @@ export const envValidationSchema = Joi.object({
 
   // Optional: the Fase 5A generator and Fase 5B tutor are inactive until
   // this is set (see AiService.isEnabled).
-  GEMINI_API_KEY: Joi.string().allow('').default(''),
+  OPENAI_API_KEY: Joi.string().allow('').default(''),
+  // Chat model and embedding model; the embedding one must support the
+  // `dimensions` parameter (text-embedding-3-*), since vectors are 1536-wide.
+  OPENAI_MODEL: Joi.string().default('gpt-4o-mini'),
+  OPENAI_EMBEDDING_MODEL: Joi.string().default('text-embedding-3-small'),
+  // Per-user cap of AI-backed requests per rolling 24 h — the main lever on
+  // AI spend while there is no paid plan.
+  AI_DAILY_LIMIT: Joi.number().integer().min(0).default(10),
 
   // Optional: comma-separated emails that may read admin-only endpoints (the
   // analytics summary). Empty means nobody can — there is no admin role.

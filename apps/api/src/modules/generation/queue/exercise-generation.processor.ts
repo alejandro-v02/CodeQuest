@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import type { Job } from 'bullmq';
+import { AiQuotaExceededError } from '../../ai/ai.service';
 import { GenerationService } from '../generation.service';
 import {
   EXERCISE_GENERATION_QUEUE,
@@ -29,6 +30,13 @@ export class ExerciseGenerationProcessor extends WorkerHost {
           `Backfill ${i + 1}/${count} for concept ${conceptId} @ difficulty ${difficulty}: ${result.outcome}`,
         );
       } catch (error) {
+        // No quota left: the remaining attempts would fail the same way.
+        if (error instanceof AiQuotaExceededError) {
+          this.logger.warn(
+            `Backfill for concept ${conceptId} stopped: AI quota exceeded.`,
+          );
+          break;
+        }
         // One failed attempt (e.g. a transient AI/Piston error) shouldn't
         // abandon the rest of the batch.
         this.logger.warn(

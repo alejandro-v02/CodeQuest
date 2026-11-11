@@ -7,7 +7,7 @@ import {
 
 // Audit/usage log for every AI-backed feature (hints, error explanations,
 // placement test) — read by AiUsageService to enforce the per-user daily
-// cap and kept for visibility into Gemini free-tier consumption.
+// cap and kept for visibility into AI usage.
 export type AiInteractionKind = 'hint' | 'explain_error' | 'placement';
 
 @Entity('ai_interactions')
@@ -29,7 +29,7 @@ export class AiInteraction {
   kind: AiInteractionKind;
 
   // true when served from cache (ExerciseHint/PlacementQuiz) instead of
-  // calling Gemini — excluded from the daily limit count.
+  // calling the AI provider — excluded from the daily limit count.
   @Column({ default: false })
   cached: boolean;
 

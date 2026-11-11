@@ -30,9 +30,14 @@ export interface AppConfig {
   execution: {
     pistonApiUrl: string;
   };
-  gemini: {
+  // Max AI-backed requests per user per rolling 24 h (see AiUsageService).
+  aiDailyLimit: number;
+  openai: {
     enabled: boolean;
     apiKey: string;
+    // Chat model for hints, error explanations and exercise generation.
+    model: string;
+    embeddingModel: string;
   };
   redis: {
     host: string;
@@ -90,9 +95,13 @@ export default (): AppConfig => ({
   execution: {
     pistonApiUrl: process.env.PISTON_API_URL ?? 'http://localhost:2000',
   },
-  gemini: {
-    enabled: Boolean(process.env.GEMINI_API_KEY),
-    apiKey: process.env.GEMINI_API_KEY ?? '',
+  aiDailyLimit: parseInt(process.env.AI_DAILY_LIMIT ?? '10', 10),
+  openai: {
+    enabled: Boolean(process.env.OPENAI_API_KEY),
+    apiKey: process.env.OPENAI_API_KEY ?? '',
+    model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+    embeddingModel:
+      process.env.OPENAI_EMBEDDING_MODEL ?? 'text-embedding-3-small',
   },
   redis: {
     host: process.env.REDIS_HOST ?? 'localhost',

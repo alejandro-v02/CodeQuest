@@ -14,7 +14,7 @@ export interface PlacementQuestionData {
 
 // Generated once per language and reused for every user: the questions
 // (and their answer keys) don't depend on who's taking the quiz, so
-// scoring afterwards is local/deterministic instead of another Gemini call.
+// scoring afterwards is local/deterministic instead of another AI call.
 @Entity('placement_quizzes')
 export class PlacementQuiz {
   @PrimaryGeneratedColumn('uuid')

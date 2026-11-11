@@ -205,7 +205,7 @@ Pipeline de cada ejercicio generado:
 ### Fase 5A — Motor de ejercicios ilimitados
 - [x] Tablas: `Concept`, `Exercise` (con `status`, `embedding`, `difficulty`), `UserExerciseHistory`, `ExerciseReport`.
 - [x] Activar `pgvector` (extensión + columna + índice HNSW) con servicio de embeddings y detección de duplicados.
-- [x] Generador con IA (Gemini free tier, JSON estricto, prompts versionados) + **plantillas parametrizadas** para quizzes.
+- [x] Generador con IA (OpenAI, JSON estricto, prompts versionados) + **plantillas parametrizadas** para quizzes.
 - [x] Pipeline de verificación por ejecución (solución de referencia vs tests, código inicial no debe pasar).
 - [x] Cola BullMQ + Redis que rellena el banco por concepto/nivel/tipo.
 - [x] Servicio "siguiente ejercicio": excluye vistos, adapta dificultad. Repaso de conceptos débiles queda pendiente.
