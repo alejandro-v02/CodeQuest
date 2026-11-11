@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
@@ -10,16 +10,19 @@ import {
   IonModal,
   IonSpinner,
   IonTextarea,
-  IonToggle,
+  ViewWillEnter,
 } from '@ionic/angular';
 import { AuthService } from '../../core/services/auth.service';
 import { GamificationService } from '../../core/services/gamification.service';
-import { NotificationsService } from '../../core/services/notifications.service';
 import { AVATAR_COLORS, AVATAR_ICONS } from '../../core/config/avatar-options';
-import type { AchievementStatus } from '../../core/models/gamification.model';
+import { findAchievement } from '../../core/config/achievements.catalog';
+import type { AchievementStatus, GamificationSummary } from '../../core/models/gamification.model';
+import { LANGUAGE_OPTIONS, type ProgrammingLanguageSlug } from '../../core/models/user.model';
+import { LanguageBadgeComponent } from '../../shared/components/language-badge/language-badge.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import { I18nService, type AppLanguage } from '../../core/services/i18n.service';
+import { I18nService } from '../../core/services/i18n.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { SettingsSheetComponent } from './settings-sheet/settings-sheet.component';
 
 const MIN_USERNAME_LENGTH = 6;
 
@@ -36,21 +39,21 @@ const MIN_USERNAME_LENGTH = 6;
     IonModal,
     IonSpinner,
     IonTextarea,
-    IonToggle,
+    LanguageBadgeComponent,
     PageHeaderComponent,
+    SettingsSheetComponent,
     TranslatePipe,
   ],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements ViewWillEnter {
   private readonly authService = inject(AuthService);
   private readonly gamificationService = inject(GamificationService);
-  private readonly notificationsService = inject(NotificationsService);
   private readonly router = inject(Router);
-  readonly i18n = inject(I18nService);
+  private readonly i18n = inject(I18nService);
 
   readonly user = this.authService.currentUser;
-  readonly reminderEnabled = signal(false);
-  readonly errorMessage = signal<string | null>(null);
+  readonly summary = signal<GamificationSummary | null>(null);
+  readonly isSettingsOpen = signal(false);
 
   readonly avatarIcons = AVATAR_ICONS;
   readonly avatarColors = AVATAR_COLORS;
@@ -65,46 +68,34 @@ export class ProfilePage implements OnInit {
   readonly isSavingProfile = signal(false);
   readonly profileError = signal<string | null>(null);
 
-  async ngOnInit(): Promise<void> {
+  // The level/XP/streak tiles should be fresh every time the tab is shown.
+  ionViewWillEnter(): void {
+    void this.loadSummary();
+  }
+
+  private async loadSummary(): Promise<void> {
     try {
-      this.reminderEnabled.set(await this.notificationsService.isReminderEnabled());
+      this.summary.set(await this.gamificationService.getSummary());
     } catch {
-      this.errorMessage.set(this.i18n.t('profile.errors.reminderLoadFailed'));
+      // Stats are decoration here: without them the tiles just don't show.
+      this.summary.set(null);
     }
   }
 
-  async setAppLanguage(lang: AppLanguage): Promise<void> {
-    await this.i18n.setLanguage(lang);
+  openSettings(): void {
+    this.isSettingsOpen.set(true);
   }
 
-  async toggleReminder(enabled: boolean): Promise<void> {
-    this.errorMessage.set(null);
-    try {
-      if (enabled) {
-        const granted = await this.notificationsService.enableDailyReminder(
-          this.user()?.dailyGoalMinutes ?? null,
-        );
-        this.reminderEnabled.set(granted);
-      } else {
-        await this.notificationsService.disableDailyReminder();
-        this.reminderEnabled.set(false);
-      }
-    } catch {
-      this.errorMessage.set(this.i18n.t('profile.errors.reminderUpdateFailed'));
-    }
-  }
-
-  async logout(): Promise<void> {
-    await this.authService.logout();
-    await this.router.navigateByUrl('/auth/login');
+  closeSettings(): void {
+    this.isSettingsOpen.set(false);
   }
 
   openGroups(): void {
     void this.router.navigateByUrl('/groups');
   }
 
-  openAdmin(): void {
-    void this.router.navigateByUrl('/admin');
+  openLeague(): void {
+    void this.router.navigateByUrl('/league');
   }
 
   openOwnPublicProfile(): void {
@@ -112,6 +103,23 @@ export class ProfilePage implements OnInit {
     if (userId) {
       void this.router.navigateByUrl(`/profile/${userId}`);
     }
+  }
+
+  languageLabel(slug: ProgrammingLanguageSlug): string {
+    return LANGUAGE_OPTIONS.find((option) => option.slug === slug)?.label ?? slug;
+  }
+
+  goalLabel(minutes: number | null): string {
+    return minutes ? this.i18n.t('profile.goalValue').replace('{n}', String(minutes)) : '—';
+  }
+
+  pinnedAchievement(): { icon: string; title: string } | null {
+    const slug = this.user()?.pinnedAchievementSlug;
+    const definition = slug ? findAchievement(slug) : undefined;
+    if (!slug || !definition) {
+      return null;
+    }
+    return { icon: definition.icon, title: this.i18n.t(`achievements.${slug}.title`) };
   }
 
   async openEditProfile(): Promise<void> {

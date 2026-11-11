@@ -1,0 +1,79 @@
+// The glass sheet itself and the shared heading styles (.modal-handle,
+// .eyebrow, h1) come from the global .settings-modal rules in theme/modals.scss.
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 14px;
+  background: var(--ion-color-step-50);
+  color: inherit;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+
+.action-row:active {
+  transform: scale(0.98);
+}
+
+.row-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: rgba(var(--ion-color-secondary-rgb), 0.14);
+  color: var(--ion-color-secondary);
+  font-size: 18px;
+}
+
+.row-label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.chevron {
+  color: var(--ion-color-step-600);
+}
+
+.language-switch {
+  display: flex;
+  gap: 6px;
+}
+
+.language-option {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--ion-color-step-150);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ion-color-step-700);
+
+  &.selected {
+    border-color: var(--ion-color-secondary);
+    background: var(--ion-color-secondary);
+    color: var(--ion-color-secondary-contrast);
+  }
+}
+
+.error-message {
+  margin: -6px 0 14px;
+  font-size: 13px;
+  color: var(--ion-color-danger);
+}
+
+.logout-button {
+  margin-bottom: 8px;
+}

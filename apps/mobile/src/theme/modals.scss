@@ -128,33 +128,42 @@
   }
 }
 
+// Full-screen (not a bottom sheet): the form is long, and a sheet with
+// breakpoints made dragging the sheet and scrolling the form fight each
+// other, while its blurred backdrop was repainted on every frame.
 .edit-profile-modal {
-  --border-radius: 24px 24px 0 0;
-  --background: transparent;
-  --backdrop-opacity: 0.55;
-
-  &::part(content) {
-    background: rgba(14, 14, 14, 0.6);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.35);
-  }
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  --background: var(--ion-background-color);
 }
 
 .edit-profile-modal-content {
-  --background: transparent;
+  --background: var(--ion-background-color);
   --padding-start: 24px;
   --padding-end: 24px;
-  --padding-top: 8px;
+  --padding-top: calc(16px + env(safe-area-inset-top, 0px));
   --padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
 
-  .modal-handle {
-    width: 36px;
-    height: 4px;
-    margin: 0 auto 18px;
-    border-radius: 999px;
-    background: var(--ion-color-step-150);
+  .modal-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .modal-close {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--ion-color-step-100);
+    color: var(--ion-text-color);
+    font-size: 22px;
   }
 
   .eyebrow {

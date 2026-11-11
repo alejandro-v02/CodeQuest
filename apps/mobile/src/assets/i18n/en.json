@@ -376,5 +376,39 @@
   "admin.analytics.ai": "AI usage (7 days)",
   "admin.analytics.aiUsers": "Used it",
   "admin.analytics.aiHits": "Times at the cap",
-  "admin.analytics.aiHitUsers": "Reached the cap"
+  "admin.analytics.aiHitUsers": "Reached the cap",
+
+  "progress.streakFreezes": "Streak freezes: {n}",
+
+  "admin.analytics.heading": "Product metrics",
+  "admin.analytics.users": "Users",
+  "admin.analytics.usersTotal": "Registered",
+  "admin.analytics.usersNew": "New (7 days)",
+  "admin.analytics.funnel": "Funnel",
+  "admin.analytics.registered": "Registered",
+  "admin.analytics.onboarded": "Finished onboarding",
+  "admin.analytics.firstExercise": "Solved an exercise",
+  "admin.analytics.active": "Users learning",
+  "admin.analytics.opens": "Users who opened the app",
+  "admin.analytics.last24h": "24 hours",
+  "admin.analytics.last7d": "7 days",
+  "admin.analytics.last30d": "30 days",
+  "admin.analytics.retention": "Retention",
+  "admin.analytics.retentionDay": "Day {n}",
+  "admin.analytics.retentionDetail": "{returned} of {eligible}",
+  "admin.analytics.lessons": "Lessons completed per week",
+  "admin.analytics.ai": "AI usage (7 days)",
+  "admin.analytics.aiUsers": "Used it",
+  "admin.analytics.aiHits": "Times at the cap",
+  "admin.analytics.aiHitUsers": "Reached the cap",
+
+  "profile.settingsHeading": "Your app, your way",
+  "profile.statLevel": "Level",
+  "profile.statXp": "Total XP",
+  "profile.statStreak": "Streak",
+  "profile.tileLanguage": "Learning",
+  "profile.publicProfile": "My public profile",
+  "profile.goalValue": "{n} min a day",
+
+  "common.close": "Close"
 }

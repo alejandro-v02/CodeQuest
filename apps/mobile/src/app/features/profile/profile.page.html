@@ -1,17 +1,27 @@
-<app-page-header [title]="'profile.pageTitle' | translate"></app-page-header>
+<app-page-header [title]="'profile.pageTitle' | translate">
+  <ion-button actions fill="clear" class="settings-button" [attr.aria-label]="'common.settings' | translate" (click)="openSettings()">
+    <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+  </ion-button>
+</app-page-header>
+
+<app-settings-sheet [isOpen]="isSettingsOpen()" (closed)="closeSettings()"></app-settings-sheet>
 
 <ion-modal
   class="edit-profile-modal"
   [isOpen]="isEditOpen()"
-  [breakpoints]="[0, 0.9, 0.97]"
-  [initialBreakpoint]="0.9"
   (willDismiss)="closeEditProfile()"
 >
   <ng-template>
     <ion-content class="edit-profile-modal-content">
-      <div class="modal-handle"></div>
-      <p class="eyebrow">{{ 'profile.editEyebrow' | translate }}</p>
-      <h1>{{ 'profile.editHeading' | translate }}</h1>
+      <div class="modal-topbar">
+        <div>
+          <p class="eyebrow">{{ 'profile.editEyebrow' | translate }}</p>
+          <h1>{{ 'profile.editHeading' | translate }}</h1>
+        </div>
+        <button type="button" class="modal-close" [attr.aria-label]="'common.close' | translate" (click)="closeEditProfile()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
 
       <h2 class="section-title">{{ 'profile.usernameLabel' | translate }}</h2>
       <div class="username-field">
@@ -98,80 +108,86 @@
 
 <ion-content [fullscreen]="true" [scrollY]="!isEditOpen()">
   @if (user(); as u) {
-    <div class="profile-card">
-      <button type="button" class="avatar" [style.background]="u.avatarColor" (click)="openOwnPublicProfile()">
+    <div class="hero" [style.--avatar-color]="u.avatarColor">
+      <button type="button" class="avatar" (click)="openOwnPublicProfile()">
         <ion-icon [name]="u.avatarIcon"></ion-icon>
       </button>
-      <h2>{{ u.displayName }}</h2>
-      @if (u.username) {
-        <p class="username-tag">&#64;{{ u.username }}</p>
-      }
-      <p class="email">{{ u.email }}</p>
+      <div class="hero-info">
+        <h2>{{ u.displayName }}</h2>
+        @if (u.username) {
+          <p class="username-tag">&#64;{{ u.username }}</p>
+        }
+        @if (u.bio) {
+          <p class="bio">{{ u.bio }}</p>
+        }
+        @if (pinnedAchievement(); as pinned) {
+          <span class="pinned">
+            <ion-icon [name]="pinned.icon"></ion-icon>
+            {{ pinned.title }}
+          </span>
+        }
+        <p class="email">{{ u.email }}</p>
+      </div>
+    </div>
 
-      <ion-button fill="outline" size="small" class="edit-profile-button" (click)="openEditProfile()">
-        <ion-icon slot="start" name="create-outline"></ion-icon>
+    @if (summary(); as s) {
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value">{{ s.level }}</span>
+          <span class="stat-label">{{ 'profile.statLevel' | translate }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">{{ s.xp }}</span>
+          <span class="stat-label">{{ 'profile.statXp' | translate }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value"><ion-icon name="flame-outline"></ion-icon>{{ s.streak.current }}</span>
+          <span class="stat-label">{{ 'profile.statStreak' | translate }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="info-row">
+      <div class="info-tile">
+        @if (u.preferredLanguage; as language) {
+          <app-language-badge [languageSlug]="language"></app-language-badge>
+          <span class="info-text">
+            <span class="info-label">{{ 'profile.tileLanguage' | translate }}</span>
+            <span class="info-value">{{ languageLabel(language) }}</span>
+          </span>
+        } @else {
+          <span class="info-text">
+            <span class="info-label">{{ 'profile.tileLanguage' | translate }}</span>
+            <span class="info-value">—</span>
+          </span>
+        }
+      </div>
+      <div class="info-tile">
+        <span class="info-icon"><ion-icon name="time-outline"></ion-icon></span>
+        <span class="info-text">
+          <span class="info-label">{{ 'profile.dailyGoalLabel' | translate }}</span>
+          <span class="info-value">{{ goalLabel(u.dailyGoalMinutes) }}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="actions-grid">
+      <button type="button" class="action-tile" (click)="openGroups()">
+        <span class="action-icon"><ion-icon name="people-outline"></ion-icon></span>
+        {{ 'groups.pageTitle' | translate }}
+      </button>
+      <button type="button" class="action-tile" (click)="openLeague()">
+        <span class="action-icon"><ion-icon name="medal-outline"></ion-icon></span>
+        {{ 'league.pageTitle' | translate }}
+      </button>
+      <button type="button" class="action-tile" (click)="openOwnPublicProfile()">
+        <span class="action-icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+        {{ 'profile.publicProfile' | translate }}
+      </button>
+      <button type="button" class="action-tile" (click)="openEditProfile()">
+        <span class="action-icon"><ion-icon name="create-outline"></ion-icon></span>
         {{ 'profile.editProfile' | translate }}
-      </ion-button>
-
-      <dl class="details">
-        <div class="row">
-          <dt>{{ 'profile.programmingLanguageLabel' | translate }}</dt>
-          <dd>{{ u.preferredLanguage ?? '—' }}</dd>
-        </div>
-        <div class="row">
-          <dt>{{ 'profile.dailyGoalLabel' | translate }}</dt>
-          <dd>{{ u.dailyGoalMinutes ? u.dailyGoalMinutes + ' min' : '—' }}</dd>
-        </div>
-      </dl>
-
-      <div class="toggle-row">
-        <ion-icon name="notifications-outline"></ion-icon>
-        <span class="toggle-label">{{ 'profile.dailyReminderLabel' | translate }}</span>
-        <ion-toggle
-          [checked]="reminderEnabled()"
-          (ionChange)="toggleReminder($event.detail.checked)"
-        ></ion-toggle>
-      </div>
-
-      <div class="toggle-row language-row">
-        <ion-icon name="globe-outline"></ion-icon>
-        <span class="toggle-label">{{ 'profile.appLanguageLabel' | translate }}</span>
-        <div class="language-switch">
-          <button
-            type="button"
-            class="language-option"
-            [class.selected]="i18n.language() === 'es'"
-            (click)="setAppLanguage('es')"
-          >
-            {{ 'profile.languageSpanish' | translate }}
-          </button>
-          <button
-            type="button"
-            class="language-option"
-            [class.selected]="i18n.language() === 'en'"
-            (click)="setAppLanguage('en')"
-          >
-            {{ 'profile.languageEnglish' | translate }}
-          </button>
-        </div>
-      </div>
-
-      <div class="toggle-row" role="button" tabindex="0" (click)="openGroups()" (keyup.enter)="openGroups()">
-        <ion-icon name="people-outline"></ion-icon>
-        <span class="toggle-label">{{ 'groups.pageTitle' | translate }}</span>
-        <ion-icon name="chevron-forward"></ion-icon>
-      </div>
-
-      @if (errorMessage(); as message) {
-        <p class="error-message">{{ message }}</p>
-      }
-
-      <button type="button" class="admin-link" (click)="openAdmin()">{{ 'profile.adminPanelButton' | translate }}</button>
-
-      <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
-        <ion-icon slot="start" name="log-out-outline"></ion-icon>
-        {{ 'profile.logoutButton' | translate }}
-      </ion-button>
+      </button>
     </div>
   }
 </ion-content>

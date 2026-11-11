@@ -376,5 +376,39 @@
   "admin.analytics.ai": "Uso de IA (7 días)",
   "admin.analytics.aiUsers": "La usaron",
   "admin.analytics.aiHits": "Veces al tope",
-  "admin.analytics.aiHitUsers": "Llegaron al tope"
+  "admin.analytics.aiHitUsers": "Llegaron al tope",
+
+  "progress.streakFreezes": "Protectores de racha: {n}",
+
+  "admin.analytics.heading": "Métricas del producto",
+  "admin.analytics.users": "Usuarios",
+  "admin.analytics.usersTotal": "Registrados",
+  "admin.analytics.usersNew": "Nuevos (7 días)",
+  "admin.analytics.funnel": "Embudo",
+  "admin.analytics.registered": "Registrados",
+  "admin.analytics.onboarded": "Terminaron el onboarding",
+  "admin.analytics.firstExercise": "Resolvieron un ejercicio",
+  "admin.analytics.active": "Usuarios aprendiendo",
+  "admin.analytics.opens": "Usuarios que abrieron la app",
+  "admin.analytics.last24h": "24 horas",
+  "admin.analytics.last7d": "7 días",
+  "admin.analytics.last30d": "30 días",
+  "admin.analytics.retention": "Retención",
+  "admin.analytics.retentionDay": "Día {n}",
+  "admin.analytics.retentionDetail": "{returned} de {eligible}",
+  "admin.analytics.lessons": "Lecciones completadas por semana",
+  "admin.analytics.ai": "Uso de IA (7 días)",
+  "admin.analytics.aiUsers": "La usaron",
+  "admin.analytics.aiHits": "Veces al tope",
+  "admin.analytics.aiHitUsers": "Llegaron al tope",
+
+  "profile.settingsHeading": "Tu app, a tu manera",
+  "profile.statLevel": "Nivel",
+  "profile.statXp": "XP total",
+  "profile.statStreak": "Racha",
+  "profile.tileLanguage": "Aprendiendo",
+  "profile.publicProfile": "Mi perfil público",
+  "profile.goalValue": "{n} min al día",
+
+  "common.close": "Cerrar"
 }
