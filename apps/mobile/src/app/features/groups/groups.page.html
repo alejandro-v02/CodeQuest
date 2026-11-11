@@ -78,37 +78,46 @@
       }
     </section>
 
-    <section class="section">
-      <h2 class="section-title">
-        <ion-icon name="add-circle-outline"></ion-icon>
-        {{ 'groups.createHeading' | translate }}
-      </h2>
-      <div class="form-card">
-        <p class="hint">{{ 'groups.createHint' | translate }}</p>
-        <div class="form-row">
-          <input
-            class="field"
-            type="text"
-            maxlength="60"
-            autocomplete="off"
-            [value]="newName()"
-            [placeholder]="'groups.namePlaceholder' | translate"
-            (input)="onNameInput($event)"
-            (keyup.enter)="create()"
-          />
-          <ion-button [disabled]="isCreating() || newName().trim().length < 3" (click)="create()">
-            @if (isCreating()) {
-              <ion-spinner name="dots"></ion-spinner>
-            } @else {
-              {{ 'groups.createButton' | translate }}
-            }
-          </ion-button>
+    @if (isInstructor()) {
+      <section class="section">
+        <h2 class="section-title">
+          <ion-icon name="add-circle-outline"></ion-icon>
+          {{ 'groups.createHeading' | translate }}
+        </h2>
+        <div class="form-card">
+          <p class="hint">{{ 'groups.createHint' | translate }}</p>
+          <div class="form-row">
+            <input
+              class="field"
+              type="text"
+              maxlength="60"
+              autocomplete="off"
+              [value]="newName()"
+              [placeholder]="'groups.namePlaceholder' | translate"
+              (input)="onNameInput($event)"
+              (keyup.enter)="create()"
+            />
+            <ion-button [disabled]="isCreating() || newName().trim().length < 3" (click)="create()">
+              @if (isCreating()) {
+                <ion-spinner name="dots"></ion-spinner>
+              } @else {
+                {{ 'groups.createButton' | translate }}
+              }
+            </ion-button>
+          </div>
+          @if (createError(); as message) {
+            <p class="error-message">{{ message }}</p>
+          }
         </div>
-        @if (createError(); as message) {
-          <p class="error-message">{{ message }}</p>
-        }
-      </div>
-    </section>
+      </section>
+    } @else {
+      <section class="section">
+        <p class="instructor-note">
+          <ion-icon name="school-outline"></ion-icon>
+          {{ 'groups.instructorOnlyNote' | translate }}
+        </p>
+      </section>
+    }
 
     <section class="section">
       <h2 class="section-title">

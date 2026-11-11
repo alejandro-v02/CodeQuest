@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton, IonContent, IonIcon, IonSpinner, ViewWillEnter } from '@ionic/angular';
+import { AuthService } from '../../core/services/auth.service';
 import { GroupsService } from '../../core/services/groups.service';
 import { I18nService } from '../../core/services/i18n.service';
+import { AnalyticsService } from '../../core/services/analytics.service';
 import type { GroupRanking, GroupSummary } from '../../core/models/group.model';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
@@ -34,6 +36,11 @@ export class GroupsPage implements OnInit, ViewWillEnter {
   private readonly groupsService = inject(GroupsService);
   private readonly router = inject(Router);
   private readonly i18n = inject(I18nService);
+  private readonly authService = inject(AuthService);
+  private readonly analytics = inject(AnalyticsService);
+
+  // Only verified instructors can create classes; anyone can join one.
+  readonly isInstructor = computed(() => this.authService.currentUser()?.isInstructor === true);
 
   readonly groups = signal<GroupSummary[]>([]);
   readonly ranking = signal<GroupRanking | null>(null);
@@ -112,6 +119,7 @@ export class GroupsPage implements OnInit, ViewWillEnter {
     this.joinError.set(null);
     try {
       const group = await this.groupsService.join(code);
+      this.analytics.track('group_joined');
       this.joinCode.set('');
       this.openGroup(group.id);
     } catch (error) {
@@ -138,10 +146,14 @@ export class GroupsPage implements OnInit, ViewWillEnter {
     this.createError.set(null);
     try {
       const group = await this.groupsService.create(name);
+      this.analytics.track('group_created');
       this.newName.set('');
       this.openGroup(group.id);
-    } catch {
-      this.createError.set(this.i18n.t('groups.errors.createFailed'));
+    } catch (error) {
+      const forbidden = error instanceof HttpErrorResponse && error.status === 403;
+      this.createError.set(
+        this.i18n.t(forbidden ? 'groups.errors.instructorOnly' : 'groups.errors.createFailed'),
+      );
     } finally {
       this.isCreating.set(false);
     }
