@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
 import { Concept } from '../concepts/entities/concept.entity';
@@ -8,6 +13,7 @@ import {
   User,
   type ProgrammingLanguageSlug,
 } from '../users/entities/user.entity';
+import { Attempt } from './entities/attempt.entity';
 import { Exercise } from './entities/exercise.entity';
 import { UserExerciseHistory } from './entities/user-exercise-history.entity';
 import type { ExerciseDetail } from './exercises.types';
@@ -23,6 +29,11 @@ const STREAK_TO_ADAPT = 2;
 // difficulty pair, a backfill job is enqueued so the bank doesn't run dry.
 const LOW_WATERMARK = 2;
 const QUIZ_TEMPLATE_KEY = 'variable-arithmetic';
+// Chance that "next" re-serves an exercise the user failed or skipped even
+// though fresh ones remain.
+const RETRY_UNSOLVED_CHANCE = 1 / 3;
+// Tries when the bank is empty and an exercise has to be generated live.
+const GENERATE_ON_DEMAND_ATTEMPTS = 2;
 
 @Injectable()
 export class NextExerciseService {
@@ -55,35 +66,70 @@ export class NextExerciseService {
     // Lesson exercises also feed Práctica libre, but only the ones this user
     // can already open: serving one from a locked lesson would be refused as
     // soon as they tried to open or submit it.
-    const excludeIds = [
-      ...(await this.getSeenExerciseIds(userId, conceptId)),
-      ...(await this.getLockedLessonExerciseIds(
-        conceptId,
-        concept.language.slug,
-        userId,
-      )),
-    ];
+    const lockedIds = await this.getLockedLessonExerciseIds(
+      conceptId,
+      concept.language.slug,
+      userId,
+    );
+    // A solved exercise never comes back; one that was served but not solved
+    // keeps coming back until it is.
+    const solvedIds = await this.getSolvedExerciseIds(userId, conceptId);
+    const servedIds = await this.getServedExerciseIds(userId, conceptId);
+    const solvedSet = new Set(solvedIds);
+    const unsolvedServedIds = servedIds.filter((id) => !solvedSet.has(id));
+    // Fresh exercises come first; the unsolved ones only fill in when
+    // nothing new is left, plus an occasional retry so a skipped exercise
+    // doesn't wait until the whole bank is exhausted.
+    const retryUnsolved =
+      unsolvedServedIds.length > 0 && Math.random() < RETRY_UNSOLVED_CHANCE;
+    const freshExclude = [...solvedIds, ...servedIds, ...lockedIds];
+    const reuseExclude = [...solvedIds, ...lockedIds];
 
-    let candidate = await this.pickApproved(conceptId, difficulty, excludeIds);
-    if (!candidate) {
+    let candidate: Exercise | null = null;
+    if (retryUnsolved) {
       candidate = await this.pickApproved(
         conceptId,
         difficulty,
-        excludeIds,
-        Math.max(MIN_DIFFICULTY, difficulty - 1),
-        Math.min(MAX_DIFFICULTY, difficulty + 1),
+        reuseExclude,
+        undefined,
+        undefined,
+        unsolvedServedIds,
       );
     }
+    const attempts: Array<[string[], number?, number?]> = [
+      [freshExclude],
+      [
+        freshExclude,
+        Math.max(MIN_DIFFICULTY, difficulty - 1),
+        Math.min(MAX_DIFFICULTY, difficulty + 1),
+      ],
+      [reuseExclude],
+      [
+        reuseExclude,
+        Math.max(MIN_DIFFICULTY, difficulty - 1),
+        Math.min(MAX_DIFFICULTY, difficulty + 1),
+      ],
+    ];
+    for (const [exclude, min, max] of attempts) {
+      if (candidate) {
+        break;
+      }
+      candidate = await this.pickApproved(
+        conceptId,
+        difficulty,
+        exclude,
+        min,
+        max,
+      );
+    }
+    const excludeIds = freshExclude;
 
     if (!candidate) {
       // Bank is empty of unseen exercises for this concept entirely — queue
       // a backfill for next time and generate a free, instant quiz now so
       // the request never dead-ends.
       this.backfill(conceptId, difficulty);
-      candidate = await this.templateGeneratorService.generateQuiz(
-        conceptId,
-        QUIZ_TEMPLATE_KEY,
-      );
+      candidate = await this.generateOnTopic(concept, difficulty);
     } else {
       await this.maybeBackfill(conceptId, difficulty, excludeIds);
     }
@@ -98,6 +144,47 @@ export class NextExerciseService {
     );
 
     return this.exercisesService.getExercise(candidate.id, userId);
+  }
+
+  // Nothing left in the bank for this concept: make one on the spot so the
+  // user always gets an exercise about what they picked. The arithmetic quiz
+  // template only talks about variables, so it is a fallback for that concept
+  // alone — anywhere else it would be off-topic.
+  private async generateOnTopic(
+    concept: Concept,
+    difficulty: number,
+  ): Promise<Exercise> {
+    for (let attempt = 0; attempt < GENERATE_ON_DEMAND_ATTEMPTS; attempt += 1) {
+      try {
+        const result = await this.generationService.generateCodeExercise(
+          concept.id,
+          difficulty,
+        );
+        if (result.outcome === 'approved' && result.exerciseId) {
+          const exercise = await this.exerciseRepo.findOne({
+            where: { id: result.exerciseId },
+          });
+          if (exercise) {
+            return exercise;
+          }
+        }
+      } catch (error) {
+        this.logger.warn(
+          `On-demand generation for concept "${concept.slug}" failed: ` +
+            (error instanceof Error ? error.message : String(error)),
+        );
+        break;
+      }
+    }
+    if (concept.slug === 'variables') {
+      return this.templateGeneratorService.generateQuiz(
+        concept.id,
+        QUIZ_TEMPLATE_KEY,
+      );
+    }
+    throw new ServiceUnavailableException(
+      'Ya completaste los ejercicios de este tema por ahora. Vuelve pronto: estamos preparando más.',
+    );
   }
 
   private async getLockedLessonExerciseIds(
@@ -125,11 +212,16 @@ export class NextExerciseService {
     excludeIds: string[],
     rangeMin?: number,
     rangeMax?: number,
+    onlyIds?: string[],
   ): Promise<Exercise | null> {
     const qb = this.exerciseRepo
       .createQueryBuilder('exercise')
       .where('exercise.concept_id = :conceptId', { conceptId })
       .andWhere('exercise.status = :status', { status: 'approved' });
+
+    if (onlyIds) {
+      qb.andWhere('exercise.id IN (:...onlyIds)', { onlyIds });
+    }
 
     if (rangeMin !== undefined && rangeMax !== undefined) {
       qb.andWhere('exercise.difficulty BETWEEN :min AND :max', {
@@ -185,7 +277,8 @@ export class NextExerciseService {
       });
   }
 
-  private async getSeenExerciseIds(
+  // Every exercise of this concept already served to the user (solved or not).
+  private async getServedExerciseIds(
     userId: string,
     conceptId: string,
   ): Promise<string[]> {
@@ -193,7 +286,29 @@ export class NextExerciseService {
       where: { userId, conceptId },
       select: { exerciseId: true },
     });
-    return rows.map((row) => row.exerciseId);
+    return [...new Set(rows.map((row) => row.exerciseId))];
+  }
+
+  // Exercises of this concept the user has passed — through Práctica libre
+  // or, for lesson exercises linked to the concept, through the lesson.
+  private async getSolvedExerciseIds(
+    userId: string,
+    conceptId: string,
+  ): Promise<string[]> {
+    const rows: Array<{ exercise_id: string }> = await this.exerciseRepo.manager
+      .createQueryBuilder()
+      .select('DISTINCT attempt.exercise_id', 'exercise_id')
+      .from(Attempt, 'attempt')
+      .innerJoin(
+        Exercise,
+        'exercise',
+        'exercise.id::text = attempt.exercise_id::text',
+      )
+      .where('attempt.user_id::text = :userId', { userId })
+      .andWhere('attempt.passed = true')
+      .andWhere('exercise.concept_id = :conceptId', { conceptId })
+      .getRawMany();
+    return rows.map((row) => row.exercise_id);
   }
 
   // Looks at the most recent passed/failed outcomes for this concept and
