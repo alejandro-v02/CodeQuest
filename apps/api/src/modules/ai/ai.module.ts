@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AnalyticsModule } from '../analytics/analytics.module';
 import { Exercise } from '../exercises/entities/exercise.entity';
 import { User } from '../users/entities/user.entity';
 import { AiController } from './ai.controller';
@@ -16,7 +17,14 @@ import { PlacementQuiz } from './entities/placement-quiz.entity';
     // module-to-module dependency, so this stays free of the circular
     // import that importing ExercisesModule directly would create
     // (ExercisesModule -> GenerationModule -> AiModule).
-    TypeOrmModule.forFeature([AiInteraction, ExerciseHint, PlacementQuiz, Exercise, User]),
+    TypeOrmModule.forFeature([
+      AiInteraction,
+      ExerciseHint,
+      PlacementQuiz,
+      Exercise,
+      User,
+    ]),
+    AnalyticsModule,
   ],
   controllers: [AiController],
   providers: [AiService, AiUsageService],

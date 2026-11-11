@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
+import { AnalyticsService } from '../analytics/analytics.service';
 import {
   AiInteraction,
   type AiInteractionKind,
@@ -18,6 +19,7 @@ export class AiUsageService {
   constructor(
     @InjectRepository(AiInteraction)
     private readonly interactionRepo: Repository<AiInteraction>,
+    private readonly analyticsService: AnalyticsService,
   ) {}
 
   async assertUnderDailyLimit(userId: string): Promise<void> {
@@ -26,6 +28,8 @@ export class AiUsageService {
       where: { userId, cached: false, createdAt: MoreThan(since) },
     });
     if (count >= DAILY_LIMIT) {
+      // How often people hit the cap is the signal for sizing a paid plan.
+      await this.analyticsService.record(userId, 'ai_limit_hit');
       throw new HttpException(
         'Alcanzaste el límite diario de usos de IA. Vuelve mañana.',
         HttpStatus.TOO_MANY_REQUESTS,
