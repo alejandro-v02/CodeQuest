@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton, IonContent, ViewWillEnter } from '@ionic/angular';
 import { AdminService } from '../../core/services/admin.service';
+import { AnalyticsSummaryComponent } from './analytics-summary/analytics-summary.component';
 import type { AdminExerciseStat } from '../../core/models/admin.model';
 import { LoadingBounceComponent } from '../../shared/components/loading-bounce/loading-bounce.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
@@ -18,7 +19,14 @@ interface AdminLanguageGroup {
   selector: 'app-admin',
   templateUrl: './admin.page.html',
   styleUrls: ['./admin.page.scss'],
-  imports: [IonButton, IonContent, LoadingBounceComponent, PageHeaderComponent, TranslatePipe],
+  imports: [
+    IonButton,
+    IonContent,
+    AnalyticsSummaryComponent,
+    LoadingBounceComponent,
+    PageHeaderComponent,
+    TranslatePipe,
+  ],
 })
 export class AdminPage implements ViewWillEnter {
   private readonly adminService = inject(AdminService);

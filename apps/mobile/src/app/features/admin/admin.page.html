@@ -1,6 +1,8 @@
 <app-page-header [title]="'admin.pageTitle' | translate" [eyebrow]="'admin.eyebrow' | translate" [showBack]="true" (back)="goBack()"></app-page-header>
 
 <ion-content [fullscreen]="true">
+  <app-analytics-summary></app-analytics-summary>
+
   @if (isLoading()) {
     <div class="state-pane">
       <app-loading-bounce></app-loading-bounce>

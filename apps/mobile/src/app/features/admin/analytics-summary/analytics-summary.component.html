@@ -1,0 +1,102 @@
+@if (summary(); as s) {
+  <section class="analytics">
+    <h2 class="heading">{{ 'admin.analytics.heading' | translate }}</h2>
+
+    <h3 class="group-title">{{ 'admin.analytics.users' | translate }}</h3>
+    <div class="tiles">
+      <div class="tile">
+        <span class="value">{{ s.users.total }}</span>
+        <span class="label">{{ 'admin.analytics.usersTotal' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.users.newLast7Days }}</span>
+        <span class="label">{{ 'admin.analytics.usersNew' | translate }}</span>
+      </div>
+    </div>
+
+    <h3 class="group-title">{{ 'admin.analytics.funnel' | translate }}</h3>
+    <div class="tiles three">
+      <div class="tile">
+        <span class="value">{{ s.funnel.registered }}</span>
+        <span class="label">{{ 'admin.analytics.registered' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.funnel.onboarded }}</span>
+        <span class="label">{{ 'admin.analytics.onboarded' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.funnel.firstExercise }}</span>
+        <span class="label">{{ 'admin.analytics.firstExercise' | translate }}</span>
+      </div>
+    </div>
+
+    <h3 class="group-title">{{ 'admin.analytics.active' | translate }}</h3>
+    <div class="tiles three">
+      <div class="tile">
+        <span class="value">{{ s.learners.last24h }}</span>
+        <span class="label">{{ 'admin.analytics.last24h' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.learners.last7d }}</span>
+        <span class="label">{{ 'admin.analytics.last7d' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.learners.last30d }}</span>
+        <span class="label">{{ 'admin.analytics.last30d' | translate }}</span>
+      </div>
+    </div>
+
+    <h3 class="group-title">{{ 'admin.analytics.opens' | translate }}</h3>
+    <div class="tiles three">
+      <div class="tile">
+        <span class="value">{{ s.appOpens.last24h }}</span>
+        <span class="label">{{ 'admin.analytics.last24h' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.appOpens.last7d }}</span>
+        <span class="label">{{ 'admin.analytics.last7d' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.appOpens.last30d }}</span>
+        <span class="label">{{ 'admin.analytics.last30d' | translate }}</span>
+      </div>
+    </div>
+
+    <h3 class="group-title">{{ 'admin.analytics.retention' | translate }}</h3>
+    <div class="tiles three">
+      @for (item of s.retention; track item.day) {
+        <div class="tile">
+          <span class="value">{{ retentionLabel(item) }}</span>
+          <span class="label">{{ retentionDay(item) }}</span>
+          <span class="detail">{{ retentionDetail(item) }}</span>
+        </div>
+      }
+    </div>
+
+    <h3 class="group-title">{{ 'admin.analytics.lessons' | translate }}</h3>
+    <div class="tiles four">
+      @for (week of s.lessonsCompletedByWeek; track week.weekStart) {
+        <div class="tile">
+          <span class="value">{{ week.count }}</span>
+          <span class="label">{{ week.weekStart.slice(5) }}</span>
+        </div>
+      }
+    </div>
+
+    <h3 class="group-title">{{ 'admin.analytics.ai' | translate }}</h3>
+    <div class="tiles three">
+      <div class="tile">
+        <span class="value">{{ s.ai.usersLast7Days }}</span>
+        <span class="label">{{ 'admin.analytics.aiUsers' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.ai.limitHitsLast7Days }}</span>
+        <span class="label">{{ 'admin.analytics.aiHits' | translate }}</span>
+      </div>
+      <div class="tile">
+        <span class="value">{{ s.ai.usersHitLimitLast7Days }}</span>
+        <span class="label">{{ 'admin.analytics.aiHitUsers' | translate }}</span>
+      </div>
+    </div>
+  </section>
+}
