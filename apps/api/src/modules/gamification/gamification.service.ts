@@ -8,6 +8,7 @@ import { User } from '../users/entities/user.entity';
 import { ACHIEVEMENTS_CATALOG } from './achievements.catalog';
 import { Streak } from './entities/streak.entity';
 import { UserAchievement } from './entities/user-achievement.entity';
+import { advanceStreak } from './streak-rules';
 import { startOfIsoWeekUtc } from './week.util';
 import { XpEvent } from './entities/xp-event.entity';
 import type {
@@ -20,12 +21,6 @@ const EXERCISE_XP = 10;
 const XP_PER_LEVEL = 100;
 const NO_HINT_STREAK_TARGET = 10;
 const STREAK_ACHIEVEMENT_TARGET = 7;
-
-function previousDateString(dateStr: string): string {
-  const date = new Date(`${dateStr}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() - 1);
-  return date.toISOString().slice(0, 10);
-}
 
 @Injectable()
 export class GamificationService {
@@ -160,6 +155,7 @@ export class GamificationService {
       streak: {
         current: streak?.currentStreak ?? 0,
         longest: streak?.longestStreak ?? 0,
+        freezes: streak?.freezes ?? 0,
       },
       achievements: ACHIEVEMENTS_CATALOG.map((definition) => ({
         ...definition,
@@ -221,12 +217,7 @@ export class GamificationService {
       return;
     }
 
-    streak.currentStreak =
-      streak.lastActivityDate === previousDateString(today)
-        ? streak.currentStreak + 1
-        : 1;
-    streak.longestStreak = Math.max(streak.longestStreak, streak.currentStreak);
-    streak.lastActivityDate = today;
+    Object.assign(streak, advanceStreak(streak, today));
     await this.streakRepo.save(streak);
 
     if (streak.currentStreak >= STREAK_ACHIEVEMENT_TARGET) {

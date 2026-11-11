@@ -19,6 +19,11 @@ export class Streak {
   @Column({ type: 'varchar', nullable: true, name: 'last_activity_date' })
   lastActivityDate: string | null;
 
+  // Streak freezes in stock: each one covers a single missed day (see
+  // streak-rules.ts). Earned every 7 days of streak, capped.
+  @Column({ type: 'int', default: 0, name: 'freezes' })
+  freezes: number;
+
   // Consecutive exercises passed for the first time with no hint used on
   // any of them — resets to 0 the moment a hint is used on one. Backs the
   // "10 ejercicios sin pistas" achievement.
