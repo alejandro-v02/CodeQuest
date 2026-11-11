@@ -1,7 +1,10 @@
 // Floating pill tab bar instead of Ionic's default flush-to-edge bar,
 // so it reads more like a modern app HUD than a stock template.
 .quest-tab-bar {
-  --background: rgba(10, 10, 10, 0.72);
+  // A lighter tint than before (was 0.72) so the content scrolling behind
+  // actually shows through, and a much stronger blur so it reads as frosted
+  // glass instead of a flat dark pill.
+  --background: rgba(10, 10, 10, 0.5);
 
   position: absolute;
   left: 16px;
@@ -10,8 +13,8 @@
   border-radius: 28px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(44px) saturate(200%);
+  -webkit-backdrop-filter: blur(44px) saturate(200%);
 
   ion-tab-button {
     --color: var(--ion-color-step-600);
