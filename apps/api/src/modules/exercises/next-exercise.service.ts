@@ -4,7 +4,10 @@ import { In, Not, Repository } from 'typeorm';
 import { Concept } from '../concepts/entities/concept.entity';
 import { GenerationService } from '../generation/generation.service';
 import { TemplateGeneratorService } from '../generation/templates/template-generator.service';
-import { User } from '../users/entities/user.entity';
+import {
+  User,
+  type ProgrammingLanguageSlug,
+} from '../users/entities/user.entity';
 import { Exercise } from './entities/exercise.entity';
 import { UserExerciseHistory } from './entities/user-exercise-history.entity';
 import type { ExerciseDetail } from './exercises.types';
@@ -42,20 +45,31 @@ export class NextExerciseService {
   async getNext(userId: string, conceptId: string): Promise<ExerciseDetail> {
     const concept = await this.conceptRepo.findOne({
       where: { id: conceptId },
+      relations: { language: true },
     });
     if (!concept) {
       throw new NotFoundException('Concept not found');
     }
 
     const difficulty = await this.resolveDifficulty(userId, conceptId);
-    const seenIds = await this.getSeenExerciseIds(userId, conceptId);
+    // Lesson exercises also feed Práctica libre, but only the ones this user
+    // can already open: serving one from a locked lesson would be refused as
+    // soon as they tried to open or submit it.
+    const excludeIds = [
+      ...(await this.getSeenExerciseIds(userId, conceptId)),
+      ...(await this.getLockedLessonExerciseIds(
+        conceptId,
+        concept.language.slug,
+        userId,
+      )),
+    ];
 
-    let candidate = await this.pickApproved(conceptId, difficulty, seenIds);
+    let candidate = await this.pickApproved(conceptId, difficulty, excludeIds);
     if (!candidate) {
       candidate = await this.pickApproved(
         conceptId,
         difficulty,
-        seenIds,
+        excludeIds,
         Math.max(MIN_DIFFICULTY, difficulty - 1),
         Math.min(MAX_DIFFICULTY, difficulty + 1),
       );
@@ -71,7 +85,7 @@ export class NextExerciseService {
         QUIZ_TEMPLATE_KEY,
       );
     } else {
-      await this.maybeBackfill(conceptId, difficulty, seenIds);
+      await this.maybeBackfill(conceptId, difficulty, excludeIds);
     }
 
     await this.historyRepo.save(
@@ -84,6 +98,25 @@ export class NextExerciseService {
     );
 
     return this.exercisesService.getExercise(candidate.id, userId);
+  }
+
+  private async getLockedLessonExerciseIds(
+    conceptId: string,
+    languageSlug: ProgrammingLanguageSlug,
+    userId: string,
+  ): Promise<string[]> {
+    const lockedLessonIds = await this.exercisesService.getLockedLessonIds(
+      languageSlug,
+      userId,
+    );
+    if (lockedLessonIds.length === 0) {
+      return [];
+    }
+    const locked = await this.exerciseRepo.find({
+      where: { conceptId, lessonId: In(lockedLessonIds) },
+      select: { id: true },
+    });
+    return locked.map((exercise) => exercise.id);
   }
 
   private async pickApproved(

@@ -101,6 +101,22 @@ export class ExercisesService {
     }));
   }
 
+  // Ids of the lessons this user can't open yet. Práctica libre uses it to
+  // avoid serving an exercise that getExercise/submitAnswer would then refuse.
+  async getLockedLessonIds(
+    languageSlug: ProgrammingLanguageSlug,
+    userId: string,
+  ): Promise<string[]> {
+    const overview = await this.coursesService.getPathOverview(
+      languageSlug,
+      userId,
+    );
+    return overview.modules
+      .flatMap((courseModule) => courseModule.lessons)
+      .filter((lesson) => lesson.status === 'locked')
+      .map((lesson) => lesson.id);
+  }
+
   async getExercise(
     exerciseId: string,
     userId: string,
@@ -316,9 +332,11 @@ export class ExercisesService {
       { conceptName: string; passed: number; failed: number }
     >();
     for (const row of rows) {
-      const stat =
-        byConcept.get(row.conceptId) ??
-        { conceptName: row.conceptName, passed: 0, failed: 0 };
+      const stat = byConcept.get(row.conceptId) ?? {
+        conceptName: row.conceptName,
+        passed: 0,
+        failed: 0,
+      };
       stat[row.outcome] += Number(row.count);
       byConcept.set(row.conceptId, stat);
     }
@@ -361,7 +379,10 @@ export class ExercisesService {
         'exercisesSolved',
       )
       .addSelect('COUNT(*)', 'totalAttempts')
-      .addSelect('SUM(CASE WHEN attempt.passed THEN 1 ELSE 0 END)', 'totalPassed')
+      .addSelect(
+        'SUM(CASE WHEN attempt.passed THEN 1 ELSE 0 END)',
+        'totalPassed',
+      )
       .addSelect('COUNT(DISTINCT DATE(attempt.createdAt))', 'activeDays')
       .getRawOne<{
         exercisesSolved: string;
