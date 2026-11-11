@@ -29,6 +29,21 @@ export const envValidationSchema = Joi.object({
   // this is set (see AiService.isEnabled).
   GEMINI_API_KEY: Joi.string().allow('').default(''),
 
+  // Optional: comma-separated emails that may read admin-only endpoints (the
+  // analytics summary). Empty means nobody can — there is no admin role.
+  ADMIN_EMAILS: Joi.string().allow('').default(''),
+
+  // Optional: SMTP account that sends the instructor sign-in codes. Without
+  // SMTP_HOST the code is only logged (development) and sending fails in
+  // production.
+  SMTP_HOST: Joi.string().allow('').default(''),
+  SMTP_PORT: Joi.number().default(587),
+  SMTP_USER: Joi.string().allow('').default(''),
+  SMTP_PASS: Joi.string().allow('').default(''),
+  MAIL_FROM: Joi.string().default('CodeQuest <no-reply@codequest.app>'),
+  // Comma-separated email domains allowed to sign in as instructors.
+  INSTRUCTOR_EMAIL_DOMAINS: Joi.string().allow('').default('sena.edu.co'),
+
   // Backs the Fase 5A.3 BullMQ exercise-generation queue.
   REDIS_HOST: Joi.string().default('localhost'),
   REDIS_PORT: Joi.number().default(6379),

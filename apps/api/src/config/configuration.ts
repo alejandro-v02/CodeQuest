@@ -38,6 +38,20 @@ export interface AppConfig {
     host: string;
     port: number;
   };
+  // Lowercased emails allowed to read admin-only endpoints (see AdminGuard).
+  adminEmails: string[];
+  // SMTP account used to send verification codes. With no host configured the
+  // code is only logged, and only in development (see MailService).
+  mail: {
+    host: string;
+    port: number;
+    user: string;
+    pass: string;
+    from: string;
+  };
+  // Domains whose email owners may sign in as instructors. Matched exactly
+  // after the "@", so "sena.edu.co" does not match "misena.edu.co".
+  instructorEmailDomains: string[];
 }
 
 export default (): AppConfig => ({
@@ -84,4 +98,21 @@ export default (): AppConfig => ({
     host: process.env.REDIS_HOST ?? 'localhost',
     port: parseInt(process.env.REDIS_PORT ?? '6379', 10),
   },
+  adminEmails: (process.env.ADMIN_EMAILS ?? '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter((email) => email !== ''),
+  mail: {
+    host: process.env.SMTP_HOST ?? '',
+    port: parseInt(process.env.SMTP_PORT ?? '587', 10),
+    user: process.env.SMTP_USER ?? '',
+    pass: process.env.SMTP_PASS ?? '',
+    from: process.env.MAIL_FROM ?? 'CodeQuest <no-reply@codequest.app>',
+  },
+  instructorEmailDomains: (
+    process.env.INSTRUCTOR_EMAIL_DOMAINS ?? 'sena.edu.co'
+  )
+    .split(',')
+    .map((domain) => domain.trim().toLowerCase())
+    .filter((domain) => domain !== ''),
 });

@@ -19,6 +19,7 @@ import { GamificationModule } from './modules/gamification/gamification.module';
 import { SocialModule } from './modules/social/social.module';
 import { GroupsModule } from './modules/groups/groups.module';
 import { LeaguesModule } from './modules/leagues/leagues.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { LeaguesModule } from './modules/leagues/leagues.module';
     SocialModule,
     GroupsModule,
     LeaguesModule,
+    AnalyticsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
