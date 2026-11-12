@@ -8,8 +8,10 @@ const IO_CONVENTION: Record<ProgrammingLanguageSlug, string> = {
   python: 'Lee la entrada con `input()` e imprime la salida con `print()`.',
   javascript:
     "Lee la entrada con require('fs').readFileSync(0, 'utf8').trim() e imprime la salida con console.log().",
+  // The sandbox compiles with plain tsc and has no Node typings, so
+  // `require` has to be declared before it can be used.
   typescript:
-    "Lee la entrada con require('fs').readFileSync(0, 'utf8').trim() e imprime la salida con console.log().",
+    "Empieza el programa con la línea `declare const require: any;` y lee la entrada con require('fs').readFileSync(0, 'utf8').trim(); imprime la salida con console.log(). Anota los tipos de variables, parámetros y retornos.",
   cpp: 'Lee la entrada con std::cin e imprime la salida con std::cout.',
 };
 
