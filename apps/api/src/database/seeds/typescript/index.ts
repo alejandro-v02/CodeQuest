@@ -3,6 +3,7 @@ import { moduloTipos } from './modulo-tipos';
 import { moduloFunciones } from './modulo-funciones';
 import { moduloObjetos } from './modulo-objetos';
 import { moduloErrores } from './modulo-errores';
+import { moduloProyectos } from './modulo-proyectos';
 
 // Order here is the order in the app. Only ever append: seed.ts matches
 // modules by position, so inserting in the middle would overwrite rows that
@@ -12,4 +13,5 @@ export const typescriptExtraModules: SeedModule[] = [
   moduloFunciones,
   moduloObjetos,
   moduloErrores,
+  moduloProyectos,
 ];
