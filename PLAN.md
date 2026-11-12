@@ -185,7 +185,7 @@ Pipeline de cada ejercicio generado:
 
 ### Fase 3 — Contenido: rutas, módulos y lecciones
 - [x] Entidades y migraciones del contenido.
-- [x] Cargar el **mapa de currículo** (sección 4B, capa 1) de los 4 lenguajes (Python, JavaScript, TypeScript, C++) como datos; lecciones completas de **Python y JavaScript nivel principiante** (variables, tipos, condicionales, bucles, funciones, listas/arrays, diccionarios/objetos).
+- [x] Cargar el **mapa de currículo** (sección 4B, capa 1) de los 4 lenguajes (Python, JavaScript, TypeScript, C++) como datos; lecciones completas de **Python, JavaScript y TypeScript** (22 lecciones, 6 módulos, verificadas en Piston). Falta C++.
 - [x] App: pantalla "Ruta de aprendizaje" (mapa de módulos con estados bloqueado/en curso/completo) y pantalla de lección (renderizar Markdown).
 - **Entrega:** navego la ruta y leo lecciones reales desde la API. ✅ Confirmado en dispositivo real (implementado y verificado en una sesión anterior; checklist actualizado ahora).
 
