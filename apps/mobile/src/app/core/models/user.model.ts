@@ -11,7 +11,7 @@ export interface LanguageOption {
 export const LANGUAGE_OPTIONS: LanguageOption[] = [
   { slug: 'python', label: 'Python', available: true },
   { slug: 'javascript', label: 'JavaScript', available: true },
-  { slug: 'typescript', label: 'TypeScript', available: false },
+  { slug: 'typescript', label: 'TypeScript', available: true },
   { slug: 'cpp', label: 'C++', available: false },
 ];
 
