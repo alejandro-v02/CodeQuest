@@ -19,6 +19,9 @@ const RUNTIMES = {
 // tsc is slow to start, so TypeScript runs fewer jobs at a time.
 const CONCURRENCY = { python: 4, javascript: 4, typescript: 2 };
 const only = process.argv[3];
+// Optional 4th argument: a regex the "language / lesson" label must match, to
+// re-check just the lessons being written.
+const labelFilter = process.argv[4] ? new RegExp(process.argv[4], 'i') : null;
 const normalize = (text) => text.replace(/\r\n/g, '\n').trim();
 
 function collectJobs() {
@@ -29,6 +32,7 @@ function collectJobs() {
       for (const lesson of module_.lessons) {
         (lesson.exercises ?? []).forEach((exercise, index) => {
           if (exercise.type !== 'code' || !exercise.solution) return;
+          if (labelFilter && !labelFilter.test(`${language.slug} / ${lesson.title}`)) return;
           for (const testCase of exercise.testCases ?? []) {
             jobs.push({
               slug: language.slug,
