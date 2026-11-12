@@ -8,10 +8,10 @@ const IO_CONVENTION: Record<ProgrammingLanguageSlug, string> = {
   python: 'Lee la entrada con `input()` e imprime la salida con `print()`.',
   javascript:
     "Lee la entrada con require('fs').readFileSync(0, 'utf8').trim() e imprime la salida con console.log().",
-  // The sandbox compiles with plain tsc and has no Node typings, so
-  // `require` has to be declared before it can be used.
+  // The sandbox compiles with plain tsc (ES5 target, no Node typings): the
+  // lib reference brings in Map/Set/Promise and `require` has to be declared.
   typescript:
-    "Empieza el programa con la línea `declare const require: any;` y lee la entrada con require('fs').readFileSync(0, 'utf8').trim(); imprime la salida con console.log(). Anota los tipos de variables, parámetros y retornos.",
+    "Empieza el programa con las dos líneas `/// <reference lib=\"es2020\" />` y `declare const require: any;`, lee la entrada con require('fs').readFileSync(0, 'utf8').trim() e imprime la salida con console.log(). Anota los tipos de variables, parámetros y retornos. No recorras un Map ni un Set con for...of ni con spread: usa Array.from(...) o forEach.",
   cpp: 'Lee la entrada con std::cin e imprime la salida con std::cout.',
 };
 

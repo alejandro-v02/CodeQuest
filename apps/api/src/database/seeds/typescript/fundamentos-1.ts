@@ -43,6 +43,10 @@ ciudad = 5; // Error
 
 Una buena costumbre al empezar: **anota los tipos explícitamente** hasta que te resulte natural. Así practicas y el código se explica solo.
 
+## Las primeras líneas del editor
+
+En los ejercicios de código verás arriba dos líneas que ya vienen escritas: §/// <reference lib="es2020" />§ y §declare const require: any;§. Preparan el entorno para poder leer la entrada y usar cosas como §Map§ o §Promise§. **No las borres.**
+
 ## Recuerda
 
 - El tipo se escribe en minúscula: §string§, §number§, §boolean§.
