@@ -3,6 +3,8 @@ import { pythonExtraExercises } from './python/extra-exercises';
 import { pythonExtraModules } from './python';
 import { javascriptExtraExercises } from './javascript/extra-exercises';
 import { javascriptExtraModules } from './javascript';
+import { moduloFundamentos as typescriptFundamentos } from './typescript/fundamentos';
+import { typescriptExtraModules } from './typescript';
 import type {
   BugPayload,
   ExerciseType,
@@ -824,33 +826,8 @@ delete persona.activo;
     name: 'TypeScript',
     pathTitle: 'TypeScript para principiantes',
     pathDescription:
-      'El mapa de temas está listo; las lecciones completas llegan en una fase posterior.',
-    modules: [
-      {
-        title: 'Fundamentos',
-        lessons: [
-          {
-            title: 'Variables y tipos explícitos',
-            xpReward: 10,
-            contentMarkdown: null,
-          },
-          {
-            title: 'Tipos básicos y anotaciones',
-            xpReward: 10,
-            contentMarkdown: null,
-          },
-          { title: 'Condicionales', xpReward: 10, contentMarkdown: null },
-          { title: 'Bucles', xpReward: 10, contentMarkdown: null },
-          { title: 'Funciones tipadas', xpReward: 10, contentMarkdown: null },
-          { title: 'Arrays tipados', xpReward: 10, contentMarkdown: null },
-          {
-            title: 'Interfaces y objetos',
-            xpReward: 10,
-            contentMarkdown: null,
-          },
-        ],
-      },
-    ],
+      'Aprende TypeScript desde cero: tipos, funciones, objetos, clases, genéricos y mini proyectos.',
+    modules: [typescriptFundamentos],
   },
   {
     slug: 'cpp',
@@ -895,6 +872,7 @@ const extras: Partial<
     exercises: javascriptExtraExercises,
     modules: javascriptExtraModules,
   },
+  typescript: { exercises: {}, modules: typescriptExtraModules },
 };
 
 export const curriculum: SeedLanguage[] = baseCurriculum.map((language) => {
