@@ -45,6 +45,24 @@ npm install
 npm run start:dev
 ```
 
+### Primera vez: lenguajes y contenido
+
+```bash
+cd apps/api
+npm run setup:piston   # instala los runtimes en Piston (Python, Node, TypeScript, GCC)
+npm run seed           # carga el currículo y los conceptos en la base de datos
+```
+
+### Comandos útiles (`apps/api`)
+
+| Comando                | Qué hace                                                              |
+| ---------------------- | --------------------------------------------------------------------- |
+| `npm run verify:seeds` | revisa la estructura de los ejercicios y corre las soluciones de Python y JS en local |
+| `npm run verify:piston`| corre todas las soluciones dentro de Piston (único chequeo que cubre TypeScript) |
+| `npm test`             | pruebas unitarias                                                     |
+
+Si el móvil está conectado por USB, redirige el puerto del backend con `adb reverse tcp:3000 tcp:3000` (hay que repetirlo al reinstalar la app o reiniciar adb).
+
 ### App móvil (`apps/mobile`)
 
 ```bash
