@@ -8,10 +8,10 @@ Lenguajes objetivo: **Python, JavaScript, TypeScript y C++** (motor de contenido
 
 - **App móvil:** Ionic + Angular (standalone components, signals) + Capacitor
 - **Backend:** NestJS + TypeORM + PostgreSQL
-- **Ejecución de código:** Judge0 / Piston (vía backend, nunca en el servidor de la API)
-- **IA:** LLM llamado siempre desde el backend
+- **Ejecución de código:** Piston autoalojado en Docker (vía backend, nunca en el servidor de la API)
+- **IA:** OpenAI (chat y embeddings), llamado siempre desde el backend, con tope diario por usuario
 - **Cola de trabajos:** BullMQ + Redis
-- **Editor:** CodeMirror 6
+- **Editor:** área de texto propia, ligera y compatible con el teclado del móvil
 
 ## Estructura del repositorio
 
@@ -21,7 +21,7 @@ CodeQuest/
 │   ├── mobile/        # Ionic + Angular + Capacitor
 │   └── api/            # NestJS
 ├── docs/                # decisiones, diagramas, notas
-├── docker-compose.yml   # Postgres local
+├── docker-compose.yml   # Postgres, Redis y Piston locales
 ├── .env.example
 └── PLAN.md              # plan de trabajo por fases
 ```
