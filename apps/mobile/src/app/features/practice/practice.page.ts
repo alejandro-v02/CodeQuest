@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton, IonIcon, IonContent, ViewWillEnter } from '@ionic/angular';
@@ -117,8 +118,18 @@ export class PracticePage implements OnInit, ViewWillEnter {
       const exercise = await this.exercisesService.getNext(concept.id);
       this.analytics.track('practice_started', { concept: concept.name });
       await this.router.navigateByUrl(`/exercise/${exercise.id}`);
-    } catch {
-      this.errorMessage.set(this.i18n.t('practice.errors.generateFailed'));
+    } catch (error) {
+      // The API answers 503 when the topic's bank is empty and the AI can't
+      // fill it right now: say that instead of a generic failure.
+      const noMoreExercises =
+        error instanceof HttpErrorResponse && error.status === 503;
+      this.errorMessage.set(
+        this.i18n.t(
+          noMoreExercises
+            ? 'practice.errors.noMoreExercises'
+            : 'practice.errors.generateFailed',
+        ),
+      );
       this.startingConceptId.set(null);
     }
   }

@@ -123,6 +123,7 @@
   "practice.emptySubtitle": "Este lenguaje no tiene conceptos disponibles por ahora.",
   "practice.errors.loadConceptsFailed": "No se pudieron cargar los conceptos.",
   "practice.errors.generateFailed": "No se pudo generar un ejercicio. Intenta de nuevo.",
+  "practice.errors.noMoreExercises": "Ya completaste los ejercicios de este tema por ahora. Vuelve pronto: estamos preparando más.",
 
   "exercise.pageTitle": "Ejercicio",
   "exercise.editorHint": "Toca dentro del código donde quieras escribir, y usa estos símbolos para insertarlos ahí:",

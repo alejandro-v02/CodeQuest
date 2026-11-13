@@ -123,6 +123,7 @@
   "practice.emptySubtitle": "This language has no concepts available right now.",
   "practice.errors.loadConceptsFailed": "Couldn't load the concepts.",
   "practice.errors.generateFailed": "Couldn't generate an exercise. Try again.",
+  "practice.errors.noMoreExercises": "You have finished the exercises for this topic for now. Come back soon: we are preparing more.",
 
   "exercise.pageTitle": "Exercise",
   "exercise.editorHint": "Tap inside the code where you want to type, and use these symbols to insert them there:",
