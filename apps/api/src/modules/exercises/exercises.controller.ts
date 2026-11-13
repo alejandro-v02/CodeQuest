@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { PublicUser } from '../users/users.mapper';
@@ -62,7 +63,9 @@ export class ExercisesController {
   }
 
   // Fase 5A.4 admin panel — must be declared before ':exerciseId' so Nest's
-  // route matching doesn't treat "admin" as an exercise id.
+  // route matching doesn't treat "admin" as an exercise id. Admin-only: it
+  // lists every exercise with pass rates and reports, not per-user data.
+  @UseGuards(AdminGuard)
   @Get('admin/stats')
   getAdminStats(): Promise<AdminExerciseStat[]> {
     return this.exercisesService.getAdminStats();
