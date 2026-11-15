@@ -127,5 +127,8 @@ export const conceptsByLanguage: Record<
     { slug: 'herencia-polimorfismo', name: 'Herencia y polimorfismo' },
     { slug: 'errores-compilador', name: 'Leer errores del compilador' },
     { slug: 'excepciones', name: 'Excepciones' },
+    { slug: 'proyecto-calculadora', name: 'Proyecto: calculadora' },
+    { slug: 'proyecto-inventario', name: 'Proyecto: inventario' },
+    { slug: 'proyecto-notas', name: 'Proyecto: notas de estudiantes' },
   ],
 };
