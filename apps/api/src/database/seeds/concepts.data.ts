@@ -119,5 +119,11 @@ export const conceptsByLanguage: Record<
     { slug: 'referencias', name: 'Referencias' },
     { slug: 'punteros', name: 'Punteros' },
     { slug: 'const-buenas-practicas', name: 'const y buenas prácticas' },
+    { slug: 'clases-objetos', name: 'Clases y objetos' },
+    {
+      slug: 'constructores-encapsulacion',
+      name: 'Constructores y encapsulación',
+    },
+    { slug: 'herencia-polimorfismo', name: 'Herencia y polimorfismo' },
   ],
 };
