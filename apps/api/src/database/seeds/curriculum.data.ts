@@ -5,6 +5,7 @@ import { javascriptExtraExercises } from './javascript/extra-exercises';
 import { javascriptExtraModules } from './javascript';
 import { moduloFundamentos as typescriptFundamentos } from './typescript/fundamentos';
 import { typescriptExtraModules } from './typescript';
+import { cppExtraModules } from './cpp';
 import type {
   BugPayload,
   ExerciseType,
@@ -873,6 +874,7 @@ const extras: Partial<
     modules: javascriptExtraModules,
   },
   typescript: { exercises: {}, modules: typescriptExtraModules },
+  cpp: { exercises: {}, modules: cppExtraModules },
 };
 
 export const curriculum: SeedLanguage[] = baseCurriculum.map((language) => {
