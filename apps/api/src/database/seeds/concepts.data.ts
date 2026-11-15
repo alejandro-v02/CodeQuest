@@ -125,5 +125,7 @@ export const conceptsByLanguage: Record<
       name: 'Constructores y encapsulación',
     },
     { slug: 'herencia-polimorfismo', name: 'Herencia y polimorfismo' },
+    { slug: 'errores-compilador', name: 'Leer errores del compilador' },
+    { slug: 'excepciones', name: 'Excepciones' },
   ],
 };
