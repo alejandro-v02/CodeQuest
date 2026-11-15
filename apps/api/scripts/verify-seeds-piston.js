@@ -15,9 +15,10 @@ const RUNTIMES = {
   python: { language: 'python', version: '3.12.0', file: 'main.py' },
   javascript: { language: 'javascript', version: '20.11.1', file: 'main.js' },
   typescript: { language: 'typescript', version: '5.0.3', file: 'main.ts' },
+  cpp: { language: 'c++', version: '10.2.0', file: 'main.cpp' },
 };
-// tsc is slow to start, so TypeScript runs fewer jobs at a time.
-const CONCURRENCY = { python: 4, javascript: 4, typescript: 2 };
+// tsc and g++ are slow to start, so they run fewer jobs at a time.
+const CONCURRENCY = { python: 4, javascript: 4, typescript: 2, cpp: 2 };
 const only = process.argv[3];
 // Optional 4th argument: a regex the "language / lesson" label must match, to
 // re-check just the lessons being written.
