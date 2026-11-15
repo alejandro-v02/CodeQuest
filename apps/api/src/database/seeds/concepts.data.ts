@@ -104,5 +104,13 @@ export const conceptsByLanguage: Record<
     { slug: 'proyecto-inventario', name: 'Proyecto: inventario' },
     { slug: 'proyecto-notas', name: 'Proyecto: notas de estudiantes' },
   ],
-  cpp: [{ slug: 'tipos-basicos', name: 'Tipos de datos básicos' }],
+  cpp: [
+    { slug: 'variables-tipos', name: 'Variables y tipos' },
+    { slug: 'tipos-basicos', name: 'Tipos de datos básicos' },
+    { slug: 'condicionales', name: 'Condicionales' },
+    { slug: 'bucles', name: 'Bucles' },
+    { slug: 'funciones', name: 'Funciones' },
+    { slug: 'arrays-vectores', name: 'Arrays y vectores' },
+    { slug: 'structs', name: 'Structs' },
+  ],
 };
