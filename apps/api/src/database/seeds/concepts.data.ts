@@ -112,5 +112,8 @@ export const conceptsByLanguage: Record<
     { slug: 'funciones', name: 'Funciones' },
     { slug: 'arrays-vectores', name: 'Arrays y vectores' },
     { slug: 'structs', name: 'Structs' },
+    { slug: 'entrada-salida', name: 'Entrada y salida' },
+    { slug: 'cadenas-string', name: 'Cadenas (string)' },
+    { slug: 'operaciones-cadenas', name: 'Operaciones con cadenas' },
   ],
 };
