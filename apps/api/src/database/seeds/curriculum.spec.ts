@@ -44,6 +44,23 @@ describe('curriculum seed', () => {
     expect(missing).toEqual([]);
   });
 
+  it('has a lesson for every concept', () => {
+    const orphans: string[] = [];
+    for (const language of curriculum) {
+      const titles = new Set(
+        language.modules.flatMap((module_) =>
+          module_.lessons.map((lesson) => lesson.title),
+        ),
+      );
+      for (const concept of conceptsByLanguage[language.slug] ?? []) {
+        if (!titles.has(concept.name)) {
+          orphans.push(`${language.slug} / ${concept.name}`);
+        }
+      }
+    }
+    expect(orphans).toEqual([]);
+  });
+
   it('has well-formed exercises', () => {
     const problems: string[] = [];
     for (const language of curriculum) {
