@@ -115,5 +115,9 @@ export const conceptsByLanguage: Record<
     { slug: 'entrada-salida', name: 'Entrada y salida' },
     { slug: 'cadenas-string', name: 'Cadenas (string)' },
     { slug: 'operaciones-cadenas', name: 'Operaciones con cadenas' },
+    { slug: 'parametros-retorno', name: 'Parámetros y retorno' },
+    { slug: 'referencias', name: 'Referencias' },
+    { slug: 'punteros', name: 'Punteros' },
+    { slug: 'const-buenas-practicas', name: 'const y buenas prácticas' },
   ],
 };
