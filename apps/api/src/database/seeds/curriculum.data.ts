@@ -6,6 +6,7 @@ import { javascriptExtraModules } from './javascript';
 import { moduloFundamentos as typescriptFundamentos } from './typescript/fundamentos';
 import { typescriptExtraModules } from './typescript';
 import { cppExtraModules } from './cpp';
+import { moduloFundamentos as cppFundamentos } from './cpp/fundamentos';
 import type {
   BugPayload,
   ExerciseType,
@@ -835,25 +836,8 @@ delete persona.activo;
     name: 'C++',
     pathTitle: 'C++ para principiantes',
     pathDescription:
-      'El mapa de temas está listo; las lecciones completas llegan en una fase posterior.',
-    modules: [
-      {
-        title: 'Fundamentos',
-        lessons: [
-          { title: 'Variables y tipos', xpReward: 10, contentMarkdown: null },
-          {
-            title: 'Tipos de datos básicos',
-            xpReward: 10,
-            contentMarkdown: null,
-          },
-          { title: 'Condicionales', xpReward: 10, contentMarkdown: null },
-          { title: 'Bucles', xpReward: 10, contentMarkdown: null },
-          { title: 'Funciones', xpReward: 10, contentMarkdown: null },
-          { title: 'Arrays y vectores', xpReward: 10, contentMarkdown: null },
-          { title: 'Structs', xpReward: 10, contentMarkdown: null },
-        ],
-      },
-    ],
+      'Aprende C++ desde cero: tipos, control de flujo, funciones, memoria, clases y mini proyectos.',
+    modules: [cppFundamentos],
   },
 ];
 
