@@ -417,7 +417,212 @@ if (x > maximo) maximo = x;
         },
       ],
     },
-    { title: 'Punteros', xpReward: 10, contentMarkdown: null },
+    {
+      title: 'Punteros',
+      xpReward: 10,
+      contentMarkdown: md`
+# Punteros
+
+Todas las variables viven en algún lugar de la memoria, y cada lugar tiene una **dirección**. Un **puntero** es una variable que guarda la dirección de otra.
+
+## Dirección y puntero
+
+§§§cpp
+int x = 5;
+int* p = &x; // p guarda la dirección de x
+
+cout << p << endl; // una dirección (un número largo en hexadecimal)
+cout << *p << endl; // 5 (el valor que hay en esa dirección)
+*p = 8;
+cout << x << endl; // 8 (cambiar *p cambia x)
+§§§
+
+- §&x§ → "la dirección de §x§".
+- §int*§ → "puntero a un entero".
+- §*p§ → "lo que hay en la dirección a la que apunta §p§" (se llama **desreferenciar**).
+
+## nullptr: el puntero que no apunta a nada
+
+§§§cpp
+int* p = nullptr; // vale "nada"
+if (p != nullptr) {
+cout << *p << endl; // solo se usa si apunta a algo
+}
+§§§
+
+Desreferenciar un puntero nulo (§*p§ con §p == nullptr§) **cierra el programa de golpe**. Es uno de los errores más comunes en C++.
+
+## Punteros como parámetros
+
+Antes de las referencias, así se modificaban variables ajenas:
+
+§§§cpp
+void intercambiar(int* a, int* b) {
+int temporal = *a;
+*a = *b;
+*b = temporal;
+}
+
+int x = 1, y = 2;
+intercambiar(&x, &y);
+§§§
+
+Hoy se prefiere la referencia, pero verás punteros en muchísimo código.
+
+## Memoria dinámica: new y delete
+
+Con §new§ pides memoria durante la ejecución; con §delete§ la devuelves:
+
+§§§cpp
+int n = 3;
+int* datos = new int[n]; // un arreglo de n enteros en memoria dinámica
+for (int i = 0; i < n; i++) {
+datos[i] = i * 10;
+}
+delete[] datos; // ¡siempre liberar lo que se pidió con new!
+§§§
+
+Si olvidas §delete§, la memoria queda ocupada hasta que el programa termina (una **fuga de memoria**). Si usas el puntero **después** de liberarlo, el comportamiento es indefinido.
+
+En la práctica diaria §vector§ hace todo esto por ti, y por eso es la opción recomendada.
+
+## Recuerda
+
+- §&§ obtiene una dirección y §*§ accede al valor apuntado.
+- Comprueba que un puntero no sea §nullptr§ antes de usarlo.
+- Todo §new§ necesita su §delete§.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 1,
+          payload: {
+            code: 'int x = 5;\nint* p = &x;\n*p = 8;\ncout << x;',
+            options: ['5', '8', 'Una dirección', 'Error de compilación'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué significa `*p` en esta línea?',
+          difficulty: 1,
+          payload: {
+            code: 'int x = 5;\nint* p = &x;\ncout << *p;',
+            options: [
+              'La dirección de p',
+              'El valor al que apunta p',
+              'Un puntero a p',
+              'Multiplicar p por algo',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué pasa al ejecutar este código?',
+          difficulty: 2,
+          payload: {
+            code: 'int* p = nullptr;\ncout << *p;',
+            options: [
+              'Imprime 0',
+              'El programa se cierra con un error (desreferencia de un puntero nulo)',
+              'Imprime nullptr',
+              'Error de compilación',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Haz que `p` apunte a `x`.',
+          difficulty: 1,
+          payload: {
+            template: 'int x = 5;\nint{{0}} p = {{1}}x;',
+            blanks: ['*', '&'],
+          },
+        },
+        {
+          type: 'bug',
+          prompt:
+            'El programa se cierra al ejecutarse. ¿Qué línea causa el problema?',
+          difficulty: 2,
+          payload: {
+            lines: ['int* p = nullptr;', '*p = 5;', 'cout << *p << endl;'],
+            buggyLineIndex: 1,
+            explanation:
+              'p no apunta a ninguna variable: escribir en *p con p nulo cierra el programa. Primero debe apuntar a algo (int x; p = &x;).',
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas de la función que intercambia dos enteros con punteros.',
+          difficulty: 3,
+          payload: {
+            blocks: [
+              'void intercambiar(int* a, int* b) {',
+              '  int temporal = *a;',
+              '  *a = *b;',
+              '  *b = temporal;',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee dos enteros. Con una función `intercambiar(int* a, int* b)` que usa punteros, imprime primero el segundo y luego el primero.',
+          starterCode: `${INCLUDES}void intercambiar(int* a, int* b) {\n  // TODO\n}\n\nint main() {\n  int a, b;\n  cin >> a >> b;\n  intercambiar(&a, &b);\n  cout << a << " " << b << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}void intercambiar(int* a, int* b) {\n  int temporal = *a;\n  *a = *b;\n  *b = temporal;\n}\n\nint main() {\n  int a, b;\n  cin >> a >> b;\n  intercambiar(&a, &b);\n  cout << a << " " << b << endl;\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            { input: '3\n8', expectedOutput: '8 3', isHidden: false },
+            { input: '10 -2', expectedOutput: '-2 10', isHidden: false },
+            { input: '5 5', expectedOutput: '5 5', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee un entero `x`. Crea un puntero a `x`, súmale 10 **a través del puntero** e imprime `x`.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  int x;\n  cin >> x;\n  int* p = &x;\n  *p = *p + 10;\n  cout << x << endl;\n  return 0;\n}\n`,
+          difficulty: 1,
+          testCases: [
+            { input: '5', expectedOutput: '15', isHidden: false },
+            { input: '-10', expectedOutput: '0', isHidden: false },
+            { input: '100', expectedOutput: '110', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'La primera línea es N y luego N enteros. Guárdalos en un arreglo dinámico (`new int[n]`), imprime su suma y libera la memoria con `delete[]`.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  int* datos = new int[n];\n  int suma = 0;\n  for (int i = 0; i < n; i++) {\n    cin >> datos[i];\n    suma += datos[i];\n  }\n  cout << suma << endl;\n  delete[] datos;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            { input: '3\n1 2 3', expectedOutput: '6', isHidden: false },
+            { input: '4\n10 -4 7 1', expectedOutput: '14', isHidden: false },
+            { input: '1\n5', expectedOutput: '5', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'La primera línea es N y luego N enteros. Escribe `int* mayor(vector<int>& v)`, que devuelve un puntero al elemento mayor, e imprime ese valor y su posición (índice), separados por un espacio.',
+          starterCode: `${INCLUDES}int* mayor(vector<int>& v) {\n  // TODO\n  return &v[0];\n}\n\nint main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  int* p = mayor(v);\n  cout << *p << " " << (p - &v[0]) << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}int* mayor(vector<int>& v) {\n  int* mejor = &v[0];\n  for (int i = 1; i < v.size(); i++) {\n    if (v[i] > *mejor) {\n      mejor = &v[i];\n    }\n  }\n  return mejor;\n}\n\nint main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  int* p = mayor(v);\n  cout << *p << " " << (p - &v[0]) << endl;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            { input: '4\n3 9 2 9', expectedOutput: '9 1', isHidden: false },
+            { input: '3\n-5 -2 -9', expectedOutput: '-2 1', isHidden: false },
+            { input: '1\n7', expectedOutput: '7 0', isHidden: true },
+          ],
+        },
+      ],
+    },
     { title: 'const y buenas prácticas', xpReward: 10, contentMarkdown: null },
   ],
 };
