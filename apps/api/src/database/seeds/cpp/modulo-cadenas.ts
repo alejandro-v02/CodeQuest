@@ -425,6 +425,224 @@ s[i] = toupper(s[i]); // pasa cada carácter a mayúscula
         },
       ],
     },
-    { title: 'Operaciones con cadenas', xpReward: 10, contentMarkdown: null },
+    {
+      title: 'Operaciones con cadenas',
+      xpReward: 10,
+      contentMarkdown: md`
+# Operaciones con cadenas
+
+La clase §string§ trae métodos para buscar, cortar y transformar texto sin que tengas que recorrerlo a mano.
+
+## Buscar con find
+
+§§§cpp
+string s = "programar en C++";
+cout << s.find("gra") << endl; // 3 (posición donde empieza)
+cout << (s.find("xyz") == string::npos); // 1 (no se encontró)
+§§§
+
+§find§ devuelve la **posición** de la primera coincidencia, o §string::npos§ si no existe.
+
+## Cortar con substr
+
+§§§cpp
+string s = "programar";
+cout << s.substr(0, 3) << endl; // "pro" (desde 0, 3 caracteres)
+cout << s.substr(4) << endl; // "ramar" (desde la posición 4 hasta el final)
+§§§
+
+## Reemplazar, insertar y borrar
+
+§§§cpp
+string s = "hola mundo";
+s.replace(0, 4, "adios"); // "adios mundo" (desde 0, quita 4 y pone "adios")
+s.insert(0, ">> "); // ">> adios mundo"
+s.erase(0, 3); // "adios mundo"
+§§§
+
+## Ordenar los caracteres
+
+§§§cpp
+string palabra = "casa";
+sort(palabra.begin(), palabra.end()); // "aacs"
+§§§
+
+Dos palabras son **anagramas** si, al ordenar sus letras, quedan iguales.
+
+## Separar palabras con stringstream
+
+§§§cpp
+string frase = "uno dos tres";
+stringstream flujo(frase);
+string palabra;
+while (flujo >> palabra) {
+cout << palabra << endl;
+}
+§§§
+
+Un §stringstream§ se lee igual que §cin§: ideal para partir una línea en palabras.
+
+## Texto ↔ número
+
+§§§cpp
+int n = stoi("42"); // 42
+double d = stod("3.5"); // 3.5
+string t = to_string(42); // "42"
+§§§
+
+## Clasificar caracteres
+
+§isalpha(c)§ (¿es letra?), §isdigit(c)§ (¿es dígito?), §isupper§, §islower§, §isspace§.
+
+## Recuerda
+
+- §find§ devuelve la posición o §string::npos§.
+- §substr(inicio, cantidad)§ **no** modifica la cadena: devuelve una nueva.
+- §replace§, §insert§ y §erase§ **sí** modifican la cadena original.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 1,
+          payload: {
+            code: 'string s = "hola";\ncout << s.find("la");',
+            options: ['1', '2', '3', 'Error'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 1,
+          payload: {
+            code: 'string s = "programar";\ncout << s.substr(1, 3);',
+            options: ['pro', 'rog', 'rogr', 'ogr'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué devuelve `find` cuando no encuentra el texto?',
+          difficulty: 2,
+          payload: {
+            code: 'string s = "hola";\nauto pos = s.find("xyz");',
+            options: ['0', '-1 siempre', 'string::npos', 'Lanza una excepción'],
+            correctIndex: 2,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Obtén las 3 primeras letras de `s`.',
+          difficulty: 1,
+          payload: {
+            template: 'string inicio = s.{{0}}(0, {{1}});',
+            blanks: ['substr', '3'],
+          },
+        },
+        {
+          type: 'bug',
+          prompt:
+            'El programa dice que "hola" es palíndromo. ¿Qué línea tiene el error?',
+          difficulty: 3,
+          payload: {
+            lines: [
+              'string s = "hola";',
+              'string alReves = s;',
+              'reverse(alReves.begin(), alReves.end());',
+              'bool esPalindromo = (s.length() == alReves.length());',
+              'cout << (esPalindromo ? "si" : "no");',
+            ],
+            buggyLineIndex: 3,
+            explanation:
+              'Comparar solo las longitudes no basta: hay que comparar las cadenas, s == alReves.',
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas que separan una frase en palabras y las imprimen.',
+          difficulty: 3,
+          payload: {
+            blocks: [
+              'stringstream flujo(frase);',
+              'string palabra;',
+              'while (flujo >> palabra) {',
+              '  cout << palabra << endl;',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee una palabra e imprime `si` si es un palíndromo (se lee igual al revés) o `no` si no lo es.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  string palabra;\n  cin >> palabra;\n  string alReves = palabra;\n  reverse(alReves.begin(), alReves.end());\n  cout << (palabra == alReves ? "si" : "no") << endl;\n${FIN}`,
+          difficulty: 2,
+          testCases: [
+            { input: 'oso', expectedOutput: 'si', isHidden: false },
+            { input: 'hola', expectedOutput: 'no', isHidden: false },
+            { input: 'anilina', expectedOutput: 'si', isHidden: true },
+            { input: 'ab', expectedOutput: 'no', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee una frase (una línea) e imprime cuántas palabras tiene. Usa `stringstream`.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  string frase;\n  getline(cin, frase);\n  stringstream flujo(frase);\n  string palabra;\n  int total = 0;\n  while (flujo >> palabra) {\n    total++;\n  }\n  cout << total << endl;\n${FIN}`,
+          difficulty: 2,
+          testCases: [
+            { input: 'hola mundo cruel', expectedOutput: '3', isHidden: false },
+            { input: 'una', expectedOutput: '1', isHidden: false },
+            { input: 'a b c d e', expectedOutput: '5', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee dos palabras (una por línea). Imprime `anagramas` si tienen las mismas letras (en cualquier orden) o `no` si no.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  string a, b;\n  cin >> a >> b;\n  sort(a.begin(), a.end());\n  sort(b.begin(), b.end());\n  cout << (a == b ? "anagramas" : "no") << endl;\n${FIN}`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'roma\namor',
+              expectedOutput: 'anagramas',
+              isHidden: false,
+            },
+            { input: 'casa\ncosa', expectedOutput: 'no', isHidden: false },
+            {
+              input: 'listen\nsilent',
+              expectedOutput: 'anagramas',
+              isHidden: true,
+            },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee una frase (línea 1), una palabra a buscar (línea 2) y su reemplazo (línea 3). Imprime la frase con **todas** las apariciones reemplazadas.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  string frase, buscar, nuevo;\n  getline(cin, frase);\n  getline(cin, buscar);\n  getline(cin, nuevo);\n  size_t pos = frase.find(buscar);\n  while (pos != string::npos) {\n    frase.replace(pos, buscar.length(), nuevo);\n    pos = frase.find(buscar, pos + nuevo.length());\n  }\n  cout << frase << endl;\n${FIN}`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'el gato y el perro\nel\nun',
+              expectedOutput: 'un gato y un perro',
+              isHidden: false,
+            },
+            {
+              input: 'banana\nna\nNA',
+              expectedOutput: 'baNANA',
+              isHidden: false,
+            },
+            { input: 'hola\nxyz\nabc', expectedOutput: 'hola', isHidden: true },
+          ],
+        },
+      ],
+    },
   ],
 };
