@@ -28,3 +28,7 @@ Cada caso de prueba entrega la entrada **un valor por línea** por la entrada es
 | Mini proyectos              | Calculadora, Inventario, Notas de estudiantes                                        |
 
 El contenido de las lecciones se escribe por módulos; mientras tanto C++ sigue como "Próximamente" en la app.
+
+## Progreso
+
+Escritas y verificadas en Piston: Fundamentos (7), Cadenas y entrada (3) y Funciones y memoria (4). Pendientes: Clases (3), Errores y depuración (2) y Mini proyectos (3). C++ se activa en la app cuando estén todas.
