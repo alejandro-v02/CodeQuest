@@ -623,6 +623,203 @@ En la práctica diaria §vector§ hace todo esto por ti, y por eso es la opción
         },
       ],
     },
-    { title: 'const y buenas prácticas', xpReward: 10, contentMarkdown: null },
+    {
+      title: 'const y buenas prácticas',
+      xpReward: 10,
+      contentMarkdown: md`
+# const y buenas prácticas
+
+Escribir código que funcione es el primer paso; escribir código **seguro y claro** es lo que lo hace mantenible. Estas son las costumbres más importantes de C++.
+
+## const: lo que no debe cambiar
+
+§§§cpp
+const int MAX_INTENTOS = 3;
+MAX_INTENTOS = 5; // ERROR de compilación: es una constante
+§§§
+
+Marcar algo como §const§ le pide al compilador que **vigile** que nadie lo modifique. Úsalo para valores fijos y para parámetros que una función solo lee:
+
+§§§cpp
+double promedio(const vector<int>& v) {
+int suma = 0;
+for (int x : v) suma += x;
+return static_cast<double>(suma) / v.size();
+}
+§§§
+
+Si dentro de §promedio§ alguien intenta hacer §v.push_back(1)§, el programa no compila: la función se comprometió a no cambiar el vector.
+
+## Inicializa siempre
+
+§§§cpp
+int contador; // contiene basura
+int bueno = 0; // seguro
+§§§
+
+Una variable sin inicializar tiene un valor impredecible. Es la fuente de errores que "a veces funcionan y a veces no".
+
+## Nombres claros
+
+§§§cpp
+int d = 86400; // ¿qué es d?
+const int SEGUNDOS_POR_DIA = 86400; // se explica solo
+§§§
+
+## Evita los números mágicos
+
+Un número suelto en medio del código (§if (edad >= 18)§) no explica por qué. Ponle nombre:
+
+§§§cpp
+const int MAYORIA_DE_EDAD = 18;
+if (edad >= MAYORIA_DE_EDAD) { ... }
+§§§
+
+## Prefiere vector y string
+
+§vector§ y §string§ gestionan su propia memoria: no necesitan §new§/§delete§ y no se desbordan como los arreglos clásicos. Usa punteros y memoria dinámica solo cuando sea realmente necesario.
+
+## Referencias constantes para objetos grandes
+
+§§§cpp
+void mostrar(const string& texto); // sin copia, sin riesgo de modificar
+void mostrar(string texto); // copia el texto completo en cada llamada
+§§§
+
+## Recuerda
+
+- §const§ = el compilador vigila por ti.
+- Inicializa, nombra con claridad y evita números sueltos.
+- §const T&§ para parámetros grandes que solo se leen.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Qué ocurre al compilar este código?',
+          difficulty: 1,
+          payload: {
+            code: 'const int MAX = 3;\nMAX = 5;',
+            options: [
+              'MAX vale 5',
+              'Error de compilación: no se puede modificar una constante',
+              'MAX sigue valiendo 3 sin error',
+              'Se ejecuta con una advertencia',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Por qué se usa `const vector<int>&` en este parámetro?',
+          difficulty: 2,
+          payload: {
+            code: 'double promedio(const vector<int>& v);',
+            options: [
+              'Para que la función pueda modificar el vector',
+              'Para no copiar el vector y garantizar que la función no lo modifica',
+              'Para que el vector sea más rápido de recorrer',
+              'No tiene ningún efecto',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Cuál es el problema de esta variable?',
+          difficulty: 2,
+          payload: {
+            code: 'int contador;\ncout << contador;',
+            options: [
+              'Ninguno: vale 0 por defecto',
+              'Sin inicializar contiene un valor impredecible',
+              'No compila',
+              'Imprime siempre 1',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Declara `MAX_INTENTOS` como constante.',
+          difficulty: 1,
+          payload: {
+            template: '{{0}} int MAX_INTENTOS = 3;',
+            blanks: ['const'],
+          },
+        },
+        {
+          type: 'bug',
+          prompt:
+            'El compilador rechaza esta función. ¿Qué línea intenta modificar algo que prometió no tocar?',
+          difficulty: 3,
+          payload: {
+            lines: [
+              'int total(const vector<int>& v) {',
+              '  int suma = 0;',
+              '  v.push_back(0);',
+              '  for (int x : v) suma += x;',
+              '  return suma;',
+              '}',
+            ],
+            buggyLineIndex: 2,
+            explanation:
+              'v es const: la función se comprometió a no modificar el vector, y push_back lo cambia.',
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas: constante, uso en una condición y mensaje.',
+          difficulty: 2,
+          payload: {
+            blocks: [
+              'const int MAYORIA_DE_EDAD = 18;',
+              'if (edad >= MAYORIA_DE_EDAD) {',
+              '  cout << "adulto" << endl;',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'La primera línea es N y luego N enteros. Escribe `promedio(const vector<int>& v)` e imprime el promedio con 2 decimales.',
+          starterCode: `${INCLUDES}double promedio(const vector<int>& v) {\n  // TODO\n  return 0;\n}\n\nint main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  cout << fixed << setprecision(2) << promedio(v) << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}double promedio(const vector<int>& v) {\n  int suma = 0;\n  for (int x : v) {\n    suma += x;\n  }\n  return static_cast<double>(suma) / v.size();\n}\n\nint main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  cout << fixed << setprecision(2) << promedio(v) << endl;\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            { input: '3\n4 6 8', expectedOutput: '6.00', isHidden: false },
+            { input: '2\n7 2', expectedOutput: '4.50', isHidden: false },
+            { input: '1\n10', expectedOutput: '10.00', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee una edad. Usa la constante `MAYORIA_DE_EDAD = 18` para imprimir `adulto` o `menor`.',
+          starterCode: `${INCLUDES}const int MAYORIA_DE_EDAD = 18;\n\nint main() {\n  int edad;\n  cin >> edad;\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}const int MAYORIA_DE_EDAD = 18;\n\nint main() {\n  int edad;\n  cin >> edad;\n  if (edad >= MAYORIA_DE_EDAD) {\n    cout << "adulto" << endl;\n  } else {\n    cout << "menor" << endl;\n  }\n  return 0;\n}\n`,
+          difficulty: 1,
+          testCases: [
+            { input: '20', expectedOutput: 'adulto', isHidden: false },
+            { input: '15', expectedOutput: 'menor', isHidden: false },
+            { input: '18', expectedOutput: 'adulto', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee un texto (una línea) y cuenta cuántas palabras tiene. Escribe `contarPalabras(const string& texto)` y úsala.',
+          starterCode: `${INCLUDES}int contarPalabras(const string& texto) {\n  // TODO\n  return 0;\n}\n\nint main() {\n  string frase;\n  getline(cin, frase);\n  cout << contarPalabras(frase) << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}int contarPalabras(const string& texto) {\n  stringstream flujo(texto);\n  string palabra;\n  int total = 0;\n  while (flujo >> palabra) {\n    total++;\n  }\n  return total;\n}\n\nint main() {\n  string frase;\n  getline(cin, frase);\n  cout << contarPalabras(frase) << endl;\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            { input: 'hola mundo cruel', expectedOutput: '3', isHidden: false },
+            { input: 'una', expectedOutput: '1', isHidden: false },
+            { input: 'a b c d e', expectedOutput: '5', isHidden: true },
+          ],
+        },
+      ],
+    },
   ],
 };
