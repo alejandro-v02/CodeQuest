@@ -1,6 +1,6 @@
 import type { SeedModule } from '../curriculum.data';
 import { md } from '../md';
-import { INCLUDES } from './common';
+import { INCLUDES, PLANTILLA } from './common';
 
 export const moduloMemoria: SeedModule = {
   title: 'Funciones y memoria',
@@ -204,7 +204,219 @@ Sin caso base, la función se llama infinitamente hasta agotar la memoria y el p
         },
       ],
     },
-    { title: 'Referencias', xpReward: 10, contentMarkdown: null },
+    {
+      title: 'Referencias',
+      xpReward: 10,
+      contentMarkdown: md`
+# Referencias
+
+Una **referencia** es otro nombre para una variable que ya existe. No crea una copia: trabaja directamente sobre la original.
+
+## Declarar una referencia
+
+§§§cpp
+int x = 5;
+int& r = x; // r es un alias de x
+r = 9;
+cout << x << endl; // 9 (cambiar r cambia x)
+§§§
+
+El símbolo §&§ después del tipo indica "referencia a un entero".
+
+## Paso por referencia
+
+Si un parámetro es una referencia, la función **modifica la variable original**:
+
+§§§cpp
+void incrementar(int& n) {
+n++;
+}
+
+int main() {
+int x = 5;
+incrementar(x);
+cout << x << endl; // 6
+return 0;
+}
+§§§
+
+Es la forma de resolver el problema de la lección anterior (en la que §incrementar§ no cambiaba nada).
+
+## Intercambiar dos valores
+
+§§§cpp
+void intercambiar(int& a, int& b) {
+int temporal = a;
+a = b;
+b = temporal;
+}
+§§§
+
+C++ trae §swap(a, b)§ que hace exactamente esto.
+
+## Referencias en los recorridos
+
+Con §&§ en un §for§ por rangos modificas los elementos del vector; sin §&§ solo cambias una copia:
+
+§§§cpp
+vector<int> v = {1, 2, 3};
+for (int& x : v) {
+x = x * 2; // v queda {2, 4, 6}
+}
+§§§
+
+## Referencias constantes
+
+Pasar un vector o un texto grande por valor lo **copia entero**, y es lento. Con §const&§ no se copia y además la función no puede modificarlo:
+
+§§§cpp
+int suma(const vector<int>& v) {
+int total = 0;
+for (int x : v) total += x;
+return total;
+}
+§§§
+
+## Parámetros de salida
+
+Una función puede "devolver" varios valores escribiendo en referencias:
+
+§§§cpp
+void estadisticas(const vector<int>& v, int& minimo, int& maximo) {
+minimo = v[0];
+maximo = v[0];
+for (int x : v) {
+if (x < minimo) minimo = x;
+if (x > maximo) maximo = x;
+}
+}
+§§§
+
+## Recuerda
+
+- §int& r = x;§ → §r§ y §x§ son el mismo dato.
+- §void f(int& n)§ → la función puede cambiar el original.
+- §const vector<int>& v§ → rápido (sin copia) y seguro (sin cambios).
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 1,
+          payload: {
+            code: 'int x = 5;\nint& r = x;\nr = 9;\ncout << x;',
+            options: ['5', '9', '14', 'Error de compilación'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 1,
+          payload: {
+            code: 'void incrementar(int& n) {\n  n++;\n}\n\nint main() {\n  int x = 5;\n  incrementar(x);\n  cout << x;\n}',
+            options: ['5', '6', '0', 'Error de compilación'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Cómo queda el vector después del bucle?',
+          difficulty: 2,
+          payload: {
+            code: 'vector<int> v = {1, 2, 3};\nfor (int x : v) {\n  x = x * 2;\n}',
+            options: [
+              '{2, 4, 6}',
+              '{1, 2, 3} (x es una copia)',
+              '{1, 4, 9}',
+              'Error de compilación',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Haz que la función modifique la variable original.',
+          difficulty: 1,
+          payload: {
+            template: 'void duplicar(int{{0}} n) {\n  n = n * 2;\n}',
+            blanks: ['&'],
+          },
+        },
+        {
+          type: 'bug',
+          prompt:
+            'La función no intercambia los valores. ¿Qué línea tiene el problema?',
+          difficulty: 2,
+          payload: {
+            lines: [
+              'void intercambiar(int a, int b) {',
+              '  int temporal = a;',
+              '  a = b;',
+              '  b = temporal;',
+              '}',
+            ],
+            buggyLineIndex: 0,
+            explanation:
+              'Los parámetros se pasan por valor: se cambian las copias. Deben ser referencias: int& a, int& b.',
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas de la función que intercambia dos enteros.',
+          difficulty: 2,
+          payload: {
+            blocks: [
+              'void intercambiar(int& a, int& b) {',
+              '  int temporal = a;',
+              '  a = b;',
+              '  b = temporal;',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee dos enteros `a` y `b`. Con una función `intercambiar(int& a, int& b)`, imprime primero `b` y luego `a`, separados por un espacio.',
+          starterCode: `${INCLUDES}void intercambiar(int& a, int& b) {\n  // TODO\n}\n\nint main() {\n  int a, b;\n  cin >> a >> b;\n  intercambiar(a, b);\n  cout << a << " " << b << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}void intercambiar(int& a, int& b) {\n  int temporal = a;\n  a = b;\n  b = temporal;\n}\n\nint main() {\n  int a, b;\n  cin >> a >> b;\n  intercambiar(a, b);\n  cout << a << " " << b << endl;\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            { input: '3\n8', expectedOutput: '8 3', isHidden: false },
+            { input: '10 -2', expectedOutput: '-2 10', isHidden: false },
+            { input: '5 5', expectedOutput: '5 5', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'La primera línea es N y luego vienen N enteros. Duplica cada elemento recorriendo el vector con referencias e imprímelos separados por un espacio.',
+          starterCode: PLANTILLA,
+          solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  for (int& x : v) {\n    x = x * 2;\n  }\n  for (int i = 0; i < n; i++) {\n    if (i > 0) {\n      cout << " ";\n    }\n    cout << v[i];\n  }\n  cout << endl;\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            { input: '3\n1 2 3', expectedOutput: '2 4 6', isHidden: false },
+            { input: '2\n-5 10', expectedOutput: '-10 20', isHidden: false },
+            { input: '1\n0', expectedOutput: '0', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'La primera línea es N y luego N enteros. Escribe `estadisticas(v, minimo, maximo)` con parámetros de salida e imprime el mínimo y el máximo separados por un espacio.',
+          starterCode: `${INCLUDES}void estadisticas(const vector<int>& v, int& minimo, int& maximo) {\n  // TODO\n}\n\nint main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  int minimo, maximo;\n  estadisticas(v, minimo, maximo);\n  cout << minimo << " " << maximo << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}void estadisticas(const vector<int>& v, int& minimo, int& maximo) {\n  minimo = v[0];\n  maximo = v[0];\n  for (int x : v) {\n    if (x < minimo) minimo = x;\n    if (x > maximo) maximo = x;\n  }\n}\n\nint main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  int minimo, maximo;\n  estadisticas(v, minimo, maximo);\n  cout << minimo << " " << maximo << endl;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            { input: '4\n4 9 1 7', expectedOutput: '1 9', isHidden: false },
+            { input: '2\n-3 -8', expectedOutput: '-8 -3', isHidden: false },
+            { input: '1\n6', expectedOutput: '6 6', isHidden: true },
+          ],
+        },
+      ],
+    },
     { title: 'Punteros', xpReward: 10, contentMarkdown: null },
     { title: 'const y buenas prácticas', xpReward: 10, contentMarkdown: null },
   ],
