@@ -440,6 +440,271 @@ Si no escribes ningún constructor, C++ crea uno vacío. Pero en cuanto escribes
         },
       ],
     },
-    { title: 'Herencia y polimorfismo', xpReward: 10, contentMarkdown: null },
+    {
+      title: 'Herencia y polimorfismo',
+      xpReward: 10,
+      contentMarkdown: md`
+# Herencia y polimorfismo
+
+La **herencia** permite crear una clase nueva a partir de otra, reutilizando sus datos y métodos. El **polimorfismo** deja tratar objetos distintos como si fueran del mismo tipo, y que cada uno responda a su manera.
+
+## Herencia
+
+§§§cpp
+class Animal {
+protected:
+string nombre;
+
+public:
+Animal(string n) : nombre(n) {}
+
+void presentar() const {
+cout << "Soy " << nombre << endl;
+}
+};
+
+class Perro : public Animal {
+public:
+Perro(string n) : Animal(n) {} // llama al constructor del padre
+
+void ladrar() const {
+cout << nombre << " dice guau" << endl;
+}
+};
+
+Perro rex("Rex");
+rex.presentar(); // heredado de Animal
+rex.ladrar(); // propio de Perro
+§§§
+
+- §class Perro : public Animal§ → §Perro§ **hereda** de §Animal§.
+- §protected§ permite el acceso desde la clase y sus hijas, pero no desde fuera.
+- El constructor de la hija llama al del padre con §: Animal(n)§.
+
+## Métodos virtuales y override
+
+Si el padre y la hija definen el mismo método, ¿cuál se ejecuta? Depende de §virtual§:
+
+§§§cpp
+class Animal {
+public:
+virtual string sonido() const { return "..."; }
+};
+
+class Perro : public Animal {
+public:
+string sonido() const override { return "guau"; }
+};
+§§§
+
+- §virtual§ en el padre → "la hija puede reemplazar este método".
+- §override§ en la hija → el compilador comprueba que de verdad reemplaza uno del padre (si te equivocas en el nombre, da error).
+
+## Polimorfismo
+
+Un puntero (o referencia) al tipo **padre** puede apuntar a un objeto **hijo**, y se ejecuta la versión del objeto real:
+
+§§§cpp
+Animal* a = new Perro();
+cout << a->sonido() << endl; // guau (gracias a virtual)
+delete a;
+§§§
+
+Sin §virtual§ se ejecutaría la versión del padre y saldría §...§.
+
+§§§cpp
+vector<Animal*> grupo = {new Animal(), new Perro()};
+for (Animal* a : grupo) {
+cout << a->sonido() << endl; // "..." y luego "guau"
+}
+§§§
+
+Con punteros, la flecha §->§ es la forma de llamar a un método (§a->sonido()§ equivale a §(*a).sonido()§).
+
+## Clases abstractas
+
+Un método **virtual puro** (§= 0§) no tiene cuerpo: obliga a las hijas a implementarlo, y la clase deja de poder instanciarse.
+
+§§§cpp
+class Figura {
+public:
+virtual double area() const = 0;
+virtual ~Figura() {}
+};
+
+Figura f; // ERROR: Figura es abstracta
+§§§
+
+Cuando una clase tiene métodos virtuales, conviene darle también un **destructor virtual** (§virtual ~Figura() {}§) para que §delete§ sobre un puntero al padre libere bien al objeto hijo.
+
+## Recuerda
+
+- Hereda con §: public Padre§ y llama al constructor del padre en la lista de inicialización.
+- §virtual§ + §override§ hacen posible el polimorfismo.
+- Una clase con un método §= 0§ es abstracta: solo sirve de molde.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Cómo se declara que `Perro` hereda de `Animal`?',
+          difficulty: 1,
+          payload: {
+            code: '// Perro es un tipo de Animal',
+            options: [
+              'class Perro extends Animal',
+              'class Perro : public Animal',
+              'class Perro inherits Animal',
+              'class Perro -> Animal',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 2,
+          payload: {
+            code: 'class Animal {\n public:\n  virtual string sonido() const { return "..."; }\n};\nclass Perro : public Animal {\n public:\n  string sonido() const override { return "guau"; }\n};\n\nAnimal* a = new Perro();\ncout << a->sonido();',
+            options: ['...', 'guau', 'Error de compilación', 'Nada'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código (el método NO es virtual)?',
+          difficulty: 3,
+          payload: {
+            code: 'class Animal {\n public:\n  string sonido() const { return "..."; }\n};\nclass Perro : public Animal {\n public:\n  string sonido() const { return "guau"; }\n};\n\nAnimal* a = new Perro();\ncout << a->sonido();',
+            options: [
+              'guau',
+              '... (sin virtual se ejecuta la versión del tipo del puntero)',
+              'Error de compilación',
+              'guau...',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'fill',
+          prompt:
+            'Completa la herencia y el método que reemplaza al del padre.',
+          difficulty: 2,
+          payload: {
+            template:
+              'class Perro {{0}} public Animal {\n public:\n  string sonido() const {{1}} { return "guau"; }\n};',
+            blanks: [':', 'override'],
+          },
+        },
+        {
+          type: 'bug',
+          prompt:
+            'El compilador rechaza este programa. ¿Qué línea causa el error?',
+          difficulty: 3,
+          payload: {
+            lines: [
+              'class Figura {',
+              ' public:',
+              '  virtual double area() const = 0;',
+              '};',
+              'int main() {',
+              '  Figura f;',
+              '}',
+            ],
+            buggyLineIndex: 5,
+            explanation:
+              'Figura es abstracta (tiene un método virtual puro): no se pueden crear objetos de ella, solo de sus hijas.',
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas: clase padre con método virtual, hija y uso.',
+          difficulty: 3,
+          payload: {
+            blocks: [
+              'class Animal {',
+              ' public:',
+              '  virtual string sonido() const { return "..."; }',
+              '};',
+              'class Gato : public Animal {',
+              ' public:',
+              '  string sonido() const override { return "miau"; }',
+              '};',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `circulo <radio>` o `cuadrado <lado>`. Usa la clase abstracta `Figura` con las hijas `Circulo` y `Cuadrado` e imprime la suma de las áreas con 2 decimales.',
+          starterCode: `${INCLUDES}class Figura {\n public:\n  virtual double area() const = 0;\n  virtual ~Figura() {}\n};\n\nclass Circulo : public Figura {\n  double radio;\n\n public:\n  Circulo(double r) : radio(r) {}\n  double area() const override {\n    // TODO\n    return 0;\n  }\n};\n\nclass Cuadrado : public Figura {\n  double lado;\n\n public:\n  Cuadrado(double l) : lado(l) {}\n  double area() const override {\n    // TODO\n    return 0;\n  }\n};\n\nint main() {\n  vector<Figura*> figuras;\n  string tipo;\n  double medida;\n  while (cin >> tipo >> medida) {\n    if (tipo == "circulo") {\n      figuras.push_back(new Circulo(medida));\n    } else {\n      figuras.push_back(new Cuadrado(medida));\n    }\n  }\n  double total = 0;\n  for (Figura* f : figuras) {\n    total += f->area();\n    delete f;\n  }\n  cout << fixed << setprecision(2) << total << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}class Figura {\n public:\n  virtual double area() const = 0;\n  virtual ~Figura() {}\n};\n\nclass Circulo : public Figura {\n  double radio;\n\n public:\n  Circulo(double r) : radio(r) {}\n  double area() const override {\n    return 3.14159265358979 * radio * radio;\n  }\n};\n\nclass Cuadrado : public Figura {\n  double lado;\n\n public:\n  Cuadrado(double l) : lado(l) {}\n  double area() const override {\n    return lado * lado;\n  }\n};\n\nint main() {\n  vector<Figura*> figuras;\n  string tipo;\n  double medida;\n  while (cin >> tipo >> medida) {\n    if (tipo == "circulo") {\n      figuras.push_back(new Circulo(medida));\n    } else {\n      figuras.push_back(new Cuadrado(medida));\n    }\n  }\n  double total = 0;\n  for (Figura* f : figuras) {\n    total += f->area();\n    delete f;\n  }\n  cout << fixed << setprecision(2) << total << endl;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'cuadrado 2\ncuadrado 3',
+              expectedOutput: '13.00',
+              isHidden: false,
+            },
+            { input: 'circulo 1', expectedOutput: '3.14', isHidden: false },
+            {
+              input: 'circulo 2\ncuadrado 1',
+              expectedOutput: '13.57',
+              isHidden: true,
+            },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `empleado <salario>` o `gerente <salario> <bono>`. `Gerente` hereda de `Empleado` y sobrescribe `pago()` (salario + bono). Imprime el pago total.',
+          starterCode: `${INCLUDES}class Empleado {\n protected:\n  int salario;\n\n public:\n  Empleado(int s) : salario(s) {}\n  virtual int pago() const {\n    return salario;\n  }\n  virtual ~Empleado() {}\n};\n\nclass Gerente : public Empleado {\n  int bono;\n\n public:\n  Gerente(int s, int b) : Empleado(s), bono(b) {}\n  int pago() const override {\n    // TODO\n    return 0;\n  }\n};\n\nint main() {\n  vector<Empleado*> personal;\n  string tipo;\n  while (cin >> tipo) {\n    if (tipo == "empleado") {\n      int s;\n      cin >> s;\n      personal.push_back(new Empleado(s));\n    } else {\n      int s, b;\n      cin >> s >> b;\n      personal.push_back(new Gerente(s, b));\n    }\n  }\n  int total = 0;\n  for (Empleado* e : personal) {\n    total += e->pago();\n    delete e;\n  }\n  cout << total << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}class Empleado {\n protected:\n  int salario;\n\n public:\n  Empleado(int s) : salario(s) {}\n  virtual int pago() const {\n    return salario;\n  }\n  virtual ~Empleado() {}\n};\n\nclass Gerente : public Empleado {\n  int bono;\n\n public:\n  Gerente(int s, int b) : Empleado(s), bono(b) {}\n  int pago() const override {\n    return salario + bono;\n  }\n};\n\nint main() {\n  vector<Empleado*> personal;\n  string tipo;\n  while (cin >> tipo) {\n    if (tipo == "empleado") {\n      int s;\n      cin >> s;\n      personal.push_back(new Empleado(s));\n    } else {\n      int s, b;\n      cin >> s >> b;\n      personal.push_back(new Gerente(s, b));\n    }\n  }\n  int total = 0;\n  for (Empleado* e : personal) {\n    total += e->pago();\n    delete e;\n  }\n  cout << total << endl;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'empleado 1000\ngerente 2000 500',
+              expectedOutput: '3500',
+              isHidden: false,
+            },
+            {
+              input: 'gerente 3000 1000',
+              expectedOutput: '4000',
+              isHidden: false,
+            },
+            {
+              input: 'empleado 500\nempleado 700',
+              expectedOutput: '1200',
+              isHidden: true,
+            },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `perro <nombre>` o `gato <nombre>`. Imprime, por línea, `<nombre> dice <sonido>` (`guau` o `miau`) usando un método virtual `sonido()`.',
+          starterCode: `${INCLUDES}class Animal {\n protected:\n  string nombre;\n\n public:\n  Animal(string n) : nombre(n) {}\n  virtual string sonido() const = 0;\n  string describir() const {\n    return nombre + " dice " + sonido();\n  }\n  virtual ~Animal() {}\n};\n\nclass Perro : public Animal {\n public:\n  Perro(string n) : Animal(n) {}\n  string sonido() const override {\n    // TODO\n    return "";\n  }\n};\n\nclass Gato : public Animal {\n public:\n  Gato(string n) : Animal(n) {}\n  string sonido() const override {\n    // TODO\n    return "";\n  }\n};\n\nint main() {\n  string tipo, nombre;\n  while (cin >> tipo >> nombre) {\n    Animal* a = (tipo == "perro") ? static_cast<Animal*>(new Perro(nombre)) : static_cast<Animal*>(new Gato(nombre));\n    cout << a->describir() << endl;\n    delete a;\n  }\n  return 0;\n}\n`,
+          solution: `${INCLUDES}class Animal {\n protected:\n  string nombre;\n\n public:\n  Animal(string n) : nombre(n) {}\n  virtual string sonido() const = 0;\n  string describir() const {\n    return nombre + " dice " + sonido();\n  }\n  virtual ~Animal() {}\n};\n\nclass Perro : public Animal {\n public:\n  Perro(string n) : Animal(n) {}\n  string sonido() const override {\n    return "guau";\n  }\n};\n\nclass Gato : public Animal {\n public:\n  Gato(string n) : Animal(n) {}\n  string sonido() const override {\n    return "miau";\n  }\n};\n\nint main() {\n  string tipo, nombre;\n  while (cin >> tipo >> nombre) {\n    Animal* a = (tipo == "perro") ? static_cast<Animal*>(new Perro(nombre)) : static_cast<Animal*>(new Gato(nombre));\n    cout << a->describir() << endl;\n    delete a;\n  }\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'perro Rex\ngato Misi',
+              expectedOutput: 'Rex dice guau\nMisi dice miau',
+              isHidden: false,
+            },
+            {
+              input: 'gato Luna',
+              expectedOutput: 'Luna dice miau',
+              isHidden: false,
+            },
+            {
+              input: 'perro Toby\nperro Max',
+              expectedOutput: 'Toby dice guau\nMax dice guau',
+              isHidden: true,
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
