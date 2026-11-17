@@ -202,6 +202,208 @@ Y hay errores que solo aparecen **al ejecutar** (como acceder a un índice que n
         },
       ],
     },
-    { title: 'Excepciones', xpReward: 10, contentMarkdown: null },
+    {
+      title: 'Excepciones',
+      xpReward: 10,
+      contentMarkdown: md`
+# Excepciones
+
+Algunos errores solo se descubren **mientras el programa corre**: un texto que no es un número, un índice que no existe, una división que no debería hacerse. Para tratarlos existen las excepciones.
+
+## try / catch
+
+§§§cpp
+#include <stdexcept>
+
+try {
+int n = stoi("abc"); // lanza una excepción
+cout << n << endl;
+} catch (const invalid_argument& e) {
+cout << "no es un numero" << endl;
+}
+§§§
+
+- §try§: el código que podría fallar.
+- §catch§: qué hacer si falla; recibe el error.
+- Si dentro del §try§ ocurre una excepción, el resto del bloque se **salta** y se ejecuta el §catch§ que corresponda.
+
+## Lanzar tus propias excepciones
+
+§§§cpp
+double dividir(int a, int b) {
+if (b == 0) {
+throw invalid_argument("No se puede dividir entre cero");
+}
+return static_cast<double>(a) / b;
+}
+
+try {
+cout << dividir(5, 0) << endl;
+} catch (const exception& e) {
+cout << e.what() << endl; // No se puede dividir entre cero
+}
+§§§
+
+- §throw§ detiene la función y salta al §catch§ más cercano.
+- §e.what()§ devuelve el mensaje del error.
+- §exception§ es la clase base de todas las excepciones estándar, así que §catch (const exception& e)§ atrapa cualquiera de ellas.
+
+## Excepciones estándar útiles
+
+| Excepción          | Cuándo aparece                              |
+| ------------------ | ------------------------------------------- |
+| §invalid_argument§ | un argumento no es válido (§stoi("abc")§)   |
+| §out_of_range§     | un índice fuera de rango con §v.at(i)§      |
+| §runtime_error§    | un error general que ocurre en la ejecución |
+
+## at() frente a []
+
+§§§cpp
+vector<int> v = {1, 2, 3};
+v[10]; // sin avisar: comportamiento indefinido
+v.at(10); // lanza out_of_range, que puedes atrapar
+§§§
+
+Usa §at()§ cuando no estés seguro de que el índice sea válido.
+
+## Excepción sin atrapar
+
+Si nadie atrapa la excepción, el programa **termina de golpe**:
+
+§§§text
+terminate called after throwing an instance of 'std::runtime_error'
+what(): boom
+§§§
+
+## Cuándo usar excepciones
+
+- Para situaciones **excepcionales** (datos inválidos, recursos que fallan).
+- No para el flujo normal: comprobar con un §if§ si la lista está vacía es más claro que provocar un error.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 1,
+          payload: {
+            code: 'try {\n  int n = stoi("abc");\n  cout << n;\n} catch (const invalid_argument& e) {\n  cout << "invalido";\n}',
+            options: ['0', 'abc', 'invalido', 'Nada'],
+            correctIndex: 2,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué imprime este código?',
+          difficulty: 2,
+          payload: {
+            code: 'try {\n  cout << "A";\n  throw runtime_error("fallo");\n  cout << "B";\n} catch (const exception& e) {\n  cout << "C";\n}',
+            options: ['AB', 'AC', 'ABC', 'C'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué devuelve `e.what()`?',
+          difficulty: 2,
+          payload: {
+            code: 'try {\n  throw invalid_argument("dato mal");\n} catch (const exception& e) {\n  cout << e.what();\n}',
+            options: ['invalid_argument', 'dato mal', 'Nada', 'Un número'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué ocurre si nadie atrapa la excepción?',
+          difficulty: 2,
+          payload: {
+            code: 'int main() {\n  throw runtime_error("boom");\n}',
+            options: [
+              'El programa continúa normalmente',
+              'El programa termina de golpe con un mensaje de error',
+              'No compila',
+              'Imprime boom',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Lanza una excepción cuando el divisor es cero.',
+          difficulty: 2,
+          payload: {
+            template:
+              'if (b == 0) {\n  {{0}} invalid_argument("No se puede dividir entre cero");\n}',
+            blanks: ['throw'],
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas del bloque que intenta convertir un texto y avisa si falla.',
+          difficulty: 2,
+          payload: {
+            blocks: [
+              'try {',
+              '  int n = stoi(texto);',
+              '  cout << n << endl;',
+              '} catch (const invalid_argument& e) {',
+              '  cout << "invalido" << endl;',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee un texto e imprime `valido` si se puede convertir a número entero con `stoi`, o `invalido` si no. Usa `try`/`catch`.',
+          starterCode: `${INCLUDES}int main() {\n  string texto;\n  cin >> texto;\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}int main() {\n  string texto;\n  cin >> texto;\n  try {\n    stoi(texto);\n    cout << "valido" << endl;\n  } catch (const invalid_argument& e) {\n    cout << "invalido" << endl;\n  }\n${FIN}`,
+          difficulty: 2,
+          testCases: [
+            { input: '42', expectedOutput: 'valido', isHidden: false },
+            { input: 'hola', expectedOutput: 'invalido', isHidden: false },
+            { input: '-7', expectedOutput: 'valido', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Lee dos enteros. Si el segundo es 0, `dividir` lanza `invalid_argument("No se puede dividir entre cero")` y el programa imprime el mensaje; si no, imprime el cociente con 2 decimales.',
+          starterCode: `${INCLUDES}double dividir(int a, int b) {\n  // TODO: lanza invalid_argument si b es 0\n  return static_cast<double>(a) / b;\n}\n\nint main() {\n  int a, b;\n  cin >> a >> b;\n  try {\n    cout << fixed << setprecision(2) << dividir(a, b) << endl;\n  } catch (const exception& e) {\n    cout << e.what() << endl;\n  }\n  return 0;\n}\n`,
+          solution: `${INCLUDES}double dividir(int a, int b) {\n  if (b == 0) {\n    throw invalid_argument("No se puede dividir entre cero");\n  }\n  return static_cast<double>(a) / b;\n}\n\nint main() {\n  int a, b;\n  cin >> a >> b;\n  try {\n    cout << fixed << setprecision(2) << dividir(a, b) << endl;\n  } catch (const exception& e) {\n    cout << e.what() << endl;\n  }\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            { input: '10\n4', expectedOutput: '2.50', isHidden: false },
+            {
+              input: '5\n0',
+              expectedOutput: 'No se puede dividir entre cero',
+              isHidden: false,
+            },
+            { input: '9 3', expectedOutput: '3.00', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'La primera línea es N, luego N enteros y al final un índice `i`. Imprime el elemento en esa posición usando `at()`; si el índice no existe, imprime `fuera de rango`.',
+          starterCode: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int k = 0; k < n; k++) {\n    cin >> v[k];\n  }\n  int i;\n  cin >> i;\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int k = 0; k < n; k++) {\n    cin >> v[k];\n  }\n  int i;\n  cin >> i;\n  try {\n    cout << v.at(i) << endl;\n  } catch (const out_of_range& e) {\n    cout << "fuera de rango" << endl;\n  }\n${FIN}`,
+          difficulty: 3,
+          testCases: [
+            { input: '3\n10 20 30\n1', expectedOutput: '20', isHidden: false },
+            {
+              input: '3\n10 20 30\n5',
+              expectedOutput: 'fuera de rango',
+              isHidden: false,
+            },
+            {
+              input: '2\n7 8\n-1',
+              expectedOutput: 'fuera de rango',
+              isHidden: true,
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
