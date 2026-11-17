@@ -179,7 +179,215 @@ Lectura con §cin§, §char§, §switch§, funciones, formato de decimales y cas
         },
       ],
     },
-    { title: 'Proyecto: inventario', xpReward: 20, contentMarkdown: null },
+    {
+      title: 'Proyecto: inventario',
+      xpReward: 20,
+      contentMarkdown: md`
+# Proyecto: inventario
+
+Vas a construir un pequeño inventario de tienda: registrar productos, venderlos y revisar cuánto queda.
+
+## Paso 1: modelar un producto
+
+§§§cpp
+struct Producto {
+string nombre;
+int cantidad;
+double precio;
+};
+
+vector<Producto> inventario;
+§§§
+
+## Paso 2: leer los productos
+
+Cada línea tiene §nombre cantidad precio§. Con §cin§ se lee hasta el final de la entrada:
+
+§§§cpp
+Producto p;
+while (cin >> p.nombre >> p.cantidad >> p.precio) {
+inventario.push_back(p);
+}
+§§§
+
+## Paso 3: buscar un producto
+
+Devolver un **puntero** permite distinguir "lo encontré" de "no existe":
+
+§§§cpp
+Producto* buscar(vector<Producto>& inv, const string& nombre) {
+for (Producto& p : inv) {
+if (p.nombre == nombre) {
+return &p;
+}
+}
+return nullptr;
+}
+§§§
+
+Quien lo use debe comprobar el resultado antes de usarlo:
+
+§§§cpp
+Producto* p = buscar(inventario, "lapiz");
+if (p != nullptr) {
+p->cantidad -= 1; // con puntero se usa la flecha
+}
+§§§
+
+## Paso 4: calcular
+
+§§§cpp
+double valorTotal(const vector<Producto>& inv) {
+double total = 0;
+for (const Producto& p : inv) {
+total += p.cantidad * p.precio;
+}
+return total;
+}
+§§§
+
+## Qué has practicado
+
+Structs, vectores de structs, referencias, punteros que pueden ser §nullptr§, §const§ y acumuladores.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Qué devuelve `buscar` cuando el producto no existe?',
+          difficulty: 1,
+          payload: {
+            code: 'Producto* buscar(vector<Producto>& inv, const string& nombre) {\n  for (Producto& p : inv) {\n    if (p.nombre == nombre) return &p;\n  }\n  return nullptr;\n}',
+            options: [
+              'Un producto vacío',
+              'nullptr (un puntero que no apunta a nada)',
+              'Lanza una excepción',
+              '0 siempre',
+            ],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Cuál es el valor total de este inventario?',
+          difficulty: 2,
+          payload: {
+            code: 'vector<Producto> inv = {\n  {"lapiz", 10, 2.0},\n  {"cuaderno", 3, 5.0},\n};\n// valorTotal suma cantidad * precio de cada producto',
+            options: ['15', '35', '65', '20'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Accede a la cantidad de un producto a través de su puntero.',
+          difficulty: 2,
+          payload: {
+            template:
+              'Producto* p = buscar(inventario, "lapiz");\nif (p != {{0}}) {\n  p{{1}}cantidad -= 1;\n}',
+            blanks: ['nullptr', '->'],
+          },
+        },
+        {
+          type: 'bug',
+          prompt:
+            'Este código falla al ejecutarse si el producto no existe. ¿Qué línea es la que falla?',
+          difficulty: 3,
+          payload: {
+            lines: [
+              'void vender(vector<Producto>& inv, const string& nombre) {',
+              '  Producto* p = buscar(inv, nombre);',
+              '  p->cantidad -= 1;',
+              '}',
+            ],
+            buggyLineIndex: 2,
+            explanation:
+              'buscar puede devolver nullptr: desreferenciarlo cierra el programa. Hay que comprobar if (p != nullptr) antes.',
+          },
+        },
+        {
+          type: 'sort',
+          prompt: 'Ordena las líneas de la función que calcula el valor total.',
+          difficulty: 2,
+          payload: {
+            blocks: [
+              'double valorTotal(const vector<Producto>& inv) {',
+              '  double total = 0;',
+              '  for (const Producto& p : inv) {',
+              '    total += p.cantidad * p.precio;',
+              '  }',
+              '  return total;',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `nombre cantidad precio`. Imprime el valor total del inventario (suma de cantidad × precio) con 2 decimales.',
+          starterCode: `${INCLUDES}struct Producto {\n  string nombre;\n  int cantidad;\n  double precio;\n};\n\ndouble valorTotal(const vector<Producto>& inv) {\n  // TODO\n  return 0;\n}\n\nint main() {\n  vector<Producto> inventario;\n  Producto p;\n  while (cin >> p.nombre >> p.cantidad >> p.precio) {\n    inventario.push_back(p);\n  }\n  cout << fixed << setprecision(2) << valorTotal(inventario) << endl;\n  return 0;\n}\n`,
+          solution: `${INCLUDES}struct Producto {\n  string nombre;\n  int cantidad;\n  double precio;\n};\n\ndouble valorTotal(const vector<Producto>& inv) {\n  double total = 0;\n  for (const Producto& p : inv) {\n    total += p.cantidad * p.precio;\n  }\n  return total;\n}\n\nint main() {\n  vector<Producto> inventario;\n  Producto p;\n  while (cin >> p.nombre >> p.cantidad >> p.precio) {\n    inventario.push_back(p);\n  }\n  cout << fixed << setprecision(2) << valorTotal(inventario) << endl;\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            {
+              input: 'lapiz 10 2\ncuaderno 3 5',
+              expectedOutput: '35.00',
+              isHidden: false,
+            },
+            { input: 'regla 4 1.5', expectedOutput: '6.00', isHidden: false },
+            {
+              input: 'a 1 1\nb 2 2\nc 3 3',
+              expectedOutput: '14.00',
+              isHidden: true,
+            },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `nombre cantidad precio`. Imprime los nombres de los productos con **menos de 5 unidades**, uno por línea y en el mismo orden. Si no hay ninguno, imprime `todo en orden`.',
+          starterCode: `${INCLUDES}struct Producto {\n  string nombre;\n  int cantidad;\n  double precio;\n};\n\nint main() {\n  vector<Producto> inventario;\n  Producto p;\n  while (cin >> p.nombre >> p.cantidad >> p.precio) {\n    inventario.push_back(p);\n  }\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}struct Producto {\n  string nombre;\n  int cantidad;\n  double precio;\n};\n\nint main() {\n  vector<Producto> inventario;\n  Producto p;\n  while (cin >> p.nombre >> p.cantidad >> p.precio) {\n    inventario.push_back(p);\n  }\n  bool hayBajos = false;\n  for (const Producto& item : inventario) {\n    if (item.cantidad < 5) {\n      cout << item.nombre << endl;\n      hayBajos = true;\n    }\n  }\n  if (!hayBajos) {\n    cout << "todo en orden" << endl;\n  }\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            {
+              input: 'lapiz 10 2\ncuaderno 3 5\nregla 4 1',
+              expectedOutput: 'cuaderno\nregla',
+              isHidden: false,
+            },
+            {
+              input: 'goma 9 1',
+              expectedOutput: 'todo en orden',
+              isHidden: false,
+            },
+            { input: 'a 5 1\nb 4 1', expectedOutput: 'b', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Las líneas son comandos: `agregar <nombre> <cantidad>` suma unidades (crea el producto si no existe) y `vender <nombre> <cantidad>` las resta (si no hay suficientes, ignora la venta). Al final imprime `<nombre>: <cantidad>` por producto, en el orden en que aparecieron.',
+          starterCode: `${INCLUDES}struct Producto {\n  string nombre;\n  int cantidad;\n};\n\nProducto* buscar(vector<Producto>& inv, const string& nombre) {\n  // TODO\n  return nullptr;\n}\n\nint main() {\n  vector<Producto> inventario;\n  string comando, nombre;\n  int cantidad;\n  while (cin >> comando >> nombre >> cantidad) {\n    // TODO\n  }\n  for (const Producto& p : inventario) {\n    cout << p.nombre << ": " << p.cantidad << endl;\n  }\n  return 0;\n}\n`,
+          solution: `${INCLUDES}struct Producto {\n  string nombre;\n  int cantidad;\n};\n\nProducto* buscar(vector<Producto>& inv, const string& nombre) {\n  for (Producto& p : inv) {\n    if (p.nombre == nombre) {\n      return &p;\n    }\n  }\n  return nullptr;\n}\n\nint main() {\n  vector<Producto> inventario;\n  string comando, nombre;\n  int cantidad;\n  while (cin >> comando >> nombre >> cantidad) {\n    Producto* existente = buscar(inventario, nombre);\n    if (comando == "agregar") {\n      if (existente != nullptr) {\n        existente->cantidad += cantidad;\n      } else {\n        inventario.push_back({nombre, cantidad});\n      }\n    } else if (existente != nullptr && existente->cantidad >= cantidad) {\n      existente->cantidad -= cantidad;\n    }\n  }\n  for (const Producto& p : inventario) {\n    cout << p.nombre << ": " << p.cantidad << endl;\n  }\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'agregar lapiz 10\nvender lapiz 4',
+              expectedOutput: 'lapiz: 6',
+              isHidden: false,
+            },
+            {
+              input: 'agregar a 5\nagregar b 2\nvender a 9\nagregar a 1',
+              expectedOutput: 'a: 6\nb: 2',
+              isHidden: false,
+            },
+            {
+              input: 'vender x 1\nagregar x 3',
+              expectedOutput: 'x: 3',
+              isHidden: true,
+            },
+          ],
+        },
+      ],
+    },
     {
       title: 'Proyecto: notas de estudiantes',
       xpReward: 20,
