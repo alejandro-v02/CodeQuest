@@ -27,7 +27,6 @@ Cada caso de prueba entrega la entrada **un valor por línea** por la entrada es
 | Errores y depuración        | Leer errores del compilador, Excepciones                                             |
 | Mini proyectos              | Calculadora, Inventario, Notas de estudiantes                                        |
 
-El contenido de las lecciones se escribe por módulos; mientras tanto C++ sigue como "Próximamente" en la app.
 
 ## Estado
 
