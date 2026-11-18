@@ -16,7 +16,7 @@ Piston compila `main.cpp` con **g++ 10.2** y ejecuta el binario. Un error de com
 
 Cada caso de prueba entrega la entrada **un valor por línea** por la entrada estándar y se compara la salida estándar sin espacios finales. Los ejercicios que leen texto usan `std::getline`; los que leen números, `std::cin >>`.
 
-## Ruta de C++ (planificada)
+## Ruta de C++
 
 | Módulo                      | Lecciones                                                                            |
 | --------------------------- | ------------------------------------------------------------------------------------ |
@@ -29,6 +29,6 @@ Cada caso de prueba entrega la entrada **un valor por línea** por la entrada es
 
 El contenido de las lecciones se escribe por módulos; mientras tanto C++ sigue como "Próximamente" en la app.
 
-## Progreso
+## Estado
 
-Escritas y verificadas en Piston: Fundamentos (7), Cadenas y entrada (3) y Funciones y memoria (4). Pendientes: Clases (3), Errores y depuración (2) y Mini proyectos (3). C++ se activa en la app cuando estén todas.
+Las 22 lecciones están escritas, con sus ejercicios verificados en Piston (`npm run verify:piston`), y C++ está disponible en la app. Para comprobar la ruta completa a través de la API: `npm run smoke -- cpp`.
