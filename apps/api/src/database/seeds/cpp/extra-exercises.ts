@@ -263,4 +263,47 @@ export const cppExtraExercises: Record<string, SeedExercise[]> = {
       ],
     },
   ],
+  Structs: [
+    {
+      type: 'quiz',
+      prompt: '¿Qué imprime este código?',
+      difficulty: 2,
+      payload: {
+        code: 'struct Punto { int x; int y; };\nPunto a = {1, 2};\nPunto b = a;\nb.x = 9;\ncout << a.x << b.x;',
+        options: ['99', '19', '91', '11'],
+        correctIndex: 1,
+      },
+    },
+    {
+      type: 'fill',
+      prompt: 'Recorre un vector de structs e imprime el nombre de cada uno.',
+      difficulty: 1,
+      payload: {
+        template:
+          'for (Persona {{0}} : grupo) {\n  cout << p{{1}}nombre << endl;\n}',
+        blanks: ['p', '.'],
+      },
+    },
+    {
+      type: 'code',
+      prompt:
+        'La primera línea es N; las N siguientes son `nombre edad`. Imprime el nombre de la persona más joven (si hay empate, la primera).',
+      starterCode: `${INCLUDES}struct Persona {\n  string nombre;\n  int edad;\n};\n\nint main() {\n  int n;\n  cin >> n;\n  vector<Persona> grupo;\n  // TODO\n  return 0;\n}\n`,
+      solution: `${INCLUDES}struct Persona {\n  string nombre;\n  int edad;\n};\n\nint main() {\n  int n;\n  cin >> n;\n  vector<Persona> grupo;\n  for (int i = 0; i < n; i++) {\n    Persona p;\n    cin >> p.nombre >> p.edad;\n    grupo.push_back(p);\n  }\n  Persona joven = grupo[0];\n  for (Persona p : grupo) {\n    if (p.edad < joven.edad) {\n      joven = p;\n    }\n  }\n  cout << joven.nombre << endl;\n  return 0;\n}\n`,
+      difficulty: 3,
+      testCases: [
+        {
+          input: '3\nAna 20\nLuis 17\nEva 25',
+          expectedOutput: 'Luis',
+          isHidden: false,
+        },
+        {
+          input: '2\nPedro 30\nSofia 30',
+          expectedOutput: 'Pedro',
+          isHidden: false,
+        },
+        { input: '1\nZoe 5', expectedOutput: 'Zoe', isHidden: true },
+      ],
+    },
+  ],
 };
