@@ -12,7 +12,7 @@ export const LANGUAGE_OPTIONS: LanguageOption[] = [
   { slug: 'python', label: 'Python', available: true },
   { slug: 'javascript', label: 'JavaScript', available: true },
   { slug: 'typescript', label: 'TypeScript', available: true },
-  { slug: 'cpp', label: 'C++', available: false },
+  { slug: 'cpp', label: 'C++', available: true },
 ];
 
 export const DAILY_GOAL_OPTIONS: number[] = [5, 15, 30, 60];
