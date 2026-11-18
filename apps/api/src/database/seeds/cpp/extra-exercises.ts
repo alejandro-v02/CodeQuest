@@ -172,4 +172,95 @@ export const cppExtraExercises: Record<string, SeedExercise[]> = {
       ],
     },
   ],
+  Funciones: [
+    {
+      type: 'quiz',
+      prompt: '¿Qué imprime este código?',
+      difficulty: 2,
+      payload: {
+        code: 'int f(int n) {\n  return n * n;\n}\nint g(int n) {\n  return f(n) + 1;\n}\n\nint main() {\n  cout << g(3);\n}',
+        options: ['9', '10', '7', '16'],
+        correctIndex: 1,
+      },
+    },
+    {
+      type: 'fill',
+      prompt: 'Escribe una función que no devuelve nada y solo imprime.',
+      difficulty: 1,
+      payload: {
+        template:
+          '{{0}} saludar(string nombre) {\n  cout << "Hola, " << nombre << endl;\n}',
+        blanks: ['void'],
+      },
+    },
+    {
+      type: 'code',
+      prompt:
+        'Escribe la función `cuadradoPerfecto(n)` que devuelve si `n` es un cuadrado perfecto (1, 4, 9, 16...). Lee un entero e imprime `true` o `false` (con `boolalpha`).',
+      starterCode: `${INCLUDES}bool cuadradoPerfecto(int n) {\n  // TODO\n  return false;\n}\n\nint main() {\n  int n;\n  cin >> n;\n  cout << boolalpha << cuadradoPerfecto(n) << endl;\n  return 0;\n}\n`,
+      solution: `${INCLUDES}bool cuadradoPerfecto(int n) {\n  if (n < 0) {\n    return false;\n  }\n  int raiz = static_cast<int>(sqrt(n));\n  return raiz * raiz == n;\n}\n\nint main() {\n  int n;\n  cin >> n;\n  cout << boolalpha << cuadradoPerfecto(n) << endl;\n  return 0;\n}\n`,
+      difficulty: 2,
+      testCases: [
+        { input: '16', expectedOutput: 'true', isHidden: false },
+        { input: '15', expectedOutput: 'false', isHidden: false },
+        { input: '0', expectedOutput: 'true', isHidden: true },
+        { input: '-4', expectedOutput: 'false', isHidden: true },
+      ],
+    },
+  ],
+  'Arrays y vectores': [
+    {
+      type: 'quiz',
+      prompt: '¿Qué imprime este código?',
+      difficulty: 2,
+      payload: {
+        code: 'vector<int> v = {3, 1, 2};\nsort(v.begin(), v.end());\ncout << v[0] << v[2];',
+        options: ['32', '13', '12', '31'],
+        correctIndex: 1,
+      },
+    },
+    {
+      type: 'bug',
+      prompt:
+        'El programa debería imprimir la suma pero imprime un número raro. ¿Qué línea es la causa?',
+      difficulty: 2,
+      payload: {
+        lines: [
+          'vector<int> v = {1, 2, 3};',
+          'int suma;',
+          'for (int x : v) suma += x;',
+          'cout << suma << endl;',
+        ],
+        buggyLineIndex: 1,
+        explanation:
+          'suma no está inicializada (contiene basura). Debe empezar en 0: int suma = 0;',
+      },
+    },
+    {
+      type: 'code',
+      prompt:
+        'La primera línea es N y luego N enteros. Imprime cuántos elementos son mayores que el promedio.',
+      starterCode: PLANTILLA,
+      solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  double suma = 0;\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n    suma += v[i];\n  }\n  double promedio = suma / n;\n  int mayores = 0;\n  for (int x : v) {\n    if (x > promedio) {\n      mayores++;\n    }\n  }\n  cout << mayores << endl;\n${FIN}`,
+      difficulty: 3,
+      testCases: [
+        { input: '5\n1 2 3 4 5', expectedOutput: '2', isHidden: false },
+        { input: '3\n10 10 10', expectedOutput: '0', isHidden: false },
+        { input: '4\n1 1 1 9', expectedOutput: '1', isHidden: true },
+      ],
+    },
+    {
+      type: 'code',
+      prompt:
+        'La primera línea es N y luego N enteros. Imprime el segundo número más grande (distinto del mayor). Si no existe, imprime `no hay`.',
+      starterCode: PLANTILLA,
+      solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  vector<int> v(n);\n  for (int i = 0; i < n; i++) {\n    cin >> v[i];\n  }\n  sort(v.begin(), v.end());\n  v.erase(unique(v.begin(), v.end()), v.end());\n  if (v.size() < 2) {\n    cout << "no hay" << endl;\n  } else {\n    cout << v[v.size() - 2] << endl;\n  }\n${FIN}`,
+      difficulty: 3,
+      testCases: [
+        { input: '4\n5 3 9 1', expectedOutput: '5', isHidden: false },
+        { input: '3\n7 7 7', expectedOutput: 'no hay', isHidden: false },
+        { input: '5\n2 9 9 8 1', expectedOutput: '8', isHidden: true },
+      ],
+    },
+  ],
 };
