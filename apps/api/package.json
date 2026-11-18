@@ -21,6 +21,7 @@
     "seed": "nest build && node dist/database/seeds/seed.js",
     "verify:seeds": "tsc -p tsconfig.build.json --outDir .verify-dist --incremental false && node scripts/verify-seeds.js .verify-dist",
     "verify:piston": "tsc -p tsconfig.build.json --outDir .verify-dist --incremental false && node scripts/verify-seeds-piston.js .verify-dist",
+    "smoke": "node scripts/smoke-language.js",
     "setup:piston": "node scripts/setup-piston.js",
     "generate": "nest build && node dist/scripts/generate-exercises.js"
   },
