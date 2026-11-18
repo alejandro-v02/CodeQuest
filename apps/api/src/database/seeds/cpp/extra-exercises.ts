@@ -80,4 +80,96 @@ export const cppExtraExercises: Record<string, SeedExercise[]> = {
       ],
     },
   ],
+  Condicionales: [
+    {
+      type: 'quiz',
+      prompt: '¿Qué imprime este código?',
+      difficulty: 2,
+      payload: {
+        code: 'int x = 7;\nstring r = (x % 2 == 0) ? "par" : (x > 5 ? "impar grande" : "impar chico");\ncout << r;',
+        options: ['par', 'impar grande', 'impar chico', 'Error de compilación'],
+        correctIndex: 1,
+      },
+    },
+    {
+      type: 'fill',
+      prompt: 'Completa el `switch` para que el día 2 imprima "martes".',
+      difficulty: 1,
+      payload: {
+        template:
+          'switch (dia) {\n  case 1: cout << "lunes"; {{0}};\n  {{1}} 2: cout << "martes"; break;\n}',
+        blanks: ['break', 'case'],
+      },
+    },
+    {
+      type: 'code',
+      prompt:
+        'Lee tres números e imprime `triangulo` si pueden ser los lados de un triángulo (cada lado menor que la suma de los otros dos) o `no` si no.',
+      starterCode: PLANTILLA,
+      solution: `${INCLUDES}int main() {\n  int a, b, c;\n  cin >> a >> b >> c;\n  bool valido = a < b + c && b < a + c && c < a + b;\n  cout << (valido ? "triangulo" : "no") << endl;\n${FIN}`,
+      difficulty: 2,
+      testCases: [
+        { input: '3\n4\n5', expectedOutput: 'triangulo', isHidden: false },
+        { input: '1\n2\n10', expectedOutput: 'no', isHidden: false },
+        { input: '5 5 5', expectedOutput: 'triangulo', isHidden: true },
+      ],
+    },
+  ],
+  Bucles: [
+    {
+      type: 'quiz',
+      prompt: '¿Qué imprime este código?',
+      difficulty: 2,
+      payload: {
+        code: 'int suma = 0;\nfor (int i = 1; i <= 10; i++) {\n  if (i % 2 == 0) continue;\n  suma += i;\n}\ncout << suma;',
+        options: ['55', '30', '25', '20'],
+        correctIndex: 2,
+      },
+    },
+    {
+      type: 'sort',
+      prompt: 'Ordena las líneas que cuentan los dígitos de un número.',
+      difficulty: 3,
+      payload: {
+        blocks: [
+          'int digitos = 0;',
+          'while (n > 0) {',
+          '  n = n / 10;',
+          '  digitos++;',
+          '}',
+          'cout << digitos << endl;',
+        ],
+      },
+    },
+    {
+      type: 'code',
+      prompt:
+        'Lee un número N e imprime una escalera de N líneas: la línea `i` tiene `i` asteriscos.',
+      starterCode: PLANTILLA,
+      solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  for (int i = 1; i <= n; i++) {\n    for (int j = 0; j < i; j++) {\n      cout << "*";\n    }\n    cout << endl;\n  }\n${FIN}`,
+      difficulty: 2,
+      testCases: [
+        { input: '3', expectedOutput: '*\n**\n***', isHidden: false },
+        { input: '1', expectedOutput: '*', isHidden: false },
+        {
+          input: '5',
+          expectedOutput: '*\n**\n***\n****\n*****',
+          isHidden: true,
+        },
+      ],
+    },
+    {
+      type: 'code',
+      prompt:
+        'Lee un número positivo e imprime cuántos dígitos tiene, usando un bucle `while` (sin convertirlo a texto).',
+      starterCode: PLANTILLA,
+      solution: `${INCLUDES}int main() {\n  int n;\n  cin >> n;\n  int digitos = 0;\n  while (n > 0) {\n    n = n / 10;\n    digitos++;\n  }\n  cout << digitos << endl;\n${FIN}`,
+      difficulty: 2,
+      testCases: [
+        { input: '12345', expectedOutput: '5', isHidden: false },
+        { input: '7', expectedOutput: '1', isHidden: false },
+        { input: '1000', expectedOutput: '4', isHidden: true },
+      ],
+    },
+  ],
 };
