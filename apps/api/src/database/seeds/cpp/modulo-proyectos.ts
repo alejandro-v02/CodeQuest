@@ -391,7 +391,207 @@ Structs, vectores de structs, referencias, punteros que pueden ser §nullptr§, 
     {
       title: 'Proyecto: notas de estudiantes',
       xpReward: 20,
-      contentMarkdown: null,
+      contentMarkdown: md`
+# Proyecto: notas de estudiantes
+
+Vas a procesar las notas de un grupo: calcular promedios, decidir quién aprueba y encontrar al mejor estudiante.
+
+## Paso 1: modelar los datos
+
+§§§cpp
+struct Estudiante {
+string nombre;
+vector<double> notas;
+};
+§§§
+
+Un estudiante tiene un nombre y **una cantidad variable de notas**, por eso las notas son un §vector§.
+
+## Paso 2: leer una línea con varias notas
+
+Cada línea tiene §nombre nota1 nota2 ...§. Se lee la línea completa y se separa con un §stringstream§:
+
+§§§cpp
+string linea;
+while (getline(cin, linea)) {
+stringstream flujo(linea);
+Estudiante e;
+flujo >> e.nombre;
+double nota;
+while (flujo >> nota) {
+e.notas.push_back(nota);
+}
+estudiantes.push_back(e);
+}
+§§§
+
+## Paso 3: funciones pequeñas
+
+§§§cpp
+double promedio(const vector<double>& notas) {
+double suma = 0;
+for (double n : notas) {
+suma += n;
+}
+return suma / notas.size();
+}
+
+string estado(double prom) {
+return prom >= 6 ? "aprobado" : "reprobado";
+}
+§§§
+
+## Paso 4: recorrer el grupo
+
+§§§cpp
+for (const Estudiante& e : estudiantes) {
+double p = promedio(e.notas);
+cout << e.nombre << " " << fixed << setprecision(1) << p << " " << estado(p) << endl;
+}
+§§§
+
+## Paso 5: buscar al mejor
+
+Se guarda el mejor visto hasta ahora y se compara con cada estudiante; con §>§ (y no §>=§) gana el primero en caso de empate.
+
+## Qué has practicado
+
+Structs con vectores, §getline§ + §stringstream§, funciones con §const&§, recorridos y búsqueda del máximo.
+      `,
+      exercises: [
+        {
+          type: 'quiz',
+          prompt: '¿Cuál es el promedio de estas notas?',
+          difficulty: 1,
+          payload: {
+            code: 'vector<double> notas = {4, 6, 8};\ndouble suma = 0;\nfor (double n : notas) suma += n;\ncout << suma / notas.size();',
+            options: ['4', '6', '8', '18'],
+            correctIndex: 1,
+          },
+        },
+        {
+          type: 'quiz',
+          prompt: '¿Qué hace este bucle con la línea `Ana 8 6 7`?',
+          difficulty: 2,
+          payload: {
+            code: 'stringstream flujo(linea);\nstring nombre;\nflujo >> nombre;\ndouble nota;\nint cuantas = 0;\nwhile (flujo >> nota) cuantas++;',
+            options: [
+              'Lee el nombre y cuenta 3 notas',
+              'Lee el nombre y cuenta 4 valores',
+              'Cuenta 0 notas',
+              'No compila',
+            ],
+            correctIndex: 0,
+          },
+        },
+        {
+          type: 'fill',
+          prompt: 'Completa la función que decide el estado del estudiante.',
+          difficulty: 2,
+          payload: {
+            template:
+              'string estado(double prom) {\n  return prom {{0}} 6 ? "aprobado" : "reprobado";\n}',
+            blanks: ['>='],
+          },
+        },
+        {
+          type: 'bug',
+          prompt: 'El promedio sale mal. ¿Qué línea tiene el error?',
+          difficulty: 2,
+          payload: {
+            lines: [
+              'double promedio(const vector<double>& notas) {',
+              '  double suma = 0;',
+              '  for (double n : notas) suma += n;',
+              '  return suma / 2;',
+              '}',
+            ],
+            buggyLineIndex: 3,
+            explanation:
+              'Hay que dividir entre la cantidad de notas (notas.size()), no entre 2.',
+          },
+        },
+        {
+          type: 'sort',
+          prompt:
+            'Ordena las líneas que separan el nombre y las notas de una línea de texto.',
+          difficulty: 3,
+          payload: {
+            blocks: [
+              'stringstream flujo(linea);',
+              'Estudiante e;',
+              'flujo >> e.nombre;',
+              'double nota;',
+              'while (flujo >> nota) {',
+              '  e.notas.push_back(nota);',
+              '}',
+            ],
+          },
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `nombre nota1 nota2 ...`. Imprime por estudiante `nombre promedio estado`, con el promedio a 1 decimal. Aprueba con promedio mayor o igual a 6.',
+          starterCode: `${INCLUDES}struct Estudiante {\n  string nombre;\n  vector<double> notas;\n};\n\ndouble promedio(const vector<double>& notas) {\n  // TODO\n  return 0;\n}\n\nstring estado(double prom) {\n  // TODO\n  return "";\n}\n\nint main() {\n  vector<Estudiante> estudiantes;\n  string linea;\n  while (getline(cin, linea)) {\n    stringstream flujo(linea);\n    Estudiante e;\n    flujo >> e.nombre;\n    double nota;\n    while (flujo >> nota) {\n      e.notas.push_back(nota);\n    }\n    estudiantes.push_back(e);\n  }\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}struct Estudiante {\n  string nombre;\n  vector<double> notas;\n};\n\ndouble promedio(const vector<double>& notas) {\n  double suma = 0;\n  for (double n : notas) {\n    suma += n;\n  }\n  return suma / notas.size();\n}\n\nstring estado(double prom) {\n  return prom >= 6 ? "aprobado" : "reprobado";\n}\n\nint main() {\n  vector<Estudiante> estudiantes;\n  string linea;\n  while (getline(cin, linea)) {\n    stringstream flujo(linea);\n    Estudiante e;\n    flujo >> e.nombre;\n    double nota;\n    while (flujo >> nota) {\n      e.notas.push_back(nota);\n    }\n    estudiantes.push_back(e);\n  }\n  for (const Estudiante& e : estudiantes) {\n    double p = promedio(e.notas);\n    cout << e.nombre << " " << fixed << setprecision(1) << p << " " << estado(p) << endl;\n  }\n  return 0;\n}\n`,
+          difficulty: 2,
+          testCases: [
+            {
+              input: 'Ana 8 6 7',
+              expectedOutput: 'Ana 7.0 aprobado',
+              isHidden: false,
+            },
+            {
+              input: 'Luis 4 5\nEva 9 10',
+              expectedOutput: 'Luis 4.5 reprobado\nEva 9.5 aprobado',
+              isHidden: false,
+            },
+            {
+              input: 'Zoe 6',
+              expectedOutput: 'Zoe 6.0 aprobado',
+              isHidden: true,
+            },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `nombre nota1 nota2 ...`. Imprime el nombre del estudiante con el mejor promedio (si hay empate, el que aparece primero).',
+          starterCode: `${INCLUDES}struct Estudiante {\n  string nombre;\n  vector<double> notas;\n};\n\ndouble promedio(const vector<double>& notas) {\n  // TODO\n  return 0;\n}\n\nint main() {\n  vector<Estudiante> estudiantes;\n  string linea;\n  while (getline(cin, linea)) {\n    stringstream flujo(linea);\n    Estudiante e;\n    flujo >> e.nombre;\n    double nota;\n    while (flujo >> nota) {\n      e.notas.push_back(nota);\n    }\n    estudiantes.push_back(e);\n  }\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}struct Estudiante {\n  string nombre;\n  vector<double> notas;\n};\n\ndouble promedio(const vector<double>& notas) {\n  double suma = 0;\n  for (double n : notas) {\n    suma += n;\n  }\n  return suma / notas.size();\n}\n\nint main() {\n  vector<Estudiante> estudiantes;\n  string linea;\n  while (getline(cin, linea)) {\n    stringstream flujo(linea);\n    Estudiante e;\n    flujo >> e.nombre;\n    double nota;\n    while (flujo >> nota) {\n      e.notas.push_back(nota);\n    }\n    estudiantes.push_back(e);\n  }\n  Estudiante mejor = estudiantes[0];\n  for (const Estudiante& e : estudiantes) {\n    if (promedio(e.notas) > promedio(mejor.notas)) {\n      mejor = e;\n    }\n  }\n  cout << mejor.nombre << endl;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'Ana 8 6 7\nLuis 9 9\nEva 5 5',
+              expectedOutput: 'Luis',
+              isHidden: false,
+            },
+            {
+              input: 'Pedro 7 7\nSofia 7 7',
+              expectedOutput: 'Pedro',
+              isHidden: false,
+            },
+            { input: 'Zoe 10', expectedOutput: 'Zoe', isHidden: true },
+          ],
+        },
+        {
+          type: 'code',
+          prompt:
+            'Cada línea es `nombre nota1 nota2 ...`. Imprime en una sola línea `aprobados reprobados` (cuántos estudiantes aprueban con promedio ≥ 6 y cuántos no).',
+          starterCode: `${INCLUDES}struct Estudiante {\n  string nombre;\n  vector<double> notas;\n};\n\ndouble promedio(const vector<double>& notas) {\n  // TODO\n  return 0;\n}\n\nint main() {\n  vector<Estudiante> estudiantes;\n  string linea;\n  while (getline(cin, linea)) {\n    stringstream flujo(linea);\n    Estudiante e;\n    flujo >> e.nombre;\n    double nota;\n    while (flujo >> nota) {\n      e.notas.push_back(nota);\n    }\n    estudiantes.push_back(e);\n  }\n  // TODO\n  return 0;\n}\n`,
+          solution: `${INCLUDES}struct Estudiante {\n  string nombre;\n  vector<double> notas;\n};\n\ndouble promedio(const vector<double>& notas) {\n  double suma = 0;\n  for (double n : notas) {\n    suma += n;\n  }\n  return suma / notas.size();\n}\n\nint main() {\n  vector<Estudiante> estudiantes;\n  string linea;\n  while (getline(cin, linea)) {\n    stringstream flujo(linea);\n    Estudiante e;\n    flujo >> e.nombre;\n    double nota;\n    while (flujo >> nota) {\n      e.notas.push_back(nota);\n    }\n    estudiantes.push_back(e);\n  }\n  int aprobados = 0, reprobados = 0;\n  for (const Estudiante& e : estudiantes) {\n    if (promedio(e.notas) >= 6) {\n      aprobados++;\n    } else {\n      reprobados++;\n    }\n  }\n  cout << aprobados << " " << reprobados << endl;\n  return 0;\n}\n`,
+          difficulty: 3,
+          testCases: [
+            {
+              input: 'Ana 8 6 7\nLuis 4 5\nEva 9 10',
+              expectedOutput: '2 1',
+              isHidden: false,
+            },
+            { input: 'Zoe 3', expectedOutput: '0 1', isHidden: false },
+            { input: 'A 6\nB 6\nC 5', expectedOutput: '2 1', isHidden: true },
+          ],
+        },
+      ],
     },
   ],
 };
