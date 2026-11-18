@@ -2,7 +2,7 @@
 
 App móvil de aprendizaje de programación personalizado: prueba de nivel, rutas de aprendizaje adaptativas, editor de código ejecutable en sandbox, IA tutora y gamificación (XP, rachas, logros).
 
-Lenguajes objetivo: **Python, JavaScript, TypeScript y C++** (motor de contenido extensible a otros lenguajes).
+Lenguajes: **Python, JavaScript, TypeScript y C++**, con ruta completa de principiante a mini proyectos (motor de contenido extensible a otros lenguajes).
 
 ## Stack
 
