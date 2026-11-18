@@ -61,6 +61,8 @@ async function runJob(job) {
       stdin: job.testCase.input,
       run_timeout: 3000,
     }),
+    // Piston can stall on a job; don't let one request hang the whole run.
+    signal: AbortSignal.timeout(60_000),
   });
   const body = await response.json();
   if (!response.ok) return `piston ${response.status}: ${JSON.stringify(body).slice(0, 120)}`;
